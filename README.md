@@ -17,7 +17,7 @@ Additional settings:-
 Commands :-
 - tx:	Raw 8 bit data to send to teletype
 - TODO
-- text	Text, adding carriage returns and setting even parity, and skipping utf-8 (print up arrow)
+- text:	Text, adding carriage returns and setting even parity, and skipping utf-8 (print up arrow)
 
 Status :-
 - rx:	Raw 8 bit data from teletype (one character at a time)
