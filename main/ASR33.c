@@ -60,6 +60,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    {
       turn_on();
       uart_write_bytes(uart, value, len);
+      last = time(0);
    }
    return "";
 }
