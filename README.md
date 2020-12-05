@@ -10,7 +10,7 @@ Additional settings:-
 - tx:	Tx pin
 - rx:	Rx pin
 - sonoff:	The topic to use for power on/off the teletype
-- idle:	The number of seconds before powering off (allow time to print)
+- idle:	The number of seconds before powering off after printing done
 - TODO
 - echo:	If echo on or off
 
