@@ -6,13 +6,12 @@ static const char TAG[] = "ASR33";
 #include <esp_spi_flash.h>
 #include <driver/uart.h>
 
-
 #define settings  \
   u8(uart,1);	\
   u8(tx,1);	\
   u8(rx,3);	\
   t(sonoff);	\
-  u32(idle,60)	\
+  u32(idle,10)	\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
@@ -60,7 +59,10 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    {
       turn_on();
       uart_write_bytes(uart, value, len);
-      last = time(0);
+      uint32_t now = time(0);
+      if (last < now)
+         last = now;
+      last += (len + 9) / 10;   // Time to print
    }
    return "";
 }
