@@ -6,7 +6,7 @@ This uses ESP32-RevK and so has the commands and settings as per that library
 https://github.com/revk/ESP32-RevK
 
 Additional settings:-
-uart	UART number
+- uart	UART number
 tx	Tx pin
 rx	Rx pin
 sonoff	The topic to use for power on/off the teletype
