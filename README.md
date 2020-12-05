@@ -15,6 +15,8 @@ Additional settings:-
 - echo:	If echo on or off
 
 Commands :-
+- on: Turn on now (automatically done if message to send)
+- off: Turn off now (automatically done after idle delay)
 - tx:	Raw 8 bit data to send to teletype
 - TODO
 - text:	Text, adding carriage returns and setting even parity, and skipping utf-8 (print up arrow)
