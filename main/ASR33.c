@@ -217,9 +217,9 @@ void app_main()
          }
       }
       // Check buffer
-      if ((txi + MAXTX - txo) % MAXTX > MAXTX * 2 / 3 && busy == 1)
+      if ((txi + MAXTX - txo) % MAXTX > MAXTX * 2 / 3 && busy != 1)
          revk_state("busy", "%d", busy = 1);
-      if ((txi + MAXTX - txo) % MAXTX < MAXTX * 1 / 3 && busy == 0)
+      if ((txi + MAXTX - txo) % MAXTX < MAXTX * 1 / 3 && busy != 0)
          revk_state("busy", "%d", busy = 0);
       if (power != 1)
          continue;              // Not running
