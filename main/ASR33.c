@@ -30,7 +30,7 @@ settings;
 #define	MAXRX	256
 
 volatile int8_t manual = 0;     // Manual power override
-int8_t busy = -1;               // Busy state
+int8_t busy = 0;                // Busy state
 volatile int8_t power = -1;     // Power state
 uint8_t buf[MAXTX];             // Tx pending buffer
 volatile uint32_t txi = 0;      // Tx buffer in pointer
