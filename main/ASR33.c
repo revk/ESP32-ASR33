@@ -29,6 +29,7 @@ settings;
 #define	MAXTX	65536
 #define	MAXRX	256
 
+volatile int8_t manual = 0;     // Manual power override
 int8_t busy = -1;               // Busy state
 volatile int8_t power = -1;     // Power state
 uint8_t buf[MAXTX];             // Tx pending buffer
@@ -51,6 +52,16 @@ uint8_t pe(uint8_t b)
 }
 
 void txbyte(uint8_t b)
+{
+   int64_t now = esp_timer_get_time();
+   uart_write_bytes(uart, &b, 1);
+   if (eot < now)
+      eot = now;
+   eot += 100000;
+   done = eot + 1000000 * idle;
+}
+
+void queuebyte(uint8_t b)
 {                               // Queue a byte
    uint32_t n = txi + 1;
    if (n >= MAXTX)
@@ -89,9 +100,9 @@ void power_on(void)
    int64_t now = esp_timer_get_time();
    start = now + 1000000;
    done = now + 1000000 * idle;
-   txbyte(0);
-   txbyte(0);
-   txbyte(pe('\r'));
+   queuebyte(0);
+   queuebyte(0);
+   queuebyte(pe('\r'));
    revk_state("power", "%d", power = 1);
 }
 
@@ -106,14 +117,20 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    if (!strcmp(tag, "upgrade"))
       power_off();
    if (!strcmp(tag, "on"))
+   {
+      manual = 1;
       power_on();
+   }
    if (!strcmp(tag, "off"))
+   {
       power_off();
+      manual = 0;
+   }
    if (!strcmp(tag, "tx"))
    {                            // raw send
       power_on();
       while (len--)
-         txbyte(*value++);
+         queuebyte(*value++);
    }
    if (!strcmp(tag, "text"))
    {                            // Text send
@@ -125,13 +142,13 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             b = 0x5E;           // Unicode (print an up arrow instead)
          else if (b >= 0x80)
             b = 0x7F;           // Rub out (only shows on paper tape)
-         txbyte(pe(b));
+         queuebyte(pe(b));
          if (b == '\n')
-            txbyte(pe('\r'));
+            queuebyte(pe('\r'));
          if (pos >= 72)
          {
-            txbyte(pe('\r'));
-            txbyte(pe('\n'));
+            queuebyte(pe('\r'));
+            queuebyte(pe('\n'));
          }
       }
    }
@@ -164,6 +181,8 @@ void app_main()
 // Configure UART parameters
    uart_param_config(uart, &uart_config);
    uart_set_pin(uart, tx, rx, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+   uart_set_line_inverse(uart, UART_SIGNAL_RXD_INV);
+   uart_set_rx_full_threshold(uart, 1);
    gpio_set_pull_mode(rx, GPIO_PULLUP_ONLY);
 
    while (1)
@@ -187,10 +206,11 @@ void app_main()
             if (b == '\n')
             {
                revk_event("line", "%.*s", rxp, line);
+               rxp = 0;
             } else if (b != '\r' && rxp < MAXRX)
                line[rxp++] = (b & 0x7F);
             if (echo)
-               uart_write_bytes(uart, &b, 1);   // Does not set position
+               txbyte(b);
          }
       }
       // Check buffer
@@ -205,7 +225,7 @@ void app_main()
          continue;              // Waiting to start
       if (txi == txo)
       {
-         if (done < now)
+         if (done < now && !manual)
             power_off();
          continue;              // Nothing to send
       }
@@ -216,10 +236,6 @@ void app_main()
          n = 0;
       uint8_t b = buf[txo];
       txo = n;
-      uart_write_bytes(uart, &b, 1);
-      if (eot < now)
-         eot = now;
-      eot += 100000;
-      done = eot + 1000000 * idle;
+      txbyte(b);
    }
 }
