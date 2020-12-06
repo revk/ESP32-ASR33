@@ -113,6 +113,9 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       revk_info(TAG, "Running ASR33 control");
       if (power < 0)
          power_off();
+      else
+         revk_state("power", "%d", power);
+      revk_state("busy", "%d", busy);
    }
    if (!strcmp(tag, "upgrade"))
       power_off();
