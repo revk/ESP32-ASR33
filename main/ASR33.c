@@ -11,9 +11,11 @@ static const char TAG[] = "ASR33";
   u8(uart,1);	\
   u8(tx,1);	\
   u8(rx,3);	\
+  u8(on,0xFF);	\
   u1(echo);	\
   t(sonoff);	\
   u32(idle,10)	\
+  u32(keyidle,120)	\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
@@ -29,7 +31,7 @@ settings;
 #define	MAXTX	65536
 #define	MAXRX	256
 
-volatile int8_t manual = 0;     // Manual power override
+volatile int8_t manual = 0;     // Manual power override (eg key pressed, etc)
 int8_t busy = 0;                // Busy state
 volatile int8_t power = -1;     // Power state
 uint8_t buf[MAXTX];             // Tx pending buffer
@@ -51,14 +53,20 @@ uint8_t pe(uint8_t b)
    return b;
 }
 
-void txbyte(uint8_t b)
-{
+int64_t timeout(int extra)
+{                               // Set power off timeout
    int64_t now = esp_timer_get_time();
-   uart_write_bytes(uart, &b, 1);
    if (eot < now)
       eot = now;
-   eot += 100000;
-   done = eot + 1000000 * idle;
+   eot += extra;
+   done = eot + 1000000 * (manual ? keyidle : idle);
+   return now;
+}
+
+void txbyte(uint8_t b)
+{
+   uart_write_bytes(uart, &b, 1);
+   timeout(100000);
 }
 
 void queuebyte(uint8_t b)
@@ -97,9 +105,7 @@ void power_on(void)
       return;
    if (sonoff)
       revk_raw(NULL, sonoff, 1, "1", 0);
-   int64_t now = esp_timer_get_time();
-   start = now + 1000000;
-   done = now + 1000000 * idle;
+   start = timeout(0) + 1000000;        // Delayed start for power on
    queuebyte(0);
    queuebyte(0);
    queuebyte(pe('\r'));
@@ -186,11 +192,25 @@ void app_main()
    uart_set_pin(uart, tx, rx, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
    uart_set_line_inverse(uart, UART_SIGNAL_RXD_INV);
    uart_set_rx_full_threshold(uart, 1);
-   gpio_set_pull_mode(rx, GPIO_PULLUP_ONLY);
+   gpio_pullup_en(rx);
+   if (GPIO_IS_VALID_GPIO(on))
+   {                            // On input
+      gpio_set_direction(on, GPIO_MODE_INPUT);
+      gpio_pullup_en(on);
+   }
 
    while (1)
    {
-      usleep(50000);
+      usleep(10000);
+      if (GPIO_IS_VALID_GPIO(on))
+      {                         // Check key to turn on
+         if (gpio_get_level(on))
+         {
+            manual = 1;
+            power_on();
+            revk_event("on", "1");
+         }
+      }
       // Check rx
       size_t len;
       uart_get_buffered_data_len(uart, &len);
@@ -205,6 +225,8 @@ void app_main()
          uint8_t b;
          if (uart_read_bytes(uart, &b, 1, 0) > 0)
          {
+            manual = ((b & 0x7F) != 'S' - '@'); // Manual cancelled if XOFF;
+            timeout(0);
             revk_event("rx", "%c", b);
             if (b == '\n')
             {
@@ -228,7 +250,7 @@ void app_main()
          continue;              // Waiting to start
       if (txi == txo)
       {
-         if (done < now && !manual)
+         if (done < now)
             power_off();
          continue;              // Nothing to send
       }

@@ -9,8 +9,10 @@ Additional settings:-
 - uart:	UART number
 - tx:	Tx pin
 - rx:	Rx pin
+- on:	On pin (a low on this wakes up)(
 - sonoff:	The topic to use for power on/off the teletype
 - idle:	The number of seconds before powering off after printing done
+- keyidle: The number of seconds before powering off in manual mode (i.e. on function not just printing)
 - echo:	If echo on or off
 
 Commands :-
