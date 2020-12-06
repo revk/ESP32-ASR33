@@ -151,14 +151,12 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             b = 0x5E;           // Unicode (print an up arrow instead)
          else if (b >= 0x80)
             b = 0x7F;           // Rub out (only shows on paper tape)
-         queuebyte(pe(b));
-         if (b == '\n')
-            queuebyte(pe('\r'));
-         if (pos >= 72)
+         if (b == '\n' || pos >= 72)
          {
             queuebyte(pe('\r'));
             queuebyte(pe('\n'));
-         }
+         } else
+            queuebyte(pe(b));
       }
    }
    return "";
