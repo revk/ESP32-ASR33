@@ -9,9 +9,9 @@ static const char TAG[] = "ASR33";
 
 #define settings  \
   u8(uart,1);	\
-  u8(tx,1);	\
-  u8(rx,3);	\
-  u8(on,0xFF);	\
+  u8(tx,17);	\
+  u8(rx,16);	\
+  u8(on,4);	\
   u1(echo);	\
   t(sonoff);	\
   u32(idle,10)	\
