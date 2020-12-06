@@ -122,9 +122,9 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       {
          uint8_t b = *value++;
          if (b >= 0xC0)
-            b = 0x5F;           // Unicode
-         else if (b > 0x80)
-            continue;           // Unicode continue
+            b = 0x5E;           // Unicode (print an up arrow instead)
+         else if (b >= 0x80)
+            b = 0x7F;           // Rub out (only shows on paper tape)
          txbyte(pe(b));
          if (b == '\n')
             txbyte(pe('\r'));
@@ -177,7 +177,8 @@ void app_main()
          if (!power)
          {
             power_on();
-            sleep(1);
+            if (echo)
+               sleep(1);        // Messy, but simplest way I expect
          }
          uint8_t b;
          if (uart_read_bytes(uart, &b, 1, 0) > 0)
@@ -186,10 +187,10 @@ void app_main()
             if (b == '\n')
             {
                revk_event("line", "%.*s", rxp, line);
-            } else if (rxp < MAXRX)
+            } else if (b != '\r' && rxp < MAXRX)
                line[rxp++] = (b & 0x7F);
             if (echo)
-               uart_write_bytes(uart, &b, 1);
+               uart_write_bytes(uart, &b, 1);   // Does not set position
          }
       }
       // Check buffer
