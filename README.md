@@ -11,19 +11,20 @@ Additional settings:-
 - rx:	Rx pin
 - sonoff:	The topic to use for power on/off the teletype
 - idle:	The number of seconds before powering off after printing done
-- TODO
 - echo:	If echo on or off
 
 Commands :-
 - on: Turn on now (automatically done if message to send)
 - off: Turn off now (automatically done after idle delay)
 - tx:	Raw 8 bit data to send to teletype
-- TODO
 - text:	Text, adding carriage returns and setting even parity, and skipping utf-8 (print up arrow)
 
 Status :-
+- power: If power on or off
+- busy: If tx queue is getting full - don't send it busy
+
+Events :-
 - rx:	Raw 8 bit data from teletype (one character at a time)
-- TODO
 - line:	Text typed, parity stripped, a whole line of typed text
 
 Copyright © 2020 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
