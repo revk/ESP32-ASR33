@@ -175,9 +175,13 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
          if (b >= ' ' && b < 0x7F && pos >= 72)
          {                      // force newline before printing beyond the end
             queuebyte(pe('\r'));        // CR before LF for timing
+            queuebyte(0);
             queuebyte(pe('\n'));
          } else if (b == '\n')
+         {
             queuebyte(pe('\r'));        // Add CR before LF
+            queuebyte(0);
+         }
          queuebyte(pe(b));
       }
    }
@@ -224,8 +228,8 @@ void app_main()
       usleep(10000);
       if (GPIO_IS_VALID_GPIO(on))
       {                         // Check key to turn on
-         if (gpio_get_level(on))
-         {
+         if (gpio_get_level(on) && !power)
+         {                      // On key pressed
             manual = 1;
             power_on();
             revk_event("on", "1");
