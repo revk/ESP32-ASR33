@@ -146,17 +146,39 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       power_on();
       while (len--)
       {
-         uint8_t b = *value++;
-         if (b >= 0xC0)
-            b = 0x5E;           // Unicode (print an up arrow instead)
-         else if (b >= 0x80)
-            b = 0x7F;           // Rub out (only shows on paper tape)
-         if (b == '\n' || pos >= 72)
+         uint32_t b = *value++;
+         // We assume this is unicode
+         if ((b & 0xC0) == 0x80)
+            b = 0x7F;           // Silly, not even unicode, rub out
+         else if ((b & 0xF8) == 0xF0 && len >= 3 && (value[1] & 0xC0) == 0xC0 && (value[2] & 0xC0) == 0xC0 && (value[3] & 0xC0) == 0xC0)
          {
-            queuebyte(pe('\r'));
+            b = (value[3] & 0x3F) + ((value[2] & 0x3F) << 6) + ((value[1] & 0x3F) << 12) + ((value[0] & 0x07) << 18);
+            len -= 3;
+         } else if ((b & 0xF0) == 0xE0 && len >= 2 && (value[1] & 0xC0) == 0xC0 && (value[2] & 0xC0) == 0xC0)
+         {
+            b = (value[2] & 0x3F) + ((value[1] & 0x3F) << 6) + ((value[0] & 0x0F) << 12);
+            len -= 2;
+         } else if ((b & 0xE0) == 0xC0 && len >= 1 && (value[1] & 0xC0) == 0xC0)
+         {
+            b = (value[1] & 0x3F) + ((value[0] & 0x1F) << 6);
+            len -= 1;
+         }
+         // Handle some unicode we understand
+         if (b >= 0x1D670 && b < 0x1D670 + 26)
+            b = 'A' + b - 0x1D670;      // Maths monospace characters
+         else if (b >= 0x1D68A && b < 0x1D68A + 26)
+            b = 'a' + b - 0x1D68A;
+         else if (b >= 0x1D7F6 && b < 0x1D7F6 + 10)
+            b = '0' + b - 0x1D7F6;
+         if (b >= 0x80)
+            b = 0x5E;           // Other unicode so print as Up arrow
+         if (b >= ' ' && b < 0x7F && pos >= 72)
+         {                      // force newline before printing beyond the end
+            queuebyte(pe('\r'));        // CR before LF for timing
             queuebyte(pe('\n'));
-         } else
-            queuebyte(pe(b));
+         } else if (b == '\n')
+            queuebyte(pe('\r'));        // Add CR before LF
+         queuebyte(pe(b));
       }
    }
    return "";
@@ -223,7 +245,7 @@ void app_main()
          uint8_t b;
          if (uart_read_bytes(uart, &b, 1, 0) > 0)
          {
-            manual = ((b & 0x7F) != 'S' - '@'); // Manual cancelled if XOFF;
+            manual = ((b & 0x7F) != 'D' - '@'); // Manual cancelled if EOT
             timeout(0);
             revk_event("rx", "%c", b);
             if (b == '\n')
