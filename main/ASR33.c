@@ -11,9 +11,11 @@ static const char TAG[] = "ASR33";
   u8(uart,1);	\
   u8(tx,17);	\
   u8(rx,16);	\
+  u8(pu,0xFF);	\
   u8(on,4);	\
   u1(echo);	\
   t(sonoff);	\
+  u32(wake,2)	\
   u32(idle,10)	\
   u32(keyidle,120)	\
 
@@ -106,10 +108,7 @@ void power_on(void)
       return;
    if (sonoff)
       revk_raw(NULL, sonoff, 1, "1", 0);
-   start = timeout(0) + 1000000;        // Delayed start for power on
-   queuebyte(0);
-   queuebyte(0);
-   queuebyte(pe('\r'));
+   start = timeout(0) + wake * 1000;    // Delayed start for power on
    revk_state("power", "%d", power = 1);
 }
 
@@ -124,7 +123,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
          revk_state("power", "%d", power);
       revk_state("busy", "%d", busy);
    }
-   if (!strcmp(tag, "upgrade"))
+   if (!strcmp(tag, "restart"))
       power_off();
    if (!strcmp(tag, "on"))
    {
@@ -220,11 +219,18 @@ void app_main()
    uart_set_pin(uart, tx, rx, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
    uart_set_line_inverse(uart, UART_SIGNAL_RXD_INV);
    uart_set_rx_full_threshold(uart, 1);
+   gpio_set_pull_mode(rx, GPIO_PULLUP_ONLY);
    gpio_pullup_en(rx);
    if (GPIO_IS_VALID_GPIO(on))
    {                            // On input
       gpio_set_direction(on, GPIO_MODE_INPUT);
+      gpio_set_pull_mode(on, GPIO_PULLUP_ONLY);
       gpio_pullup_en(on);
+   }
+   if (GPIO_IS_VALID_GPIO(pu))
+   {
+      gpio_set_pull_mode(pu, GPIO_PULLUP_ONLY);
+      gpio_pullup_en(pu);
    }
 
    while (1)
@@ -234,7 +240,6 @@ void app_main()
       {                         // Check key to turn on
          if (gpio_get_level(on) && !power)
          {                      // On key pressed
-            manual = 1;
             power_on();
             revk_event("on", "1");
          }
@@ -253,7 +258,13 @@ void app_main()
          uint8_t b;
          if (uart_read_bytes(uart, &b, 1, 0) > 0)
          {
-            manual = ((b & 0x7F) != 'D' - '@'); // Manual cancelled if EOT
+            if (b && b != 0xFF && b == pe(b))
+            {
+               if ((b & 0x7F) == 4)
+                  manual = 0;   // EOT, short timeout
+               else
+                  manual = 1;   // Typing
+            }
             timeout(0);
             revk_event("rx", "%c", b);
             if (b == '\n')

@@ -9,6 +9,7 @@ Additional settings:-
 - uart:	UART number
 - tx:	Tx pin
 - rx:	Rx pin
+- pu:   Extra pulled up input pin, if extra pull up needed on rx, put in parallel
 - on:	On pin (a low on this wakes up)(
 - sonoff:	The topic to use for power on/off the teletype
 - idle:	The number of seconds before powering off after printing done
