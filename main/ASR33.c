@@ -151,17 +151,17 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
          // We assume this is utf-8
          if ((b & 0xC0) == 0x80)
             b = 0x7F;           // Silly, not even utf-8, rub out
-         else if ((b & 0xF8) == 0xF0 && len >= 3 && (value[1] & 0xC0) == 0x80 && (value[2] & 0xC0) == 0x80 && (value[3] & 0xC0) == 0x80)
+         else if ((b & 0xF8) == 0xF0 && len >= 3 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80 && (value[2] & 0xC0) == 0x80)
          {
             b = (value[3] & 0x3F) + ((value[2] & 0x3F) << 6) + ((value[1] & 0x3F) << 12) + ((value[0] & 0x07) << 18);
             value += 3;
             len -= 3;
-         } else if ((b & 0xF0) == 0xE0 && len >= 2 && (value[1] & 0xC0) == 0x80 && (value[2] & 0xC0) == 0x80)
+         } else if ((b & 0xF0) == 0xE0 && len >= 2 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80)
          {
             b = (value[2] & 0x3F) + ((value[1] & 0x3F) << 6) + ((value[0] & 0x0F) << 12);
             value += 2;
             len -= 2;
-         } else if ((b & 0xE0) == 0xC0 && len >= 1 && (value[1] & 0xC0) == 0x80)
+         } else if ((b & 0xE0) == 0xC0 && len >= 1 && (value[0] & 0xC0) == 0x80)
          {
             b = (value[1] & 0x3F) + ((value[0] & 0x1F) << 6);
             value += 1;
