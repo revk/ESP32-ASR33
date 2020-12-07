@@ -108,7 +108,7 @@ void power_on(void)
       return;
    if (sonoff)
       revk_raw(NULL, sonoff, 1, "1", 0);
-   start = timeout(0) + wake * 1000000;    // Delayed start for power on
+   start = timeout(0) + wake * 1000000; // Delayed start for power on
    revk_state("power", "%d", power = 1);
 }
 
@@ -251,7 +251,10 @@ void app_main()
          continue;              // Not running
       int64_t now = esp_timer_get_time();
       if (start > now)
+      {
+         uart_flush(uart);
          continue;              // Waiting to start
+      }
       // Check rx
       size_t len;
       uart_get_buffered_data_len(uart, &len);
