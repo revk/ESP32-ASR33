@@ -15,7 +15,7 @@ static const char TAG[] = "ASR33";
   u8(on,4);	\
   u1(echo);	\
   t(sonoff);	\
-  u32(wake,2)	\
+  u32(wake,1)	\
   u32(idle,10)	\
   u32(keyidle,120)	\
 
@@ -236,25 +236,27 @@ void app_main()
    while (1)
    {
       usleep(10000);
-      if (GPIO_IS_VALID_GPIO(on))
-      {                         // Check key to turn on
-         if (gpio_get_level(on) && !power)
-         {                      // On key pressed
-            power_on();
-            revk_event("on", "1");
-         }
+      if (GPIO_IS_VALID_GPIO(on) && gpio_get_level(on) && !power)
+      {                         // Key press to start
+         manual = 0;
+         power_on();
+         revk_event("on", "1");
       }
+      // Check tx buffer usage
+      if ((txi + MAXTX - txo) % MAXTX > MAXTX * 2 / 3 && busy != 1)
+         revk_state("busy", "%d", busy = 1);
+      if ((txi + MAXTX - txo) % MAXTX < MAXTX * 1 / 3 && busy != 0)
+         revk_state("busy", "%d", busy = 0);
+      if (power != 1)
+         continue;              // Not running
+      int64_t now = esp_timer_get_time();
+      if (start > now)
+         continue;              // Waiting to start
       // Check rx
       size_t len;
       uart_get_buffered_data_len(uart, &len);
       if (len > 0)
       {
-         if (!power)
-         {
-            power_on();
-            if (echo)
-               sleep(1);        // Messy, but simplest way I expect
-         }
          uint8_t b;
          if (uart_read_bytes(uart, &b, 1, 0) > 0)
          {
@@ -277,24 +279,16 @@ void app_main()
                txbyte(b);
          }
       }
-      // Check buffer
-      if ((txi + MAXTX - txo) % MAXTX > MAXTX * 2 / 3 && busy != 1)
-         revk_state("busy", "%d", busy = 1);
-      if ((txi + MAXTX - txo) % MAXTX < MAXTX * 1 / 3 && busy != 0)
-         revk_state("busy", "%d", busy = 0);
-      if (power != 1)
-         continue;              // Not running
-      int64_t now = esp_timer_get_time();
-      if (start > now)
-         continue;              // Waiting to start
+      // Check tx
       if (txi == txo)
-      {
+      {                         // Nothing to send
          if (done < now)
-            power_off();
-         continue;              // Nothing to send
+            power_off();        // Idle complete, power off
+         continue;
       }
-      if (eot > now + 1000000)
-         continue;              // Waiting to buffer more
+      if (eot > now + 2000000)
+         continue;              // Let's wait for these to send...
+      // Get next character
       uint32_t n = txo + 1;
       if (n >= MAXTX)
          n = 0;
