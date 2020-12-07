@@ -92,6 +92,7 @@ void power_off(void)
    revk_state("power", "%d", power = 0);
    if (sonoff)
       revk_raw(NULL, sonoff, 1, "0", 0);
+   manual = 0;
    start = 0;
    done = 0;
    txi = 0;
