@@ -30,4 +30,7 @@ Events :-
 - rx:	Raw 8 bit data from teletype (one character at a time)
 - line:	Text typed, parity stripped, a whole line of typed text
 
+Can be connected using a 100 ohm resistor directly
+(see https://www.revk.uk/2020/12/connecting-asr33-teletype-to-esp32.html)
+
 Copyright © 2020 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
