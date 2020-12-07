@@ -108,7 +108,7 @@ void power_on(void)
       return;
    if (sonoff)
       revk_raw(NULL, sonoff, 1, "1", 0);
-   start = timeout(0) + wake * 1000;    // Delayed start for power on
+   start = timeout(0) + wake * 1000000;    // Delayed start for power on
    revk_state("power", "%d", power = 1);
 }
 
