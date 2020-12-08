@@ -11,7 +11,6 @@ static const char TAG[] = "ASR33";
   u8(uart,1);	\
   u8(tx,17);	\
   u8(rx,16);	\
-  u8(pu,0xFF);	\
   u8(on,4);	\
   u1(echo);	\
   t(sonoffpower);	\
@@ -91,7 +90,6 @@ void power_off(void)
 {
    if (power == 0)
       return;
-   revk_state("power", "%d", power = 0);
    if (sonoffmotor)
    {
       revk_raw(NULL, sonoffmotor, 1, "0", 0);
@@ -99,6 +97,7 @@ void power_off(void)
    }
    if (sonoffpower)
       revk_raw(NULL, sonoffpower, 1, "0", 0);
+   revk_state("power", "%d", power = 0);
    manual = 0;
    done = 0;
    txi = 0;
@@ -110,15 +109,19 @@ void power_on(void)
 {
    if (power == 1)
       return;
+   revk_state("power", "%d", power = 1);
    if (sonoffpower)
    {
       revk_raw(NULL, sonoffpower, 1, "1", 0);
       sleep(1);
    }
+   uart_flush(uart);
    if (sonoffmotor)
+   {
       revk_raw(NULL, sonoffmotor, 1, "1", 0);
-   sleep(1);
-   revk_state("power", "%d", power = 1);
+      sleep(1);
+   }
+   timeout(0);
 }
 
 const char *app_command(const char *tag, unsigned int len, const unsigned char *value)
@@ -235,11 +238,6 @@ void app_main()
       gpio_set_pull_mode(on, GPIO_PULLUP_ONLY);
       gpio_pullup_en(on);
    }
-   if (GPIO_IS_VALID_GPIO(pu))
-   {
-      gpio_set_pull_mode(pu, GPIO_PULLUP_ONLY);
-      gpio_pullup_en(pu);
-   }
 
    while (1)
    {
@@ -255,6 +253,8 @@ void app_main()
          revk_state("busy", "%d", busy = 1);
       if ((txi + MAXTX - txo) % MAXTX < MAXTX * 1 / 3 && busy != 0)
          revk_state("busy", "%d", busy = 0);
+      if (txi != txo)
+         wantpower = 1;
       if (wantpower != power)
       {                         // Change power state (does any necessary timing sequence)
          if (wantpower == 0)
@@ -280,13 +280,12 @@ void app_main()
                else
                   manual = 1;   // Typing
             }
-            timeout(0);
             revk_event("rx", "%c", b);
-            if (b == '\n')
+            if ((b&0x7F) == '\n')
             {
                revk_event("line", "%.*s", rxp, line);
                rxp = 0;
-            } else if (b != '\r' && rxp < MAXRX)
+            } else if ((b&0x7F) != '\r' && rxp < MAXRX)
                line[rxp++] = (b & 0x7F);
             if (echo)
                queuebyte(b);
