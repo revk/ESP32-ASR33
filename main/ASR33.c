@@ -14,7 +14,8 @@ static const char TAG[] = "ASR33";
   u8(pu,0xFF);	\
   u8(on,4);	\
   u1(echo);	\
-  t(sonoff);	\
+  t(sonoffpower);	\
+  t(sonoffmotor);	\
   u32(wake,1)	\
   u32(idle,10)	\
   u32(keyidle,120)	\
@@ -36,6 +37,7 @@ settings;
 volatile int8_t manual = 0;     // Manual power override (eg key pressed, etc)
 int8_t busy = 0;                // Busy state
 volatile int8_t power = -1;     // Power state
+volatile int8_t wantpower = -1; // Power state wanted
 uint8_t buf[MAXTX];             // Tx pending buffer
 volatile uint32_t txi = 0;      // Tx buffer in pointer
 volatile uint32_t txo = 0;      // Tx buffer out pointer
@@ -43,8 +45,8 @@ uint8_t line[MAXRX];            // Rx line buffer
 uint32_t rxp = 0;               // Rx line buffer pointer
 int64_t eot = 0;                // When tx expected to end
 volatile int64_t done = 0;      // When to next turn off
-volatile int64_t start = 0;     // When to start printing
 uint8_t pos = 0;                // Position (ignores local echo)
+SemaphoreHandle_t queue_mutex = NULL;
 
 uint8_t pe(uint8_t b)
 {                               // Make even parity
@@ -65,26 +67,24 @@ int64_t timeout(int extra)
    return now;
 }
 
-void txbyte(uint8_t b)
-{
-   uart_write_bytes(uart, &b, 1);
-   timeout(100000);
-}
-
 void queuebyte(uint8_t b)
 {                               // Queue a byte
+   xSemaphoreTake(queue_mutex, portMAX_DELAY);
    uint32_t n = txi + 1;
    if (n >= MAXTX)
       n = 0;
-   if (n == txo)
-      return;                   // Too much
-   buf[txi] = b;
-   txi = n;
-   b &= 0x7F;
-   if (b == '\r')
-      pos = 0;
-   else if (b >= ' ' && b < 0x7F && pos < 72)
-      pos++;
+   if (n != txo)
+   {                            // Not going too far
+      buf[txi] = b;
+      txi = n;
+      // Position tracking
+      b &= 0x7F;
+      if (b == '\r')
+         pos = 0;
+      else if (b >= ' ' && b < 0x7F && pos < 72)
+         pos++;
+   }
+   xSemaphoreGive(queue_mutex);
 }
 
 void power_off(void)
@@ -92,10 +92,14 @@ void power_off(void)
    if (power == 0)
       return;
    revk_state("power", "%d", power = 0);
-   if (sonoff)
-      revk_raw(NULL, sonoff, 1, "0", 0);
+   if (sonoffmotor)
+   {
+      revk_raw(NULL, sonoffmotor, 1, "0", 0);
+      sleep(1);
+   }
+   if (sonoffpower)
+      revk_raw(NULL, sonoffpower, 1, "0", 0);
    manual = 0;
-   start = 0;
    done = 0;
    txi = 0;
    txo = 0;
@@ -106,9 +110,14 @@ void power_on(void)
 {
    if (power == 1)
       return;
-   if (sonoff)
-      revk_raw(NULL, sonoff, 1, "1", 0);
-   start = timeout(0) + wake * 1000000; // Delayed start for power on
+   if (sonoffpower)
+   {
+      revk_raw(NULL, sonoffpower, 1, "1", 0);
+      sleep(1);
+   }
+   if (sonoffmotor)
+      revk_raw(NULL, sonoffmotor, 1, "1", 0);
+   sleep(1);
    revk_state("power", "%d", power = 1);
 }
 
@@ -118,32 +127,30 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    {
       revk_info(TAG, "Running ASR33 control");
       if (power < 0)
-         power_off();
+         wantpower = 0;         // State unknown, turn off - reports state
       else
-         revk_state("power", "%d", power);
-      revk_state("busy", "%d", busy);
+         revk_state("power", "%d", power);      // Report power state
+      revk_state("busy", "%d", busy);   // Report busy state
    }
    if (!strcmp(tag, "restart"))
-      power_off();
+      wantpower = 0;
    if (!strcmp(tag, "on"))
    {
       manual = 1;
-      power_on();
+      wantpower = 1;
    }
    if (!strcmp(tag, "off"))
    {
-      power_off();
+      wantpower = 0;
       manual = 0;
    }
    if (!strcmp(tag, "tx"))
    {                            // raw send
-      power_on();
       while (len--)
          queuebyte(*value++);
    }
    if (!strcmp(tag, "text"))
    {                            // Text send
-      power_on();
       while (len--)
       {
          uint32_t b = *value++;
@@ -193,6 +200,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
 
 void app_main()
 {
+   queue_mutex = xSemaphoreCreateMutex();
    revk_init(&app_command);
 #define u32(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u16(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
@@ -239,7 +247,7 @@ void app_main()
       if (GPIO_IS_VALID_GPIO(on) && gpio_get_level(on) && !power)
       {                         // Key press to start
          manual = 0;
-         power_on();
+         wantpower = 1;
          revk_event("on", "1");
       }
       // Check tx buffer usage
@@ -247,14 +255,16 @@ void app_main()
          revk_state("busy", "%d", busy = 1);
       if ((txi + MAXTX - txo) % MAXTX < MAXTX * 1 / 3 && busy != 0)
          revk_state("busy", "%d", busy = 0);
+      if (wantpower != power)
+      {                         // Change power state (does any necessary timing sequence)
+         if (wantpower == 0)
+            power_off();
+         else if (wantpower == 1)
+            power_on();
+      }
       if (power != 1)
          continue;              // Not running
       int64_t now = esp_timer_get_time();
-      if (start > now)
-      {
-         uart_flush(uart);
-         continue;              // Waiting to start
-      }
       // Check rx
       size_t len;
       uart_get_buffered_data_len(uart, &len);
@@ -279,14 +289,14 @@ void app_main()
             } else if (b != '\r' && rxp < MAXRX)
                line[rxp++] = (b & 0x7F);
             if (echo)
-               txbyte(b);
+               queuebyte(b);
          }
       }
       // Check tx
       if (txi == txo)
       {                         // Nothing to send
          if (done < now)
-            power_off();        // Idle complete, power off
+            wantpower = 0;      // Idle complete, power off
          continue;
       }
       if (eot > now + 2000000)
@@ -297,6 +307,7 @@ void app_main()
          n = 0;
       uint8_t b = buf[txo];
       txo = n;
-      txbyte(b);
+      uart_write_bytes(uart, &b, 1);
+      timeout(100000);
    }
 }
