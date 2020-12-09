@@ -37,6 +37,7 @@ settings;
 #define	MAXRX	256
 
 volatile int8_t manual = 0;     // Manual power override (eg key pressed, etc)
+int8_t pressed = 0;             // Button pressed
 int8_t busy = 0;                // Busy state
 volatile int8_t power = -1;     // Power state
 volatile int8_t wantpower = -1; // Power state wanted
@@ -90,6 +91,18 @@ void queuebyte(uint8_t b)
    wantpower = 1;
 }
 
+void nl(void)
+{                               // Do new line
+   uint8_t p = pos;
+   if (p)
+   {
+      queuebyte(pe('\r'));      // CR
+      if (p > 40)
+         queuebyte(0);          // allow extra time for CR
+   }
+   queuebyte(pe('\n'));         // LF (allows time for CR as well)
+}
+
 void power_off(void)
 {
    if (power == 0)
@@ -119,6 +132,7 @@ void power_on(void)
    }
    uart_flush(uart);
    timeout(0);
+   queuebyte(pe('\r'));         // CR as could have printed junk, known position 0 now
 }
 
 const char *app_command(const char *tag, unsigned int len, const unsigned char *value)
@@ -183,16 +197,11 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
          if (b >= 0x80)
             b = 0x5E;           // Other unicode so print as Up arrow
          if (b >= ' ' && b < 0x7F && pos >= 72)
-         {                      // force newline before printing beyond the end
-            queuebyte(pe('\r'));        // CR before LF for timing
-            queuebyte(0);
-            queuebyte(pe('\n'));
-         } else if (b == '\n')
-         {
-            queuebyte(pe('\r'));        // Add CR before LF
-            queuebyte(0);
-         }
-         queuebyte(pe(b));
+            nl();               // Force newline as would overprint
+         if (b == '\n')
+            nl();               // We want a new line
+         else
+            queuebyte(pe(b));
       }
    }
    return "";
@@ -245,12 +254,17 @@ void app_main()
    while (1)
    {
       usleep(10000);
-      if (GPIO_IS_VALID_GPIO(on) && gpio_get_level(on) && !power)
-      {                         // Key press to start
-         manual = 0;
-         wantpower = 1;
-         revk_event("on", "1");
-      }
+      if (GPIO_IS_VALID_GPIO(on) && gpio_get_level(on))
+      {                         // Key press to start/stop
+         if (!pressed)
+         {                      // Button pressed
+            pressed = 1;
+            manual = 0;
+            wantpower = 1 - wantpower;
+            revk_event("on", "%d", wantpower);
+         }
+      } else
+         pressed = 0;
       // Check tx buffer usage
       if ((txi + MAXTX - txo) % MAXTX > MAXTX * 2 / 3 && busy != 1)
          revk_state("busy", "%d", busy = 1);
