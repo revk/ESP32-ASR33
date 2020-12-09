@@ -17,6 +17,7 @@ Additional settings:-
 - echo:	If echo on or off
 - wru:	String to send for WRU
 - ver:	Flag, if set, send version info for WRU
+- ack:  Value of ACK - 0x7C in 1963, 0x06 in later editions
 
 Commands :-
 - on: Turn on now (automatically done if message to send)

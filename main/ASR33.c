@@ -20,6 +20,7 @@ static const char TAG[] = "ASR33";
   u32(wake,1)	\
   u32(idle,10)	\
   u32(keyidle,120)	\
+  u8(ack,6)	\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
@@ -281,8 +282,12 @@ void app_main()
                line[rxp++] = (b & 0x7F);
             if (echo)
                queuebyte(b);
-            if (b == pe(5))
+            if (b == pe(5) && (ver || wru))
             {                   // WRU
+               // See 3.27 of ISS 8, SECTION 574-122-700TC
+               queuebyte(pe('\r'));     // CR
+               queuebyte(pe('\n'));     // LF
+               queuebyte(pe(0x7F));     // RO
                if (wru)
                   for (const char *p = wru; *p; p++)
                      queuebyte(pe(*p));
@@ -293,10 +298,10 @@ void app_main()
                   queuebyte(pe(' '));
                   for (const char *p = revk_version; *p; p++)
                      queuebyte(pe(*p));
-                  queuebyte(pe('\r'));
-                  queuebyte(0);
-                  queuebyte(pe('\n'));
                }
+               queuebyte(pe('\r'));     // CR
+               queuebyte(pe('\n'));     // LF
+               queuebyte(pe(ack));      // ACK
             }
          }
       }
