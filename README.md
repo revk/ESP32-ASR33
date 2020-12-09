@@ -15,6 +15,8 @@ Additional settings:-
 - idle:	The number of seconds before powering off after printing done
 - keyidle: The number of seconds before powering off in manual mode (i.e. on function not just printing)
 - echo:	If echo on or off
+- wru:	String to send for WRU
+- ver:	Flag, if set, send version info for WRU
 
 Commands :-
 - on: Turn on now (automatically done if message to send)

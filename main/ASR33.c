@@ -12,9 +12,11 @@ static const char TAG[] = "ASR33";
   u8(tx,17);	\
   u8(rx,16);	\
   u8(on,4);	\
+  u8(pu,0xFF);	\
   u1(echo);	\
-  t(sonoffpower);	\
-  t(sonoffmotor);	\
+  t(sonoff);	\
+  t(wru);	\
+  u1(ver);	\
   u32(wake,1)	\
   u32(idle,10)	\
   u32(keyidle,120)	\
@@ -84,20 +86,19 @@ void queuebyte(uint8_t b)
          pos++;
    }
    xSemaphoreGive(queue_mutex);
+   wantpower = 1;
 }
 
 void power_off(void)
 {
    if (power == 0)
       return;
-   if (sonoffmotor)
+   if (sonoff)
    {
-      revk_raw(NULL, sonoffmotor, 1, "0", 0);
+      revk_state("power", "%d", power = 0);
+      revk_raw(NULL, sonoff, 1, "0", 0);
       sleep(1);
    }
-   if (sonoffpower)
-      revk_raw(NULL, sonoffpower, 1, "0", 0);
-   revk_state("power", "%d", power = 0);
    manual = 0;
    done = 0;
    txi = 0;
@@ -109,18 +110,13 @@ void power_on(void)
 {
    if (power == 1)
       return;
-   revk_state("power", "%d", power = 1);
-   if (sonoffpower)
+   if (sonoff)
    {
-      revk_raw(NULL, sonoffpower, 1, "1", 0);
+      revk_state("power", "%d", power = 1);
+      revk_raw(NULL, sonoff, 1, "1", 0);
       sleep(1);
    }
    uart_flush(uart);
-   if (sonoffmotor)
-   {
-      revk_raw(NULL, sonoffmotor, 1, "1", 0);
-      sleep(1);
-   }
    timeout(0);
 }
 
@@ -238,6 +234,12 @@ void app_main()
       gpio_set_pull_mode(on, GPIO_PULLUP_ONLY);
       gpio_pullup_en(on);
    }
+   if (GPIO_IS_VALID_GPIO(pu))
+   {                            // Extra pull up
+      gpio_set_direction(pu, GPIO_MODE_INPUT);
+      gpio_set_pull_mode(pu, GPIO_PULLUP_ONLY);
+      gpio_pullup_en(pu);
+   }
 
    while (1)
    {
@@ -255,16 +257,6 @@ void app_main()
          revk_state("busy", "%d", busy = 0);
       if (txi != txo)
          wantpower = 1;
-      if (wantpower != power)
-      {                         // Change power state (does any necessary timing sequence)
-         if (wantpower == 0)
-            power_off();
-         else if (wantpower == 1)
-            power_on();
-      }
-      if (power != 1)
-         continue;              // Not running
-      int64_t now = esp_timer_get_time();
       // Check rx
       size_t len;
       uart_get_buffered_data_len(uart, &len);
@@ -281,16 +273,43 @@ void app_main()
                   manual = 1;   // Typing
             }
             revk_event("rx", "%c", b);
-            if ((b&0x7F) == '\n')
+            if ((b & 0x7F) == '\n')
             {
                revk_event("line", "%.*s", rxp, line);
                rxp = 0;
-            } else if ((b&0x7F) != '\r' && rxp < MAXRX)
+            } else if ((b & 0x7F) != '\r' && rxp < MAXRX)
                line[rxp++] = (b & 0x7F);
             if (echo)
                queuebyte(b);
+            if (b == pe(5))
+            {                   // WRU
+               if (wru)
+                  for (const char *p = wru; *p; p++)
+                     queuebyte(pe(*p));
+               if (ver)
+               {
+                  for (const char *p = revk_app; *p; p++)
+                     queuebyte(pe(*p));
+                  queuebyte(pe(' '));
+                  for (const char *p = revk_version; *p; p++)
+                     queuebyte(pe(*p));
+                  queuebyte(pe('\r'));
+                  queuebyte(0);
+                  queuebyte(pe('\n'));
+               }
+            }
          }
       }
+      if (wantpower != power)
+      {                         // Change power state (does any necessary timing sequence)
+         if (wantpower == 0)
+            power_off();
+         else if (wantpower == 1)
+            power_on();
+      }
+      if (power != 1)
+         continue;              // Not running
+      int64_t now = esp_timer_get_time();
       // Check tx
       if (txi == txo)
       {                         // Nothing to send
