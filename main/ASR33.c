@@ -309,7 +309,8 @@ void app_main()
                {
                   for (const char *p = revk_app; *p; p++)
                      queuebyte(pe(*p));
-                  queuebyte(pe(' '));
+                  for (const char *p = " BUILD "; *p; p++)
+                     queuebyte(pe(*p));
                   for (const char *p = revk_version; *p; p++)
                      queuebyte(pe(*p));
                }
