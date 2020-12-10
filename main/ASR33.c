@@ -37,8 +37,9 @@ settings;
 #define	MAXRX	256
 
 volatile int8_t manual = 0;     // Manual power override (eg key pressed, etc)
-int8_t pressed = 0;             // Button pressed
 int8_t busy = 0;                // Busy state
+uint8_t pressed = 0;            // Button pressed
+uint8_t doecho = 0;             // Do echo (set each start up)
 volatile int8_t power = -1;     // Power state
 volatile int8_t wantpower = -1; // Power state wanted
 uint8_t buf[MAXTX];             // Tx pending buffer
@@ -91,8 +92,8 @@ void queuebyte(uint8_t b)
    wantpower = 1;
 }
 
-void nl(void)
-{                               // Do new line
+void cr(void)
+{	// Do a carriage return
    uint8_t p = pos;
    if (p)
    {
@@ -100,6 +101,12 @@ void nl(void)
       if (p > 40)
          queuebyte(0);          // allow extra time for CR
    }
+}
+
+void nl(void)
+{                               // Do new line
+   if (pos)
+      cr();	// CR
    queuebyte(pe('\n'));         // LF (allows time for CR as well)
 }
 
@@ -118,6 +125,7 @@ void power_off(void)
    txi = 0;
    txo = 0;
    rxp = 0;
+   doecho = echo;
 }
 
 void power_on(void)
@@ -132,7 +140,6 @@ void power_on(void)
    }
    uart_flush(uart);
    timeout(0);
-   queuebyte(pe('\r'));         // CR as could have printed junk, known position 0 now
 }
 
 const char *app_command(const char *tag, unsigned int len, const unsigned char *value)
@@ -158,13 +165,23 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       wantpower = 0;
       manual = 0;
    }
+   if (!strcmp(tag, "echo"))
+      doecho = 1;
+   if (!strcmp(tag, "noecho"))
+      doecho = 0;
    if (!strcmp(tag, "tx"))
    {                            // raw send
+      if (!wantpower)
+         queuebyte(pe('\r'));   // start of line on power up
+      wantpower = 1;
       while (len--)
          queuebyte(*value++);
    }
    if (!strcmp(tag, "text"))
    {                            // Text send
+      if (!wantpower)
+         queuebyte(pe('\r'));   // start of line on power up
+      wantpower = 1;
       while (len--)
       {
          uint32_t b = *value++;
@@ -200,6 +217,8 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             nl();               // Force newline as would overprint
          if (b == '\n')
             nl();               // We want a new line
+         else if (b == '\r')
+            cr();               // We want a carriage return
          else
             queuebyte(pe(b));
       }
@@ -223,6 +242,7 @@ void app_main()
 #undef u8
 #undef u1
 
+   doecho = echo;
    ESP_ERROR_CHECK(uart_driver_install(uart, 1024, 1024, 0, NULL, 0));
    uart_config_t uart_config = {
       .baud_rate = 110,
@@ -294,7 +314,7 @@ void app_main()
                rxp = 0;
             } else if ((b & 0x7F) != '\r' && rxp < MAXRX)
                line[rxp++] = (b & 0x7F);
-            if (echo)
+            if (doecho)
                queuebyte(b);
             if (b == pe(5) && (ver || wru))
             {                   // WRU
