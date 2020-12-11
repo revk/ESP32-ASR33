@@ -36,4 +36,8 @@ Events :-
 Can be connected using a 100 ohm resistor directly
 (see https://www.revk.uk/2020/12/connecting-asr33-teletype-to-esp32.html)
 
+Note:
+- Typing WRU (^R) will response with wru and version if configured
+- Typing RU (^F) will run Colossal Cave - have fun
+
 Copyright © 2020 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0

@@ -93,7 +93,7 @@ void queuebyte(uint8_t b)
 }
 
 void cr(void)
-{	// Do a carriage return
+{                               // Do a carriage return
    uint8_t p = pos;
    if (p)
    {
@@ -106,7 +106,7 @@ void cr(void)
 void nl(void)
 {                               // Do new line
    if (pos)
-      cr();	// CR
+      cr();                     // CR
    queuebyte(pe('\n'));         // LF (allows time for CR as well)
 }
 
@@ -146,10 +146,11 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
 {
    if (!strcmp(tag, "connect"))
    {
-      revk_info(TAG, "Running ASR33 control");
       if (power < 0)
+      {
+         revk_info(TAG, "Started");
          wantpower = 0;         // State unknown, turn off - reports state
-      else
+      } else
          revk_state("power", "%d", power);      // Report power state
       revk_state("busy", "%d", busy);   // Report busy state
    }
@@ -226,7 +227,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    return "";
 }
 
-void app_main()
+void asr33_main(void *param)
 {
    queue_mutex = xSemaphoreCreateMutex();
    revk_init(&app_command);
@@ -243,7 +244,7 @@ void app_main()
 #undef u1
 
    doecho = echo;
-   ESP_ERROR_CHECK(uart_driver_install(uart, 1024, 1024, 0, NULL, 0));
+   ESP_ERROR_CHECK(uart_driver_install(uart, 10240, 10240, 0, NULL, 0));
    uart_config_t uart_config = {
       .baud_rate = 110,
       .data_bits = UART_DATA_8_BITS,
@@ -281,6 +282,8 @@ void app_main()
             pressed = 1;
             manual = 0;
             wantpower = 1 - wantpower;
+            if (wantpower)
+               queuebyte(pe('\r'));     // CR
             revk_event("on", "%d", wantpower);
          }
       } else
@@ -316,6 +319,11 @@ void app_main()
                line[rxp++] = (b & 0x7F);
             if (doecho)
                queuebyte(b);
+            if (b == pe(6))
+            {                   // RU
+               extern int advent(void);
+               advent();
+            }
             if (b == pe(5) && (ver || wru))
             {                   // WRU
                // See 3.27 of ISS 8, SECTION 574-122-700TC
@@ -368,4 +376,10 @@ void app_main()
       uart_write_bytes(uart, &b, 1);
       timeout(100000);
    }
+}
+
+void app_main(void)
+{
+   TaskHandle_t task_id = NULL;
+   xTaskCreatePinnedToCore(asr33_main, "asr33", 20 * 1024, NULL, 2, &task_id, 1);
 }
