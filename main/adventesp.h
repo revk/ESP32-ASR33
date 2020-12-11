@@ -7,6 +7,5 @@ extern uint8_t gameover;
 // Compatible functions
 
 char	*readline(const char *);
-void	add_history(const char *);
-void	sendline(const char *);
+void	sendline(const char *,int);
 #define	TAG "advent"

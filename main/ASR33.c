@@ -322,6 +322,8 @@ void asr33_main(void *param)
             if (b == pe(6))
             {                   // RU
                extern int advent(void);
+               if (!busy)
+                  revk_state("busy", "%d", busy = 1);
                advent();
             }
             if (b == pe(5) && (ver || wru))

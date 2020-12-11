@@ -9,9 +9,11 @@
 extern uint8_t uart;
 extern void nl(void);
 
-void sendline(const char *line)
+void sendline(const char *line, int len)
 {
-   uart_write_bytes(uart, line, strlen(line));
+   if (len < 0)
+      len = strlen(line);
+   uart_write_bytes(uart, line, len);
 }
 
 char *readline(const char *prompt)
@@ -42,9 +44,4 @@ char *readline(const char *prompt)
    nl();
    line[p] = 0;
    return strdup(line);
-}
-
-void add_history(const char *line)
-{
-   // No history
 }

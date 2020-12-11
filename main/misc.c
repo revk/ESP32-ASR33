@@ -31,7 +31,7 @@ static void *xcalloc(size_t size)
       // LCOV_EXCL_START
       // exclude from coverage analysis because we can't simulate an out of memory error in testing
       revk_error("advent", "Out of memory");
-      sendline("+++ out of memory +++\r\n");
+      sendline("+++ out of memory +++\r\n", -1);
       sleep(10);
       exit(EXIT_FAILURE);
       // LCOV_EXCL_STOP
@@ -52,7 +52,7 @@ static void vspeak(const char *msg, bool blank, va_list ap)
       return;
 
    if (blank == true)
-      sendline("\r\n");
+      sendline("\r\n", -1);
 
    int msglen = strlen(msg);
 
@@ -60,6 +60,8 @@ static void vspeak(const char *msg, bool blank, va_list ap)
    ssize_t size = 2000;         /* msglen > 50 ? msglen*2 : 100; */
    char rendered[size];
    char *renderp = rendered;
+   for (int i = 0; i < 20; i++)
+      *renderp++ = 0;           // thinking time
 
    // Handle format specifiers (including the custom %S) by
    // adjusting the parameter accordingly, and replacing the
@@ -82,7 +84,7 @@ static void vspeak(const char *msg, bool blank, va_list ap)
             if (msg[i] == '\n')
             {
                *renderp++ = '\r';
-               *renderp++ = 0x7f;       // Time padding
+               *renderp++ = 0;  // Time padding
             }
             *renderp++ = msg[i];
             size--;
@@ -136,8 +138,8 @@ static void vspeak(const char *msg, bool blank, va_list ap)
    *renderp = 0;
 
    // Print the message.
-   sendline(rendered);
-   sendline("\r\n");
+   sendline(rendered, renderp - rendered);
+   sendline("\r\n", -1);
 }
 
 void speak(const char *msg, ...)
@@ -230,7 +232,7 @@ static char *get_input(void)
       input_prompt[0] = '\0';
 
    // Print a blank line
-   sendline("\r\n");
+   sendline("\r\n", -1);
 
    char *input;
    while (true)
@@ -250,8 +252,6 @@ static char *get_input(void)
 
    // Strip trailing newlines from the input
    input[strcspn(input, "\r\n")] = 0;
-
-   add_history(input);
 
    return (input);
 }
@@ -745,7 +745,7 @@ int32_t randrange(int32_t range)
 void bug(enum bugtype num, const char *error_string)
 {
    revk_error("advent", "Fatal error %d: %s", num, error_string);
-   sendline("+++ FATAL ERROR +++\r\n");
+   sendline("+++ FATAL ERROR +++\r\n", -1);
    sleep(10);
    exit(EXIT_FAILURE);
 }
