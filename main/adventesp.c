@@ -26,6 +26,8 @@ char *readline(const char *prompt)
       if (uart_read_bytes(uart, &b, 1, 0) > 0)
       {
          b &= 0x7F;
+         if (b == 4)
+            return NULL;        // EOF
          if (b == '\r' || b == '\n')
             break;
          if (b >= ' ' && b <= 0x7F)
