@@ -240,7 +240,10 @@ static char *get_input(void)
       input = readline(input_prompt);
 
       if (input == NULL)        // Got EOF; return with it.
+      {
+         gameover = 1;
          return (input);
+      }
       if (input[0] == '#')
       {                         // Ignore comments.
          free(input);
@@ -264,14 +267,7 @@ bool silent_yes(void)
    {
       char *reply = get_input();
       if (reply == NULL)
-      {
-         // LCOV_EXCL_START
-         // Should be unreachable. Reply should never be NULL
-         free(reply);
-         sleep(10);
-         exit(EXIT_SUCCESS);
-         // LCOV_EXCL_STOP
-      }
+         break;
       if (strlen(reply) == 0)
       {
          free(reply);
@@ -321,14 +317,7 @@ bool yes(const char *question, const char *yes_response, const char *no_response
 
       char *reply = get_input();
       if (reply == NULL)
-      {
-         // LCOV_EXCL_START
-         // Should be unreachable. Reply should never be NULL
-         free(reply);
-         sleep(10);
-         exit(EXIT_SUCCESS);
-         // LCOV_EXCL_STOP
-      }
+         break;
 
       if (strlen(reply) == 0)
       {
