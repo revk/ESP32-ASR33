@@ -21,6 +21,7 @@ static const char TAG[] = "ASR33";
   u32(idle,10)	\
   u32(keyidle,120)	\
   u8(ack,6)	\
+  u8(think,10)	\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;

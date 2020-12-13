@@ -43,5 +43,9 @@ char *readline(const char *prompt)
    }
    nl();
    line[p] = 0;
+   extern uint8_t think;
+   uart_write_bytes(uart, "\r\n", 2);
+   for (int i = 0; i < think; i++)
+      uart_write_bytes(uart, "", 1);
    return strdup(line);
 }

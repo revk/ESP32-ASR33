@@ -60,8 +60,6 @@ static void vspeak(const char *msg, bool blank, va_list ap)
    ssize_t size = 2000;         /* msglen > 50 ? msglen*2 : 100; */
    char rendered[size];
    char *renderp = rendered;
-   for (int i = 0; i < 20; i++)
-      *renderp++ = 0;           // thinking time
 
    // Handle format specifiers (including the custom %S) by
    // adjusting the parameter accordingly, and replacing the
