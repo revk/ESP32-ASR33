@@ -30,6 +30,13 @@ char *readline(const char *prompt)
          b &= 0x7F;
          if (b == 4)
             return NULL;        // EOF
+         if (b == 0x7F)
+         {
+            uart_write_bytes(uart, "\r", 2);    // \r and NULL
+            uart_write_bytes(uart, prompt, strlen(prompt));
+            p = 0;
+            continue;
+         }
          if (b == '\r' || b == '\n')
             break;
          if (b >= ' ' && b <= 0x7F)
