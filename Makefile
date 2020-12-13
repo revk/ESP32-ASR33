@@ -12,3 +12,8 @@ update:
 	git submodule update --init --recursive --remote
 	git commit -a -m "Library update"
 
+asr33: asr33.c
+	cc -O -o asr33 asr33.c -lpopt -lmosquitto
+
+punch: punch.c
+	cc -O -o punch punch.c -lpopt 
