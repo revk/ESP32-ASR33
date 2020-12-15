@@ -181,7 +181,7 @@ int main(int argc, const char *argv[])
          printf("M%d %da %d %d 0 1 0 %d 0a%d %d 0 1 0 %d 0", x - r, y, r, r, r * 2, r, r, -r * 2);
       }
       int x = (w * 10 - len) * dpi / 20;
-      int y = dpi * 150 / 1000;
+      int y = dpi * 100 / 1000;
       for (int i = -10; i < (int) len + 10; i++)
          circle(x + i * dpi / 10, y + 5 * dpi / 10, 46 * dpi / 2000);   // Feed holes
       for (int i = 0; i < len; i++)
