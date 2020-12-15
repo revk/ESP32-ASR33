@@ -124,17 +124,27 @@ int main(int argc, const char *argv[])
       {                         // Lower case
          if (t[3] == t[4])
             memcpy(v + 4, t + 5, 4);
-         else if(!t[0])
+         else if (!t[0])
             memcpy(v, t + 1, 8);        // Move up
       }
+      unsigned char q[6];
       for (int i = 0; i < 6; i++)
       {
          unsigned char o = 0;
          for (int b = 0; b < 8; b++)
             if (v[b] & (0x80 >> i))
                o |= (1 << b);
-         fputc(o, f);
+         q[i] = o;
       }
+      int l = 0,
+          h = 5;
+      while (l < 5 && !q[l])
+         l++;
+      while (h > l && !q[h])
+         h--;
+      while (l <= h)
+         fputc(q[l++], f);
+      fputc(0, f);
    }
    {                            // POPT
       poptContext optCon;       // context for parsing command-line options
