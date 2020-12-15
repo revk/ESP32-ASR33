@@ -5,7 +5,7 @@ Direct control of an ASR33 and connection to MQTT
 This uses ESP32-RevK and so has the commands and settings as per that library
 https://github.com/revk/ESP32-RevK
 
-Additional settings:-
+Additional settings, e.g. setting/ASR33/[name]/[setting] [value]
 - uart:	UART number
 - tx:	Tx pin
 - rx:	Rx pin
@@ -18,18 +18,20 @@ Additional settings:-
 - wru:	String to send for WRU
 - ver:	Flag, if set, send version info for WRU
 - ack:  Value of ACK - 0x7C in 1963, 0x06 in later editions
+- cave: Flag, always play a game
 
-Commands :-
+Commands, e.g. command/ASR33/[name]/[command]
 - on: Turn on now (automatically done if message to send)
 - off: Turn off now (automatically done after idle delay)
 - tx:	Raw 8 bit data to send to teletype
 - text:	Text, adding carriage returns and setting even parity, and skipping utf-8 (print up arrow)
+- cave: Let's play a game
 
-Status :-
+Status, e.g. status/ASR33/[name]/[status]
 - power: If power on or off
 - busy: If tx queue is getting full - don't send it busy
 
-Events :-
+Events, e.g. event/ASR33/[name]/[event]
 - rx:	Raw 8 bit data from teletype (one character at a time)
 - line:	Text typed, parity stripped, a whole line of typed text
 
@@ -37,7 +39,7 @@ Can be connected using a 100 ohm resistor directly
 (see https://www.revk.uk/2020/12/connecting-asr33-teletype-to-esp32.html)
 
 Note:
-- Typing WRU (^R) will response with wru and version if configured
+- Typing WRU (^R) will response with wru string and version if either is configured/set
 - Typing RU (^F) will run Colossal Cave - have fun
 
 Copyright © 2020 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0

@@ -1,6 +1,5 @@
 // ASR33 direct control over MQTT
 // Copyright © 2019 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
-static const char TAG[] = "ASR33";
 
 #include "revk.h"
 #include <esp_spi_flash.h>
@@ -22,6 +21,7 @@ static const char TAG[] = "ASR33";
   u32(keyidle,120)	\
   u8(ack,6)	\
   u8(think,10)	\
+  u1(cave)	\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
@@ -41,8 +41,9 @@ volatile int8_t manual = 0;     // Manual power override (eg key pressed, etc)
 int8_t busy = 0;                // Busy state
 uint8_t pressed = 0;            // Button pressed
 uint8_t doecho = 0;             // Do echo (set each start up)
-volatile int8_t power = -1;     // Power state
-volatile int8_t wantpower = -1; // Power state wanted
+uint8_t docave = 0;             // Fun advent()
+volatile uint8_t power = 0;     // Power state
+volatile uint8_t wantpower = 0; // Power state wanted
 uint8_t buf[MAXTX];             // Tx pending buffer
 volatile uint32_t txi = 0;      // Tx buffer in pointer
 volatile uint32_t txo = 0;      // Tx buffer out pointer
@@ -147,16 +148,15 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
 {
    if (!strcmp(tag, "connect"))
    {
-      if (power < 0)
-      {
-         revk_info(TAG, "Started");
-         wantpower = 0;         // State unknown, turn off - reports state
-      } else
-         revk_state("power", "%d", power);      // Report power state
+      if (sonoff)
+         revk_raw(NULL, sonoff, 1, power ? "1" : "0", 0);       // Ensure power as wanted
+      revk_state("power", "%d", power); // Report power state
       revk_state("busy", "%d", busy);   // Report busy state
    }
    if (!strcmp(tag, "restart"))
       wantpower = 0;
+   if (!strcmp(tag, "cave"))
+      docave = 1;
    if (!strcmp(tag, "on"))
    {
       manual = 1;
@@ -321,12 +321,7 @@ void asr33_main(void *param)
             if (doecho)
                queuebyte(b);
             if (b == pe(6))
-            {                   // RU
-               extern int advent(void);
-               if (!busy)
-                  revk_state("busy", "%d", busy = 1);
-               advent();
-            }
+               docave = 1;
             if (b == pe(5) && (ver || wru))
             {                   // WRU
                // See 3.27 of ISS 8, SECTION 574-122-700TC
@@ -358,12 +353,20 @@ void asr33_main(void *param)
          else if (wantpower == 1)
             power_on();
       }
-      if (power != 1)
+      if (sonoff && power != 1)
          continue;              // Not running
       int64_t now = esp_timer_get_time();
       // Check tx
       if (txi == txo)
       {                         // Nothing to send
+         if (cave || docave)
+         {                      // Let's play a game
+            docave = 0;
+            extern int advent(void);
+            if (!busy)
+               revk_state("busy", "%d", busy = 1);
+            advent();
+         }
          if (done < now)
             wantpower = 0;      // Idle complete, power off
          continue;
