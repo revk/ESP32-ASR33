@@ -109,7 +109,7 @@ int debug = 0;
 int main(int argc, const char *argv[])
 {
    int repeat = 1;
-   int margin = 5;
+   int gap = 5;
    int lead = 15;
    int tail = 15;
    int svg = 0;
@@ -153,8 +153,8 @@ int main(int argc, const char *argv[])
       const struct poptOption optionsTable[] = {
          { "svg", 's', POPT_ARG_NONE, &svg, 0, "SVG output" },
          { "repeat", 'n', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &repeat, 0, "Repeat", "N" },
-         { "margin", 'm', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "Margin", "N" },
          { "lead", 'l', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &lead, 0, "Lead", "N" },
+         { "gap", 'g', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &gap, 0, "Gap", "N" },
          { "tail", 't', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &tail, 0, "Tail", "N" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
@@ -180,6 +180,8 @@ int main(int argc, const char *argv[])
       poptFreeContext(optCon);
    }
    fclose(f);
+   if (len && !data[len - 1])
+      len--;                    // Trailing end of last character
 
    if (svg)
    {                            // Write SVG
@@ -212,7 +214,7 @@ int main(int argc, const char *argv[])
    {
       fwrite(data, len, 1, stdout);
       if (repeat)
-         for (int i = 0; i < margin; i++)
+         for (int i = 0; i < gap; i++)
             fputc(0, stdout);
    }
    for (int i = 0; i < tail; i++)
