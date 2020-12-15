@@ -117,13 +117,20 @@ int main(int argc, const char *argv[])
       if (c >= 0x80 || c < ' ')
          return;
       const unsigned char *t = teletext + 9 * (c - ' ');
-      if (t[8] && !t[0])
-         t++;
+      unsigned char v[8];
+      memcpy(v, t, 8);
+      if (!t[0] && t[8])
+      {                         // Lower case
+         if (t[3] == t[4])
+            memcpy(v + 4, t + 5, 4);
+         else
+            memcpy(v, t + 1, 8);        // Move up
+      }
       for (int i = 0; i < 6; i++)
       {
          unsigned char o = 0;
          for (int b = 0; b < 8; b++)
-            if (t[b] & (0x80 >> i))
+            if (v[b] & (0x80 >> i))
                o |= (1 << b);
          fputc(o, f);
       }
