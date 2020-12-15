@@ -111,6 +111,7 @@ int main(int argc, const char *argv[])
    int repeat = 1;
    int margin = 5;
    int lead = 15;
+   int tail = 15;
    int svg = 0;
    char *data = NULL;
    size_t len = 0;
@@ -153,7 +154,8 @@ int main(int argc, const char *argv[])
          { "svg", 's', POPT_ARG_NONE, &svg, 0, "SVG output" },
          { "repeat", 'n', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &repeat, 0, "Repeat", "N" },
          { "margin", 'm', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "Margin", "N" },
-         { "lead", 'l', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &lead, 0, "Lean", "N" },
+         { "lead", 'l', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &lead, 0, "Lead", "N" },
+         { "tail", 't', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &tail, 0, "Tail", "N" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
@@ -191,12 +193,12 @@ int main(int argc, const char *argv[])
       int x = (w * 10 - len) * dpi / 20;
       int y = dpi * 100 / 1000;
       for (int i = -10; i < (int) len + 10; i++)
-         circle(x + i * dpi / 10, y + 5 * dpi / 10, 46 * dpi / 2000);   // Feed holes
+         circle(x + i * dpi / 10, y + 3 * dpi / 10, 46 * dpi / 2000);   // Feed holes
       for (int i = 0; i < len; i++)
       {
          for (int h = 0; h < 8; h++)
             if (data[i] & (1 << h))
-               circle(x, y + (h + (h >= 5 ? 1 : 0)) * dpi / 10, 72 * dpi / 2000);
+               circle(x, y + (h + (h >= 3 ? 1 : 0)) * dpi / 10, 72 * dpi / 2000);
          x += dpi / 10;
       }
       printf("\"/>");
@@ -209,9 +211,12 @@ int main(int argc, const char *argv[])
    while (repeat--)
    {
       fwrite(data, len, 1, stdout);
-      for (int i = 0; i < margin; i++)
-         fputc(0, stdout);
+      if (repeat)
+         for (int i = 0; i < margin; i++)
+            fputc(0, stdout);
    }
+   for (int i = 0; i < tail; i++)
+      fputc(0, stdout);
 
    return 0;
 }
