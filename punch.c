@@ -110,6 +110,7 @@ int main(int argc, const char *argv[])
 {
    int repeat = 1;
    int margin = 5;
+   int lead = 15;
    int svg = 0;
    char *data = NULL;
    size_t len = 0;
@@ -152,6 +153,7 @@ int main(int argc, const char *argv[])
          { "svg", 's', POPT_ARG_NONE, &svg, 0, "SVG output" },
          { "repeat", 'n', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &repeat, 0, "Repeat", "N" },
          { "margin", 'm', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "Margin", "N" },
+         { "lead", 'l', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &lead, 0, "Lean", "N" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
@@ -165,8 +167,6 @@ int main(int argc, const char *argv[])
 
       if (!poptPeekArg(optCon))
          errx(1, "Specify text");
-      for (int i = 0; i < margin; i++)
-         fputc(0, f);
       while (poptPeekArg(optCon))
       {
          const char *t = poptGetArg(optCon);
@@ -175,8 +175,6 @@ int main(int argc, const char *argv[])
          if (poptPeekArg(optCon))
             punch(' ');
       }
-      for (int i = 0; i < margin; i++)
-         fputc(0, f);
       poptFreeContext(optCon);
    }
    fclose(f);
@@ -206,8 +204,14 @@ int main(int argc, const char *argv[])
       return 0;
    }
    // Write out binary
+   for (int i = 0; i < lead; i++)
+      fputc(0, stdout);
    while (repeat--)
+   {
       fwrite(data, len, 1, stdout);
+      for (int i = 0; i < margin; i++)
+         fputc(0, stdout);
+   }
 
    return 0;
 }
