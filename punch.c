@@ -120,11 +120,11 @@ int main(int argc, const char *argv[])
       const unsigned char *t = teletext + 9 * (c - ' ');
       unsigned char v[8];
       memcpy(v, t, 8);
-      if (!t[0] && t[8])
+      if (t[8])
       {                         // Lower case
          if (t[3] == t[4])
             memcpy(v + 4, t + 5, 4);
-         else
+         else if(!t[0])
             memcpy(v, t + 1, 8);        // Move up
       }
       for (int i = 0; i < 6; i++)
