@@ -108,7 +108,11 @@ int debug = 0;
 
 int main(int argc, const char *argv[])
 {
-
+   int repeat = 1;
+   int svg = 0;
+   char *data = NULL;
+   size_t len = 0;
+   FILE *f = open_memstream(&data, &len);
    void punch(unsigned char c) {
       if (c >= 0x80 || c < ' ')
          return;
@@ -121,12 +125,14 @@ int main(int argc, const char *argv[])
          for (int b = 0; b < 8; b++)
             if (t[b] & (0x80 >> i))
                o |= (1 << b);
-         putchar(o);
+         fputc(o, f);
       }
    }
    {                            // POPT
       poptContext optCon;       // context for parsing command-line options
       const struct poptOption optionsTable[] = {
+         { "svg", 's', POPT_ARG_NONE, &svg, 0, "SVG output" },
+         { "repeat", 'n', POPT_ARG_INT, &repeat, 0, "Repeat", "N" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
@@ -151,6 +157,35 @@ int main(int argc, const char *argv[])
       }
       poptFreeContext(optCon);
    }
+   fclose(f);
+
+   if (svg)
+   {                            // Write SVG
+      const int dpi = 1000;
+      int w = (len + 9) / 10;   // Width (inches)
+      printf("<svg xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.0\" width=\"%din\" height=\"1in\" viewBox=\"0 0 %d %d\">", w, w * dpi, dpi);
+      printf("<path stroke=\"black\" fill=\"#cfc\" d=\"M0 0l%d 0l0 %dl%d 0z", w * dpi, dpi, -w * dpi);
+      void circle(int x, int y, int r) {
+         printf("M%d %da %d %d 0 1 0 %d 0a%d %d 0 1 0 %d 0", x - r, y, r, r, r * 2, r, r, -r * 2);
+      }
+      int x = (w * 10 - len) * dpi / 20;
+      int y = dpi * 150 / 1000;
+      for (int i = -10; i < (int) len + 10; i++)
+         circle(x + i * dpi / 10, y + 5 * dpi / 10, 46 * dpi / 2000);   // Feed holes
+      for (int i = 0; i < len; i++)
+      {
+         for (int h = 0; h < 8; h++)
+            if (data[i] & (1 << h))
+               circle(x, y + (h + (h >= 5 ? 1 : 0)) * dpi / 10, 72 * dpi / 2000);
+         x += dpi / 10;
+      }
+      printf("\"/>");
+      printf("</svg>");
+      return 0;
+   }
+   // Write out binary
+   while (repeat--)
+      fwrite(data, len, 1, stdout);
 
    return 0;
 }
