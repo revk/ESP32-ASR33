@@ -234,12 +234,13 @@ int main(int argc, const char *argv[])
    int lead = 15;
    int tail = 15;
    int svg = 0;
-   int zig = 0;
    char *data = NULL;
    size_t len = 0;
    font_t *font = teletext_f;
    int alteran = 0;
    int small = 0;
+   int zig = 0;
+   int okdc4 = 0;
    FILE *f = open_memstream(&data, &len);
    void punch(unsigned char c) {
       const unsigned char *d = font[c];
@@ -264,6 +265,7 @@ int main(int argc, const char *argv[])
          { "alteran", 'A', POPT_ARG_NONE, &alteran, 0, "Ateran" },
          { "small", 'S', POPT_ARG_NONE, &small, 0, "Small" },
          { "zig-zag", 'Z', POPT_ARG_NONE, &zig, 0, "Zig-Zag" },
+         { "ok-dc4", 0, POPT_ARG_NONE, &okdc4, 0, "DC4 is OK (not handled)" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
@@ -331,18 +333,29 @@ int main(int argc, const char *argv[])
       return 0;
    }
    // Write out binary
+   if (!okdc4)
+      fputc(0x12, stdout);      // DC2
    for (int i = 0; i < lead; i++)
       fputc(0, stdout);
    while (repeat--)
    {
-      fwrite(data, len, 1, stdout);
+      if (okdc4)
+         fwrite(data, len, 1, stdout);
+      else
+         for (int i = 0; i < len; i++)
+         {
+            fputc(data[i], stdout);
+            if (data[i] == 0x14)        // DC4
+               fputc(0x12, stdout);     // DC2
+         }
       if (repeat)
          for (int i = 0; i < gap; i++)
             fputc(0, stdout);
    }
    for (int i = 0; i < tail; i++)
       fputc(0, stdout);
-
+   if (!okdc4)
+      fputc(0x14, stdout);      // DC4
 
    return 0;
 }
