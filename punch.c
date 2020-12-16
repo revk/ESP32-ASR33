@@ -246,8 +246,8 @@ int main(int argc, const char *argv[])
    FILE *f = open_memstream(&data, &len);
    void punch(unsigned char c) {
       const unsigned char *d = font[c];
-      if (!*d && isalpha(c))
-         d = (void *) font[toupper(c)];
+      if (!*d && islower(c))
+         d = (void *) font[toupper(c)]; // try upper case if no lower case character
       int l = MAXW;
       while (l && !d[l - 1])
          l--;
