@@ -212,31 +212,6 @@ int main(int argc, const char *argv[])
          fputc(*d++, f);
       fputc(0, f);
    }
-#if 0
-   for (int c = 0; c < 256; c++)
-   {
-      const unsigned char *d = alteran_f[c];
-      if (!d[0] && !d[1])
-         continue;
-      int d2(int c) {
-         int o = 0;
-         for (int b = 0; b < 8; b++)
-            if (c & (0x80 >> (b / 2 + 1)))
-               o |= (0x80 >> b);
-         return o;
-      }
-      int A = d2(d[0]);
-      int B = d2(d[1]);
-      int C = d2(d[2]);
-      if (isdigit(c))
-      {
-         A &= ~0x80;
-         C &= ~0x80;
-      }
-      printf("\t['%c']={0x%02X,0x%02X,0x%02X},\n", c, A, B, C);
-   }
-   return 0;
-#endif
 
    {                            // POPT
       poptContext optCon;       // context for parsing command-line options
