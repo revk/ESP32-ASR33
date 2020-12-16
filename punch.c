@@ -234,6 +234,7 @@ int main(int argc, const char *argv[])
    int lead = 15;
    int tail = 15;
    int svg = 0;
+   int space = 4;
    char *data = NULL;
    size_t len = 0;
    font_t *font = teletext_f;
@@ -249,6 +250,8 @@ int main(int argc, const char *argv[])
       int l = MAXW;
       while (l && !d[l - 1])
          l--;
+      if (c == ' ' && l < space - 2)
+         l = space - 2;         // Min space for a space (allow for the fact we add one at the end and start)
       while (l--)
          fputc(*d++, f);
       fputc(0, f);
@@ -266,6 +269,7 @@ int main(int argc, const char *argv[])
          { "small", 'S', POPT_ARG_NONE, &small, 0, "Small" },
          { "zig-zag", 'Z', POPT_ARG_NONE, &zig, 0, "Zig-Zag" },
          { "ok-dc4", 0, POPT_ARG_NONE, &okdc4, 0, "DC4 is OK (not handled)" },
+         { "space", 0, POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &space, 0, "Space size", "N" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
