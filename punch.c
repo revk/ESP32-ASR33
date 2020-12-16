@@ -345,7 +345,7 @@ int main(int argc, const char *argv[])
          for (int i = 0; i < len; i++)
          {
             fputc(data[i], stdout);
-            if (data[i] == 0x14)        // DC4
+            if ((data[i] & 0x7F) == 0x14)       // DC4
                fputc(0x12, stdout);     // DC2
          }
       if (repeat)
