@@ -3,8 +3,6 @@
 #define	MAXW 5
 typedef const unsigned char font_t[MAXW];
 
-/* INDENT-OFF */
-
 font_t teletext_f[256] = {
    [' '] = { 0x00 },
    ['!'] = { 0x5F },
@@ -143,7 +141,44 @@ font_t alteran_f[256] = {
    ['Z'] = { 0x68, 0x38, 0x48 },
 };
 
-/* INDENT-ON */
+font_t alteran2_f[256] = {
+   ['0'] = { 0x7F, 0xC3, 0x7F },
+   ['1'] = { 0x43, 0xC0, 0x40 },
+   ['2'] = { 0x43, 0xC3, 0x40 },
+   ['3'] = { 0x43, 0xC3, 0x43 },
+   ['4'] = { 0x4F, 0xC3, 0x43 },
+   ['5'] = { 0x4F, 0xCF, 0x43 },
+   ['6'] = { 0x4F, 0xCF, 0x4F },
+   ['7'] = { 0x7F, 0xCF, 0x4F },
+   ['8'] = { 0x7F, 0xFF, 0x4F },
+   ['9'] = { 0x7F, 0xFF, 0x7F },
+   ['A'] = { 0x33, 0x33, 0xFF },
+   ['B'] = { 0xC3, 0xCF, 0xFF },
+   ['C'] = { 0xFF, 0x03, 0xFF },
+   ['D'] = { 0xF3, 0xFF, 0xF3 },
+   ['E'] = { 0xFF, 0x30, 0xF3 },
+   ['F'] = { 0x03, 0x03, 0xFF },
+   ['G'] = { 0xFF, 0xC0, 0xCF },
+   ['H'] = { 0xF3, 0x33, 0xFF },
+   ['I'] = { 0xC3, 0xF3, 0xC3 },
+   ['J'] = { 0xCF, 0xC3, 0xCF },
+   ['K'] = { 0x00, 0xCF, 0xFF },
+   ['L'] = { 0xCC, 0xFF, 0x33 },
+   ['M'] = { 0xCF, 0xF0, 0xCF },
+   ['N'] = { 0xF0, 0x3F, 0xFC },
+   ['O'] = { 0xCF, 0x00, 0xF3 },
+   ['P'] = { 0xFF, 0x00, 0xC3 },
+   ['Q'] = { 0xCC, 0x3F, 0xCC },
+   ['R'] = { 0xF3, 0xC3, 0xF3 },
+   ['S'] = { 0xFF, 0x0C, 0x3F },
+   ['T'] = { 0xF3, 0x30, 0xF3 },
+   ['U'] = { 0x03, 0x03, 0xFF },
+   ['V'] = { 0xC3, 0xFF, 0xFF },
+   ['W'] = { 0xCF, 0x3C, 0xFF },
+   ['X'] = { 0xFF, 0xC0, 0xFF },
+   ['Y'] = { 0xFF, 0xC3, 0x0F },
+   ['Z'] = { 0xF3, 0x3F, 0xC3 },
+};
 
 #include <stdio.h>
 #include <string.h>
@@ -164,6 +199,7 @@ int main(int argc, const char *argv[])
    size_t len = 0;
    font_t *font = teletext_f;
    int alteran = 0;
+   int alteran2 = 0;
    FILE *f = open_memstream(&data, &len);
    void punch(unsigned char c) {
       const unsigned char *d = font[c];
@@ -176,6 +212,31 @@ int main(int argc, const char *argv[])
          fputc(*d++, f);
       fputc(0, f);
    }
+#if 0
+   for (int c = 0; c < 256; c++)
+   {
+      const unsigned char *d = alteran_f[c];
+      if (!d[0] && !d[1])
+         continue;
+      int d2(int c) {
+         int o = 0;
+         for (int b = 0; b < 8; b++)
+            if (c & (0x80 >> (b / 2 + 1)))
+               o |= (0x80 >> b);
+         return o;
+      }
+      int A = d2(d[0]);
+      int B = d2(d[1]);
+      int C = d2(d[2]);
+      if (isdigit(c))
+      {
+         A &= ~0x80;
+         C &= ~0x80;
+      }
+      printf("\t['%c']={0x%02X,0x%02X,0x%02X},\n", c, A, B, C);
+   }
+   return 0;
+#endif
 
    {                            // POPT
       poptContext optCon;       // context for parsing command-line options
@@ -185,7 +246,8 @@ int main(int argc, const char *argv[])
          { "lead", 'l', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &lead, 0, "Lead", "N" },
          { "gap", 'g', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &gap, 0, "Gap", "N" },
          { "tail", 't', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &tail, 0, "Tail", "N" },
-         { "alteran", 'A', POPT_ARG_NONE, &alteran, 0, "Ateran" },
+         { "alteran-small", 0, POPT_ARG_NONE, &alteran, 0, "Ateran small" },
+         { "alteran", 'A', POPT_ARG_NONE, &alteran2, 0, "Ateran" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
@@ -202,6 +264,8 @@ int main(int argc, const char *argv[])
 
       if (alteran)
          font = alteran_f;
+      if (alteran2)
+         font = alteran2_f;
 
       while (poptPeekArg(optCon))
       {
