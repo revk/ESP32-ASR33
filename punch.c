@@ -102,7 +102,7 @@ font_t teletext_f[256] = {
    [''] = { 0x7F, 0x7F, 0x7F, 0x7F, 0x7F },
 };
 
-font_t alteran_f[256] = {
+font_t alteran_small_f[256] = {
    ['0'] = { 0x78, 0xC8, 0x78 },
    ['1'] = { 0x48, 0xC0, 0x40 },
    ['2'] = { 0x48, 0xC8, 0x40 },
@@ -141,7 +141,7 @@ font_t alteran_f[256] = {
    ['Z'] = { 0x68, 0x38, 0x48 },
 };
 
-font_t alteran2_f[256] = {
+font_t alteran_f[256] = {
    ['0'] = { 0x7F, 0xC3, 0x7F },
    ['1'] = { 0x43, 0xC0, 0x40 },
    ['2'] = { 0x43, 0xC3, 0x40 },
@@ -180,6 +180,45 @@ font_t alteran2_f[256] = {
    ['Z'] = { 0xF3, 0x3F, 0xC3 },
 };
 
+font_t small_f[256] = {
+	['0']={0x70,0x88,0x88,0x70},
+	['1']={0x88,0xF8,0x80},
+	['2']={0xC0,0xA8,0xA8,0x90},
+	['3']={0x88,0xA8,0xA8,0x50},
+	['4']={0x60,0x50,0xF8,0x40},
+	['5']={0xB8,0xA8,0xA8,0X48},
+	['6']={0x70,0xA8,0xA8,0x40},
+	['7']={0x08,0xC8,0x28,0x18},
+	['8']={0x50,0xA8,0xA8,0x50},
+	['9']={0x10,0xA8,0xA8,0x70},
+	['A']={0xE0,0x50,0x48,0x50,0xE0},
+	['B']={0xF8,0xA8,0xA8,0xA8,0x50},
+	['C']={0x70,0x88,0x88,0x88},
+	['D']={0xF8,0x88,0x88,0x88,0x70},
+	['E']={0xF8,0xA8,0xA8,0xA8,0x88},
+	['F']={0xF8,0x28,0x28,0x28,0x08},
+	['G']={0x70,0x88,0x88,0xA8,0x60},
+	['H']={0xF8,0x20,0x20,0x20,0xF8},
+	['I']={0x88,0xF8,0x88},
+	['J']={0x40,0x88,0x78,0x08},
+	['K']={0xF8,0x20,0x50,0x88},
+	['L']={0xF8,0x80,0x80,0x80,0x80},
+	['M']={0xF8,0x10,0x20,0x10,0xF8},
+	['N']={0xF8,0x10,0x20,0x40,0xF8},
+	['O']={0x70,0x88,0x88,0x88,0x70},
+	['P']={0xF8,0x28,0x28,0x28,0x10},
+	['Q']={0x70,0x88,0xA8,0x48,0xB0},
+	['R']={0xF8,0x28,0x28,0x68,0x90},
+	['S']={0x10,0xA8,0xA8,0xA8,0x40},
+	['T']={0x08,0x08,0xF8,0x08,0x08},
+	['U']={0x78,0x80,0x80,0x80,0x78},
+	['V']={0x38,0x40,0x80,0x40,0x38},
+	['W']={0x78,0x80,0x60,0x80,0x78},
+	['X']={0x88,0x50,0x20,0x50,0x88},
+	['Y']={0x08,0x10,0xE0,0x10,0x08},
+	['Z']={0x88,0xC8,0xA8,0x98,0x88},
+};
+
 #include <stdio.h>
 #include <string.h>
 #include <popt.h>
@@ -199,7 +238,7 @@ int main(int argc, const char *argv[])
    size_t len = 0;
    font_t *font = teletext_f;
    int alteran = 0;
-   int alteran2 = 0;
+   int small=0;
    FILE *f = open_memstream(&data, &len);
    void punch(unsigned char c) {
       const unsigned char *d = font[c];
@@ -221,8 +260,8 @@ int main(int argc, const char *argv[])
          { "lead", 'l', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &lead, 0, "Lead", "N" },
          { "gap", 'g', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &gap, 0, "Gap", "N" },
          { "tail", 't', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &tail, 0, "Tail", "N" },
-         { "alteran-small", 0, POPT_ARG_NONE, &alteran, 0, "Ateran small" },
-         { "alteran", 'A', POPT_ARG_NONE, &alteran2, 0, "Ateran" },
+         { "alteran", 'A', POPT_ARG_NONE, &alteran, 0, "Ateran" },
+         { "small", 'S', POPT_ARG_NONE, &small, 0, "Small" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
@@ -237,10 +276,12 @@ int main(int argc, const char *argv[])
       if (!poptPeekArg(optCon))
          errx(1, "Specify text");
 
-      if (alteran)
+      if (alteran&&small)
+         font = alteran_small_f;
+      else if (alteran)
          font = alteran_f;
-      if (alteran2)
-         font = alteran2_f;
+      else if (small)
+         font = small_f;
 
       while (poptPeekArg(optCon))
       {
@@ -260,7 +301,7 @@ int main(int argc, const char *argv[])
    if (svg)
    {                            // Write SVG
       const int dpi = 1000;
-      int w = (len + 9) / 10;   // Width (inches)
+      int w = (len + 15) / 10;   // Width (inches)
       printf("<svg xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.0\" width=\"%din\" height=\"1in\" viewBox=\"0 0 %d %d\">", w, w * dpi, dpi);
       printf("<path stroke=\"black\" fill=\"#cfc\" d=\"M0 0l%d 0l0 %dl%d 0z", w * dpi, dpi, -w * dpi);
       void circle(int x, int y, int r) {
