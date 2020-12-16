@@ -253,6 +253,8 @@ int main(int argc, const char *argv[])
          l--;
       if (c == ' ' && l < space - 2)
          l = space - 2;         // Min space for a space (allow for the fact we add one at the end and start)
+      if (!l)
+         return;                // No character
       while (l--)
          fputc(*d++, f);
       fputc(0, f);
