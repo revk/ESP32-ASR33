@@ -242,6 +242,7 @@ int main(int argc, const char *argv[])
    int small = 0;
    int zig = 0;
    int okdc4 = 0;
+   int dc = 0;
    FILE *f = open_memstream(&data, &len);
    void punch(unsigned char c) {
       const unsigned char *d = font[c];
@@ -269,6 +270,7 @@ int main(int argc, const char *argv[])
          { "small", 'S', POPT_ARG_NONE, &small, 0, "Small" },
          { "zig-zag", 'Z', POPT_ARG_NONE, &zig, 0, "Zig-Zag" },
          { "ok-dc4", 0, POPT_ARG_NONE, &okdc4, 0, "DC4 is OK (not handled)" },
+         { "dc", 0, POPT_ARG_NONE, &dc, 0, "Send DC4/DC2 start/stop" },
          { "space", 0, POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &space, 0, "Space size", "N" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
@@ -337,7 +339,7 @@ int main(int argc, const char *argv[])
       return 0;
    }
    // Write out binary
-   if (!okdc4)
+   if (dc)
       fputc(0x12, stdout);      // DC2
    for (int i = 0; i < lead; i++)
       fputc(0, stdout);
@@ -358,7 +360,7 @@ int main(int argc, const char *argv[])
    }
    for (int i = 0; i < tail; i++)
       fputc(0, stdout);
-   if (!okdc4)
+   if (dc)
       fputc(0x14, stdout);      // DC4
 
    return 0;
