@@ -1,11 +1,11 @@
 // Generate bianry output to punch lettering on to paper tape
 
 #define	MAXW 5
-typedef const unsigned char font_t[256][MAXW];
+typedef const unsigned char font_t[MAXW];
 
 /* INDENT-OFF */
 
-font_t teletext[] = {
+font_t teletext_f[256] = {
    [' '] = { 0x00 },
    ['!'] = { 0x5F },
    ['"'] = { 0x03, 0x00, 0x03 },
@@ -104,11 +104,51 @@ font_t teletext[] = {
    [''] = { 0x7F, 0x7F, 0x7F, 0x7F, 0x7F },
 };
 
+font_t alteran_f[256] = {
+   ['0'] = { 0x78, 0xC8, 0x78 },
+   ['1'] = { 0x48, 0xC0, 0x40 },
+   ['2'] = { 0x48, 0xC8, 0x40 },
+   ['3'] = { 0x48, 0xC8, 0x48 },
+   ['4'] = { 0x58, 0xC8, 0x48 },
+   ['5'] = { 0x58, 0xD8, 0x48 },
+   ['6'] = { 0x58, 0xD8, 0x58 },
+   ['7'] = { 0x78, 0xD8, 0x58 },
+   ['8'] = { 0x78, 0xF8, 0x58 },
+   ['9'] = { 0x78, 0xF8, 0x78 },
+   ['A'] = { 0x28, 0x28, 0x78 },
+   ['B'] = { 0x48, 0x58, 0x78 },
+   ['C'] = { 0x78, 0x08, 0x78 },
+   ['D'] = { 0x68, 0x78, 0x68 },
+   ['E'] = { 0x78, 0x20, 0x68 },
+   ['F'] = { 0x08, 0x08, 0x78 },
+   ['G'] = { 0x78, 0x40, 0x58 },
+   ['H'] = { 0x68, 0x28, 0x78 },
+   ['I'] = { 0x48, 0x68, 0x48 },
+   ['J'] = { 0x58, 0x48, 0x58 },
+   ['K'] = { 0x00, 0x58, 0x78 },
+   ['L'] = { 0x50, 0x78, 0x28 },
+   ['M'] = { 0x58, 0x60, 0x58 },
+   ['N'] = { 0x60, 0x38, 0x70 },
+   ['O'] = { 0x58, 0x03, 0x68 },
+   ['P'] = { 0x78, 0x00, 0x48 },
+   ['Q'] = { 0x50, 0x38, 0x50 },
+   ['R'] = { 0x68, 0x48, 0x68 },
+   ['S'] = { 0x78, 0x10, 0x38 },
+   ['T'] = { 0x68, 0x20, 0x68 },
+   ['U'] = { 0x08, 0x08, 0x78 },
+   ['V'] = { 0x48, 0x78, 0x78 },
+   ['W'] = { 0x58, 0x30, 0x78 },
+   ['X'] = { 0x78, 0x40, 0x78 },
+   ['Y'] = { 0x78, 0x48, 0x18 },
+   ['Z'] = { 0x68, 0x38, 0x48 },
+};
+
 /* INDENT-ON */
 
 #include <stdio.h>
 #include <string.h>
 #include <popt.h>
+#include <ctype.h>
 #include <err.h>
 
 int debug = 0;
@@ -122,12 +162,15 @@ int main(int argc, const char *argv[])
    int svg = 0;
    char *data = NULL;
    size_t len = 0;
-   font_t *font = teletext;
+   font_t *font = teletext_f;
+   int alteran = 0;
    FILE *f = open_memstream(&data, &len);
    void punch(unsigned char c) {
-      const unsigned char *d = (void *) font[c];
+      const unsigned char *d = font[c];
+      if (!*d && isalpha(c))
+         d = (void *) font[toupper(c)];
       int l = MAXW;
-      while (l && !d[l-1])
+      while (l && !d[l - 1])
          l--;
       while (l--)
          fputc(*d++, f);
@@ -142,6 +185,7 @@ int main(int argc, const char *argv[])
          { "lead", 'l', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &lead, 0, "Lead", "N" },
          { "gap", 'g', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &gap, 0, "Gap", "N" },
          { "tail", 't', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &tail, 0, "Tail", "N" },
+         { "alteran", 'A', POPT_ARG_NONE, &alteran, 0, "Ateran" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
@@ -155,6 +199,10 @@ int main(int argc, const char *argv[])
 
       if (!poptPeekArg(optCon))
          errx(1, "Specify text");
+
+      if (alteran)
+         font = alteran_f;
+
       while (poptPeekArg(optCon))
       {
          const char *t = poptGetArg(optCon);
