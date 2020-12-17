@@ -6,6 +6,12 @@
 #include <driver/uart.h>
 #include <driver/gpio.h>
 
+#define	EOT	4
+#define	WRU	5
+#define	RU	6
+#define	DC2	0x12
+#define	DC4	0x14
+
 #define settings  \
   u8(uart,1);	\
   u8(tx,17);	\
@@ -54,7 +60,7 @@ volatile int64_t done = 0;      // When to next turn off
 uint8_t pos = 0;                // Position (ignores local echo)
 SemaphoreHandle_t queue_mutex = NULL;
 
-uint8_t pe(uint8_t b)
+inline uint8_t pe(uint8_t b)
 {                               // Make even parity
    b &= 0x7F;
    for (int i = 0; i < 7; i++)
@@ -225,6 +231,19 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             queuebyte(pe(b));
       }
    }
+   if (!strcmp(tag, "punch"))
+   {
+      wantpower = 1;
+      queuebyte(DC2);           // Tape on
+      while (len--)
+      {
+         queuebyte(*value);
+         if (*value == DC4)
+            queuebyte(DC2);     // Turn tape back on
+         value++;
+      }
+      queuebyte(DC4);           // Tape off
+   }
    return "";
 }
 
@@ -306,7 +325,7 @@ void asr33_main(void *param)
          {
             if (b && b != 0xFF && b == pe(b))
             {
-               if ((b & 0x7F) == 4)
+               if (b == pe(EOT))
                   manual = 0;   // EOT, short timeout
                else
                   manual = 1;   // Typing
@@ -320,9 +339,9 @@ void asr33_main(void *param)
                line[rxp++] = (b & 0x7F);
             if (doecho)
                queuebyte(b);
-            if (b == pe(6))
+            if (b == pe(RU))
                docave = 1;
-            if (b == pe(5) && (ver || wru))
+            if (b == pe(WRU) && (ver || wru))
             {                   // WRU
                // See 3.27 of ISS 8, SECTION 574-122-700TC
                queuebyte(pe('\r'));     // CR

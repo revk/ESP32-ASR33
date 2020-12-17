@@ -1,4 +1,7 @@
-// Generate bianry output to punch lettering on to paper tape
+// Generate binary output to punch lettering on to paper tape
+
+#define	DC2	0x12	// Tape on
+#define	DC4	0x14	// Tape off
 
 #define	MAXW 5
 typedef const unsigned char font_t[MAXW];
@@ -241,8 +244,8 @@ int main(int argc, const char *argv[])
    int alteran = 0;
    int small = 0;
    int zig = 0;
-   int okdc4 = 0;
-   int dc = 0;
+   int dc4 = 0;
+   int startstop = 0;
    FILE *f = open_memstream(&data, &len);
    void punch(unsigned char c) {
       const unsigned char *d = font[c];
@@ -271,8 +274,8 @@ int main(int argc, const char *argv[])
          { "alteran", 'A', POPT_ARG_NONE, &alteran, 0, "Ateran" },
          { "small", 'S', POPT_ARG_NONE, &small, 0, "Small" },
          { "zig-zag", 'Z', POPT_ARG_NONE, &zig, 0, "Zig-Zag" },
-         { "ok-dc4", 0, POPT_ARG_NONE, &okdc4, 0, "DC4 is OK (not handled)" },
-         { "dc", 0, POPT_ARG_NONE, &dc, 0, "Send DC4/DC2 start/stop" },
+         { "dc4", 0, POPT_ARG_NONE, &dc4, 0, "DC4 is OK (not handled)" },
+         { "start-stop", 0, POPT_ARG_NONE, &startstop, 0, "Send DC4/DC2 start/stop" },
          { "space", 0, POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &space, 0, "Space size", "N" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
@@ -341,20 +344,20 @@ int main(int argc, const char *argv[])
       return 0;
    }
    // Write out binary
-   if (dc)
-      fputc(0x12, stdout);      // DC2
+   if (startstop)
+      fputc(DC2, stdout);      // DC2
    for (int i = 0; i < lead; i++)
       fputc(0, stdout);
    while (repeat--)
    {
-      if (okdc4)
+      if (!dc4)
          fwrite(data, len, 1, stdout);
       else
          for (int i = 0; i < len; i++)
          {
             fputc(data[i], stdout);
-            if ((data[i] & 0x7F) == 0x14)       // DC4
-               fputc(0x12, stdout);     // DC2
+            if ((data[i] & 0x7F) == DC4)       // DC4
+               fputc(DC2, stdout);     // DC2
          }
       if (repeat)
          for (int i = 0; i < gap; i++)
@@ -362,8 +365,8 @@ int main(int argc, const char *argv[])
    }
    for (int i = 0; i < tail; i++)
       fputc(0, stdout);
-   if (dc)
-      fputc(0x14, stdout);      // DC4
+   if (startstop)
+      fputc(DC4, stdout);      // DC4
 
    return 0;
 }
