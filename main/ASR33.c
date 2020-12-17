@@ -28,6 +28,7 @@
   u8(ack,6)	\
   u8(think,10)	\
   u1(cave)	\
+  u1(nodc4)	\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
@@ -234,15 +235,17 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    if (!strcmp(tag, "punch"))
    {
       wantpower = 1;
-      queuebyte(DC2);           // Tape on
+      if (!nodc4)
+         queuebyte(DC2);        // Tape on
       while (len--)
       {
          queuebyte(*value);
-         if (*value == DC4)
+         if (!nodc4 && *value == DC4)
             queuebyte(DC2);     // Turn tape back on
          value++;
       }
-      queuebyte(DC4);           // Tape off
+      if (!nodc4)
+         queuebyte(DC4);        // Tape off
    }
    return "";
 }

@@ -19,6 +19,7 @@ Additional settings, e.g. setting/ASR33/[name]/[setting] [value]
 - ver:	Flag, if set, send version info for WRU
 - ack:  Value of ACK - 0x7C in 1963, 0x06 in later editions
 - cave: Flag, always play a game
+- nodc4: ASR33 does not do DC2/DC4 so don't send to start/stop tape
 
 Commands, e.g. command/ASR33/[name]/[command]
 - on: Turn on now (automatically done if message to send)
