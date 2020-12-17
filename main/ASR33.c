@@ -29,8 +29,8 @@
   u8(think,10)	\
   u1(cave)	\
   u1(nodc4)	\
-  u8(tapelead,10) \
-  u8(tapetail,10) \
+  u8(tapelead,15) \
+  u8(tapetail,15) \
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
