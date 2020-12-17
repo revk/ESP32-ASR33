@@ -29,6 +29,8 @@
   u8(think,10)	\
   u1(cave)	\
   u1(nodc4)	\
+  u8(tapelead,10) \
+  u8(tapetail,10) \
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
@@ -41,8 +43,8 @@ settings;
 #undef u16
 #undef u8
 #undef u1
-#define	MAXTX	65536
-#define	MAXRX	256
+#define	MAXTX	65536           // Tx buffer max
+#define	MAXRX	256             // Line max
 
 volatile int8_t manual = 0;     // Manual power override (eg key pressed, etc)
 int8_t busy = 0;                // Busy state
@@ -60,6 +62,10 @@ int64_t eot = 0;                // When tx expected to end
 volatile int64_t done = 0;      // When to next turn off
 uint8_t pos = 0;                // Position (ignores local echo)
 SemaphoreHandle_t queue_mutex = NULL;
+
+const unsigned char small_f[256][5] = {
+#include "smallfont.h"
+};
 
 inline uint8_t pe(uint8_t b)
 {                               // Make even parity
@@ -233,7 +239,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       }
    }
    if (!strcmp(tag, "punch"))
-   {
+   {                            // Raw punched data (with DC2/DC4)
       wantpower = 1;
       if (!nodc4)
          queuebyte(DC2);        // Tape on
@@ -244,6 +250,41 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             queuebyte(DC2);     // Turn tape back on
          value++;
       }
+      if (!nodc4)
+         queuebyte(DC4);        // Tape off
+   }
+   if (!strcmp(tag, "tape"))
+   {                            // Punched tape text
+      wantpower = 1;
+      if (!nodc4)
+         queuebyte(DC2);        // Tape on
+      for (int i = 0; i < tapelead; i++)
+         queuebyte(0);
+      while (len--)
+      {
+         int c = *value++;
+         const unsigned char *d = small_f[c];
+         if (!*d && c >= 'a' && c <= 'z')
+            d = small_f[c - 32];        // Try upper case
+         int l = 5;
+         while (l && !d[l - 1])
+            l--;
+         if (c == ' ' && l < 3)
+            l = 3;
+         if (!l)
+            continue;
+         while (l--)
+         {
+            queuebyte(*d);
+            if (!nodc4 && *d == DC4)
+               queuebyte(DC2);
+            d++;
+         }
+         if (len)
+            queuebyte(0);
+      }
+      for (int i = 0; i < tapetail; i++)
+         queuebyte(0);
       if (!nodc4)
          queuebyte(DC4);        // Tape off
    }

@@ -1,7 +1,7 @@
 // Generate binary output to punch lettering on to paper tape
 
-#define	DC2	0x12	// Tape on
-#define	DC4	0x14	// Tape off
+#define	DC2	0x12            // Tape on
+#define	DC4	0x14            // Tape off
 
 #define	MAXW 5
 typedef const unsigned char font_t[MAXW];
@@ -184,42 +184,7 @@ font_t alteran_f[256] = {
 };
 
 font_t small_f[256] = {
-   ['0'] = { 0x70, 0x88, 0x88, 0x70 },
-   ['1'] = { 0x88, 0xF8, 0x80 },
-   ['2'] = { 0xC0, 0xA8, 0xA8, 0x90 },
-   ['3'] = { 0x88, 0xA8, 0xA8, 0x50 },
-   ['4'] = { 0x60, 0x50, 0xF8, 0x40 },
-   ['5'] = { 0xB8, 0xA8, 0xA8, 0X48 },
-   ['6'] = { 0x70, 0xA8, 0xA8, 0x40 },
-   ['7'] = { 0x08, 0xC8, 0x28, 0x18 },
-   ['8'] = { 0x50, 0xA8, 0xA8, 0x50 },
-   ['9'] = { 0x10, 0xA8, 0xA8, 0x70 },
-   ['A'] = { 0xE0, 0x50, 0x48, 0x50, 0xE0 },
-   ['B'] = { 0xF8, 0xA8, 0xA8, 0xA8, 0x50 },
-   ['C'] = { 0x70, 0x88, 0x88, 0x88 },
-   ['D'] = { 0xF8, 0x88, 0x88, 0x88, 0x70 },
-   ['E'] = { 0xF8, 0xA8, 0xA8, 0xA8, 0x88 },
-   ['F'] = { 0xF8, 0x28, 0x28, 0x28, 0x08 },
-   ['G'] = { 0x70, 0x88, 0x88, 0xA8, 0x60 },
-   ['H'] = { 0xF8, 0x20, 0x20, 0x20, 0xF8 },
-   ['I'] = { 0x88, 0xF8, 0x88 },
-   ['J'] = { 0x40, 0x88, 0x78, 0x08 },
-   ['K'] = { 0xF8, 0x20, 0x50, 0x88 },
-   ['L'] = { 0xF8, 0x80, 0x80, 0x80, 0x80 },
-   ['M'] = { 0xF8, 0x10, 0x20, 0x10, 0xF8 },
-   ['N'] = { 0xF8, 0x10, 0x20, 0x40, 0xF8 },
-   ['O'] = { 0x70, 0x88, 0x88, 0x88, 0x70 },
-   ['P'] = { 0xF8, 0x28, 0x28, 0x28, 0x10 },
-   ['Q'] = { 0x70, 0x88, 0xA8, 0x48, 0xB0 },
-   ['R'] = { 0xF8, 0x28, 0x28, 0x68, 0x90 },
-   ['S'] = { 0x10, 0xA8, 0xA8, 0xA8, 0x40 },
-   ['T'] = { 0x08, 0x08, 0xF8, 0x08, 0x08 },
-   ['U'] = { 0x78, 0x80, 0x80, 0x80, 0x78 },
-   ['V'] = { 0x38, 0x40, 0x80, 0x40, 0x38 },
-   ['W'] = { 0x78, 0x80, 0x60, 0x80, 0x78 },
-   ['X'] = { 0x88, 0x50, 0x20, 0x50, 0x88 },
-   ['Y'] = { 0x08, 0x10, 0xE0, 0x10, 0x08 },
-   ['Z'] = { 0x88, 0xC8, 0xA8, 0x98, 0x88 },
+#include "main/smallfont.h"
 };
 
 #include <stdio.h>
@@ -322,13 +287,13 @@ int main(int argc, const char *argv[])
    if (svg)
    {                            // Write SVG
       const int dpi = 1000;
-      int w = (len + 15) / 10;  // Width (inches)
-      printf("<svg xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.0\" width=\"%din\" height=\"1in\" viewBox=\"0 0 %d %d\">", w, w * dpi, dpi);
-      printf("<path stroke=\"black\" fill=\"#cfc\" d=\"M0 0l%d 0l0 %dl%d 0z", w * dpi, dpi, -w * dpi);
+      int w = len + 4;
+      printf("<svg xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.0\" width=\"%d.%din\" height=\"1in\" viewBox=\"0 0 %d %d\">", w / 10, w % 10, w * dpi / 10, dpi);
+      printf("<path stroke=\"black\" fill=\"#cfc\" d=\"M0 0l%d 0l0 %dl%d 0z", w * dpi / 10, dpi, -w * dpi / 10);
       void circle(int x, int y, int r) {
          printf("M%d %da %d %d 0 1 0 %d 0a%d %d 0 1 0 %d 0", x - r, y, r, r, r * 2, r, r, -r * 2);
       }
-      int x = (w * 10 - len) * dpi / 20;
+      int x = (w - len) * dpi / 20;
       int y = dpi * 100 / 1000;
       for (int i = -10; i < (int) len + 10; i++)
          circle(x + i * dpi / 10, y + 3 * dpi / 10, 46 * dpi / 2000);   // Feed holes
@@ -345,7 +310,7 @@ int main(int argc, const char *argv[])
    }
    // Write out binary
    if (startstop)
-      fputc(DC2, stdout);      // DC2
+      fputc(DC2, stdout);       // DC2
    for (int i = 0; i < lead; i++)
       fputc(0, stdout);
    while (repeat--)
@@ -356,8 +321,8 @@ int main(int argc, const char *argv[])
          for (int i = 0; i < len; i++)
          {
             fputc(data[i], stdout);
-            if ((data[i] & 0x7F) == DC4)       // DC4
-               fputc(DC2, stdout);     // DC2
+            if ((data[i] & 0x7F) == DC4)        // DC4
+               fputc(DC2, stdout);      // DC2
          }
       if (repeat)
          for (int i = 0; i < gap; i++)
@@ -366,7 +331,7 @@ int main(int argc, const char *argv[])
    for (int i = 0; i < tail; i++)
       fputc(0, stdout);
    if (startstop)
-      fputc(DC4, stdout);      // DC4
+      fputc(DC4, stdout);       // DC4
 
    return 0;
 }

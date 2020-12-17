@@ -27,6 +27,7 @@ Commands, e.g. command/ASR33/[name]/[command]
 - tx:	Raw 8 bit data to send to teletype
 - text:	Text, adding carriage returns and setting even parity, and skipping utf-8 (print up arrow)
 - punch: Data to punch, handles DC2/DC4 logic
+- tape: Punch 5 hole lettering
 - cave: Let's play a game
 
 Status, e.g. status/ASR33/[name]/[status]
