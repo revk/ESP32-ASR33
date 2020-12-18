@@ -180,7 +180,7 @@ int main(int argc, const char *argv[])
                warnx("rx %.*s", (int) l, buf);
             int e = mosquitto_publish(mqtt, NULL, topic, l, buf, 0, 0);
             if (e)
-               warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
+               warnx("MQTT publish failed %s (%s) %d bytes", mosquitto_strerror(e), topic, l);
          }
          free(topic);
       }
