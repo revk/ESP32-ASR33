@@ -24,7 +24,7 @@
   u1(ver);	\
   u32(wake,1)	\
   u32(idle,10)	\
-  u32(keyidle,120)	\
+  u32(keyidle,600)	\
   u8(ack,6)	\
   u8(think,10)	\
   u1(cave)	\
@@ -243,6 +243,8 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       wantpower = 1;
       if (!nodc4)
          queuebyte(DC2);        // Tape on
+      for (int i = 0; i < tapelead; i++)
+         queuebyte(0);
       while (len--)
       {
          queuebyte(*value);
@@ -250,6 +252,8 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             queuebyte(DC2);     // Turn tape back on
          value++;
       }
+      for (int i = 0; i < tapetail; i++)
+         queuebyte(0);
       if (!nodc4)
          queuebyte(DC4);        // Tape off
    }
