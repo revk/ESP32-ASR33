@@ -15,5 +15,5 @@ update:
 asr33: asr33.c
 	cc -O -o asr33 asr33.c -lpopt -lmosquitto
 
-punch: punch.c
+punch: punch.c main/smallfont.h
 	cc -O -o punch punch.c -lpopt 
