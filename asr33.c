@@ -154,7 +154,7 @@ int main(int argc, const char *argv[])
       {
          if (debug)
             warnx("rx start");
-         char buf[100000];
+         char buf[1024];
          size_t l;
          char *topic = NULL;
          // Manual on
