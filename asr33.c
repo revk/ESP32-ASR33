@@ -29,7 +29,7 @@ int main(int argc, const char *argv[])
    const char *cmd = NULL;
    char **cmdargs = NULL;
    int cmdargc = 0;
-
+   int outonly = 0;
    {                            // POPT
       poptContext optCon;       // context for parsing command-line options
       const struct poptOption optionsTable[] = {
@@ -39,6 +39,7 @@ int main(int argc, const char *argv[])
          { "mqtt-ca", 'C', POPT_ARG_STRING, &mqttcafile, 0, "MQTT CA", "filename" },
          { "mqtt-port", 0, POPT_ARG_INT, &mqttport, 0, "MQTT port", "port" },
          { "mqtt-id", 0, POPT_ARG_STRING, &mqttid, 0, "MQTT id", "id" },
+         { "out-only", 'O', POPT_ARG_NONE, &outonly, 0, "Out only so no need to leave on" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
@@ -157,20 +158,23 @@ int main(int argc, const char *argv[])
          char buf[1024];
          ssize_t l;
          char *topic = NULL;
-         // Manual on
-         if (asprintf(&topic, "command/ASR33/%s/on", tty ? : "*") < 0)
-            errx(1, "malloc");
-         int e = mosquitto_publish(mqtt, NULL, topic, 0, "", 0, 0);
-         if (e)
-            warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
-         free(topic);
-         // No local echo
-         if (asprintf(&topic, "command/ASR33/%s/noecho", tty ? : "*") < 0)
-            errx(1, "malloc");
-         e = mosquitto_publish(mqtt, NULL, topic, 0, "", 0, 0);
-         if (e)
-            warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
-         free(topic);
+         if (!outonly)
+         {
+            // Manual on
+            if (asprintf(&topic, "command/ASR33/%s/on", tty ? : "*") < 0)
+               errx(1, "malloc");
+            int e = mosquitto_publish(mqtt, NULL, topic, 0, "", 0, 0);
+            if (e)
+               warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
+            free(topic);
+            // No local echo
+            if (asprintf(&topic, "command/ASR33/%s/noecho", tty ? : "*") < 0)
+               errx(1, "malloc");
+            e = mosquitto_publish(mqtt, NULL, topic, 0, "", 0, 0);
+            if (e)
+               warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
+            free(topic);
+         }
          // Topic for the text
          if (asprintf(&topic, "command/ASR33/%s/text", tty ? : "*") < 0)
             errx(1, "malloc");
