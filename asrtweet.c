@@ -159,73 +159,97 @@ int main(int argc, const char *argv[])
       int lenin = strlen(in),
           lenout = lenin + 1;
       char *out = malloc(lenout);
+      int text = 0;
+      int pos = 0;
+      int skip = 0;
       {                         // WTF is twitter XML coding stuff in JSON, really. De-XML stuff
          int i = 0,
              o = 0;
          while (in[i])
          {
-            void replace(int len, const char *new) {
-               if (len < 0 || !new)
-                  return;
-               int newlen = strlen(new);
-               if (newlen != len)
-                  out = realloc(out, lenout += newlen - len);
-               memcpy(out + o, new, newlen);
-               o += newlen;
-               i += len;
-            }
-            if (entities)
-            {                   // URLS
-               j_t u = NULL;
-               for (u = j_first(j_find(entities, "urls")); u; u = j_next(u))
-               {
-                  j_t ind = j_find(u, "indices");
-                  if (j_isarray(ind) && j_len(ind) == 2 && atoi(j_val(j_index(ind, 0))) == i)
-                  {
-                     replace(atoi(j_val(j_index(ind, 1))) - i, j_get(u, "display_url"));
-                     break;
-                  }
+            if (!skip)
+            {
+               void replace(int len, const char *new) {
+                  if (len < 0 || !new)
+                     return;
+                  int newlen = strlen(new);
+                  if (newlen != len)
+                     out = realloc(out, lenout += newlen - len);
+                  memcpy(out + o, new, newlen);
+                  o += newlen;
+                  skip = len; // Skip input
                }
-               if (u)
-                  continue;     // found
-            }
-            if (entities)
-            {                   // media
-               j_t m = NULL;
-               for (m = j_first(j_find(entities, "media")); m; m = j_next(m))
-               {
-                  j_t ind = j_find(m, "indices");
-                  if (j_isarray(ind) && j_len(ind) == 2 && atoi(j_val(j_index(ind, 0))) == i)
+               if (entities)
+               {                // URLS
+                  j_t u = NULL;
+                  for (u = j_first(j_find(entities, "urls")); u; u = j_next(u))
                   {
-                     replace(atoi(j_val(j_index(ind, 1))) - i, "[media]");
-                     break;
+                     j_t ind = j_find(u, "indices");
+                     if (j_isarray(ind) && j_len(ind) == 2 && atoi(j_val(j_index(ind, 0))) == pos)
+                     {
+                        replace(atoi(j_val(j_index(ind, 1))) - pos, j_get(u, "display_url"));
+                        break;
+                     }
                   }
+                  if (u)
+                     continue;  // found
                }
-               if (m)
-                  continue;     // found
+               if (entities)
+               {                // media
+                  j_t m = NULL;
+                  for (m = j_first(j_find(entities, "media")); m; m = j_next(m))
+                  {
+                     j_t ind = j_find(m, "indices");
+                     if (j_isarray(ind) && j_len(ind) == 2 && atoi(j_val(j_index(ind, 0))) == pos)
+                     {
+                        char *t;
+                        if (asprintf(&t, "[%s]", j_get(m, "type")) < 0)
+                           errx(1, "malloc");
+                        replace(atoi(j_val(j_index(ind, 1))) - pos, t);
+                        free(t);
+                        break;
+                     }
+                  }
+                  if (m)
+                     continue;  // found
+               }
+               if (!strncmp(in + i, "&amp;", 5))
+               {
+                  replace(5, "&");
+                  continue;
+               }
+               if (!strncmp(in + i, "&lt;", 4))
+               {
+                  replace(4, "<");
+                  continue;
+               }
+               if (!strncmp(in + i, "&gt;", 4))
+               {
+                  replace(4, ">");
+                  continue;
+               }
             }
-            if (!strncmp(in + i, "&amp;", 5))
+            pos++;              // Count unicode pos;
+            if (!skip)
             {
-               replace(5, "&");
-               continue;
+               text++;          // Count normal text
+               out[o++] = in[i];
             }
-            if (!strncmp(in + i, "&lt;", 4))
+            i++;
+            while ((in[i] & 0xC0) == 0x80)
             {
-               replace(4, "<");
-               continue;
+               if (!skip)
+                  out[o++] = in[i];
+               i++;
             }
-            if (!strncmp(in + i, "&gt;", 4))
-            {
-               replace(4, ">");
-               continue;
-            }
-            out[o++] = in[i++];
+            if (skip)
+               skip--;          // Skipping input
          }
          out[o] = 0;
       }
       free(in);
       const char *place = j_get(j, "place.name");
-      if (!strcmp(out, "[media]"))
+      if (!text)
       {                         // No print printing if just media
          free(out);
          continue;
