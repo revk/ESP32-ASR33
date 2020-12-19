@@ -157,38 +157,72 @@ int main(int argc, const char *argv[])
             name = j_get(j, "user.screen_name");
          }
       }
-      char *text = strdup(j_get(j, "extended_tweet.full_text") ? : j_get(j, "text") ? : "");
+      j_t entities = j_find(j, "entities");
+      char *in = strdup(j_get(j, "extended_tweet.full_text") ? : j_get(j, "text") ? : "");
+      int lenin = strlen(in),
+          lenout = lenin;
+      char *out = malloc(lenout);
       {                         // WTF is twitter XML coding stuff in JSON, really. De-XML stuff
-         char *o = text,
-             *i = text;
-         while (*i)
+         int i = 0,
+             o = 0;
+         while (in[i])
          {
-            if (!strncmp(i, "&amp;", 5))
+            if (entities)
+            {
+               j_t u = NULL;
+               for (u = j_first(j_find(entities, "urls")); u; u = j_next(u))
+               {
+                  j_t ind = j_find(u, "indices");
+                  if (j_isarray(ind) && j_len(ind) == 2 && atoi(j_val(j_index(ind, 0))) == i)
+                  {
+                     int n = atoi(j_val(j_index(ind, 1))) - i;
+                     if (n > 0)
+                     {
+                        const char *display = j_get(u, "display_url") ? : "";
+                        int dl = strlen(display);
+                        if (n > dl)
+                           out = realloc(out, lenout += dl - n);
+                        memcpy(out + o, display, dl);
+                        o += dl;
+                        i += n;
+                        break;
+                     }
+                  }
+               }
+               if (u)
+                  continue;     // found
+            }
+            if (!strncmp(in + i, "&amp;", 5))
             {
                i += 5;
-               *o++ = '&';
+               out[o++] = '&';
                continue;
             }
-            if (!strncmp(i, "&lt;", 4))
+            if (!strncmp(in + i, "&lt;", 4))
             {
                i += 4;
-               *o++ = '<';
+               out[o++] = '<';
                continue;
             }
-            if (!strncmp(i, "&gt;", 4))
+            if (!strncmp(in + i, "&gt;", 4))
             {
                i += 4;
-               *o++ = '>';
+               out[o++] = '>';
                continue;
             }
-            *o++ = *i++;
+            out[o++] = in[i++];
          }
-         *o = 0;
+         out[o] = 0;
       }
+      free(in);
+      const char *place = j_get(j, "place.name");
       // Simple write out
       fprintf(o, "\n");
-      fprintf(o, "+++ %s.%03dZ message from %s%s +++\n", when, (int) (tsms % 1000), at, name);
-      fprintf(o, "%s\n", text);
+      fprintf(o, "+++ %s.%03dZ FROM %s%s", when, (int) (tsms % 1000), at, name);
+      if (place)
+         fprintf(o, " IN %s", place);
+      fprintf(o, " +++\n");
+      fprintf(o, "%s\n", out);
       if (!i && footnote)
          fprintf(o, "*** %s ***\n", footnote);
       fclose(o);
@@ -198,7 +232,7 @@ int main(int argc, const char *argv[])
       if (debug)
          fprintf(stderr, "%s", msg);
       free(msg);
-      free(text);
+      free(out);
    }
    j_free(j);
 
