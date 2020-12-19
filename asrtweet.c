@@ -169,7 +169,7 @@ int main(int argc, const char *argv[])
          {
             if (!skip)
             {
-               void replace(int len, const char *new) {
+               inline void replace(int len, const char *new) {
                   if (len < 0 || !new)
                      return;
                   int newlen = strlen(new);
@@ -177,7 +177,16 @@ int main(int argc, const char *argv[])
                      out = realloc(out, lenout += newlen - len);
                   memcpy(out + o, new, newlen);
                   o += newlen;
-                  skip = len; // Skip input
+                  for (int q = 0; q < len; q++)
+                     if ((in[i + q] & 0xC0) != 0x80)
+                        skip++;
+               }
+               inline int check(const char *from, const char *to) {
+                  int len = strlen(from);
+                  if (strncmp(in + i, from, len))
+                     return 0;  // Not found
+                  replace(len, to);     // Replace
+                  return 1;
                }
                if (entities)
                {                // URLS
@@ -213,23 +222,12 @@ int main(int argc, const char *argv[])
                   if (m)
                      continue;  // found
                }
-               if (!strncmp(in + i, "&amp;", 5))
-               {
-                  replace(5, "&");
-                  continue;
-               }
-               if (!strncmp(in + i, "&lt;", 4))
-               {
-                  replace(4, "<");
-                  continue;
-               }
-               if (!strncmp(in + i, "&gt;", 4))
-               {
-                  replace(4, ">");
-                  continue;
-               }
+               check("&amp;", "&");     // XML crap
+               check("&lt;", "<");
+               check("&gt;", ">");
+               check("£", "GBP");      // Cannot print £
             }
-            pos++;              // Count unicode pos;
+            pos++;              // Count unicode pos
             if (!skip)
             {
                text++;          // Count normal text
