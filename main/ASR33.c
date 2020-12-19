@@ -231,6 +231,12 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             b = 'a' + b - 0x1D68A;
          else if (b >= 0x1D7F6 && b < 0x1D7F6 + 10)
             b = '0' + b - 0x1D7F6;
+         else if (b == 0x2014)
+            b = '-';            // Common hyphen (long)
+         else if (b == 0x2018 || b == 0x2019)
+            b = '\'';           // Common quote escape
+         else if (b == 0x201c || b == 0x201c)
+            b = '"';            // Common quote escape
          if (b >= 0x80)
             b = 0x5E;           // Other unicode so print as Up arrow
          if (b >= ' ' && b < 0x7F && pos >= 72)
