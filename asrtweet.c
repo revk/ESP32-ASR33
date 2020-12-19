@@ -157,7 +157,7 @@ int main(int argc, const char *argv[])
       j_t entities = j_find(j, "extended_tweet.entities") ? : j_find(j, "entities");
       char *in = strdup(j_get(j, "extended_tweet.full_text") ? : j_get(j, "text") ? : "");
       int lenin = strlen(in),
-          lenout = lenin;
+          lenout = lenin + 1;
       char *out = malloc(lenout);
       {                         // WTF is twitter XML coding stuff in JSON, really. De-XML stuff
          int i = 0,
