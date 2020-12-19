@@ -17,3 +17,10 @@ asr33: asr33.c
 
 punch: punch.c main/smallfont.h
 	cc -O -o punch punch.c -lpopt 
+
+AJL/ajl.o: AJL/ajl.c
+	make -C AJL
+
+asrtweet: asrtweet.c Makefile AJL/ajl.o
+	cc -O -o $@ $< -I AJL AJL/ajl.o -lpopt -lmosquitto -pthread -lssl -lcrypto
+
