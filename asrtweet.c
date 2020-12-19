@@ -161,7 +161,7 @@ int main(int argc, const char *argv[])
       char *out = malloc(lenout);
       int text = 0;
       int pos = 0;
-      int skip = 0;
+      int skip = atoi(j_val(j_index(j_find(j, "extended_tweet.display_text_range") ? : j_find(j, "display_text_range"), 0)) ? : "");;
       {                         // WTF is twitter XML coding stuff in JSON, really. De-XML stuff
          int i = 0,
              o = 0;
