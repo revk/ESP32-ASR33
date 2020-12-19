@@ -18,157 +18,189 @@
 #include <ajlparse.h>
 #include <ajl.h>
 
-int
-main (int argc, const char *argv[])
+int main(int argc, const char *argv[])
 {
-  int debug = 0;
-  const char *alias = NULL;
-  const char *footnote = NULL;
-  const char *mqtthostname = NULL;
-  const char *mqttusername = NULL;
-  const char *mqttpassword = NULL;
-  const char *mqttid = NULL;
-  const char *mqttcafile = NULL;
-  int mqttport = 0;
-  const char *tty = NULL;
-  int background = 0;
-  int idn = 0;
-  long long *ids = NULL;
-  {				// POPT
-    poptContext optCon;		// context for parsing command-line options
-    const struct poptOption optionsTable[] = {
-      {"mqtt-hostname", 'h', POPT_ARG_STRING, &mqtthostname, 0, "MQTT hostname", "hostname"},
-      {"mqtt-username", 'u', POPT_ARG_STRING, &mqttusername, 0, "MQTT username", "username"},
-      {"mqtt-password", 'p', POPT_ARG_STRING, &mqttpassword, 0, "MQTT password", "password"},
-      {"mqtt-ca", 'C', POPT_ARG_STRING, &mqttcafile, 0, "MQTT CA", "filename"},
-      {"mqtt-port", 0, POPT_ARG_INT, &mqttport, 0, "MQTT port", "port"},
-      {"mqtt-id", 0, POPT_ARG_STRING, &mqttid, 0, "MQTT id", "id"},
-      {"tty", 0, POPT_ARG_STRING, &tty, 0, "TTY id", "id"},
-      {"alias", 'a', POPT_ARG_STRING, &alias, 0, "Alias (1st ID)", "name"},
-      {"footnote", 'f', POPT_ARG_STRING, &footnote, 0, "footnote (1st ID)", "text"},
-      {"alias", 'a', POPT_ARG_STRING, &alias, 0, "Alias", "name"},
-      {"daemon", 'D', POPT_ARG_NONE, &background, 0, "Daemon"},
-      {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
-      POPT_AUTOHELP {}
-    };
+   int debug = 0;
+   const char *alias = NULL;
+   const char *footnote = NULL;
+   const char *mqtthostname = NULL;
+   const char *mqttusername = NULL;
+   const char *mqttpassword = NULL;
+   const char *mqttid = NULL;
+   const char *mqttcafile = NULL;
+   int mqttport = 0;
+   const char *tty = NULL;
+   int background = 0;
+   int idn = 0;
+   long long *ids = NULL;
+   {                            // POPT
+      poptContext optCon;       // context for parsing command-line options
+      const struct poptOption optionsTable[] = {
+         { "mqtt-hostname", 'h', POPT_ARG_STRING, &mqtthostname, 0, "MQTT hostname", "hostname" },
+         { "mqtt-username", 'u', POPT_ARG_STRING, &mqttusername, 0, "MQTT username", "username" },
+         { "mqtt-password", 'p', POPT_ARG_STRING, &mqttpassword, 0, "MQTT password", "password" },
+         { "mqtt-ca", 'C', POPT_ARG_STRING, &mqttcafile, 0, "MQTT CA", "filename" },
+         { "mqtt-port", 0, POPT_ARG_INT, &mqttport, 0, "MQTT port", "port" },
+         { "mqtt-id", 0, POPT_ARG_STRING, &mqttid, 0, "MQTT id", "id" },
+         { "tty", 0, POPT_ARG_STRING, &tty, 0, "TTY id", "id" },
+         { "alias", 'a', POPT_ARG_STRING, &alias, 0, "Alias (1st ID)", "name" },
+         { "footnote", 'f', POPT_ARG_STRING, &footnote, 0, "footnote (1st ID)", "text" },
+         { "alias", 'a', POPT_ARG_STRING, &alias, 0, "Alias", "name" },
+         { "daemon", 'D', POPT_ARG_NONE, &background, 0, "Daemon" },
+         { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
+         POPT_AUTOHELP { }
+      };
 
-    optCon = poptGetContext (NULL, argc, argv, optionsTable, 0);
-    poptSetOtherOptionHelp (optCon, "[tweet-ids]");
+      optCon = poptGetContext(NULL, argc, argv, optionsTable, 0);
+      poptSetOtherOptionHelp(optCon, "[tweet-ids]");
 
-    int c;
-    if ((c = poptGetNextOpt (optCon)) < -1)
-      errx (1, "%s: %s\n", poptBadOption (optCon, POPT_BADOPTION_NOALIAS), poptStrerror (c));
+      int c;
+      if ((c = poptGetNextOpt(optCon)) < -1)
+         errx(1, "%s: %s\n", poptBadOption(optCon, POPT_BADOPTION_NOALIAS), poptStrerror(c));
 
-    if (!poptPeekArg (optCon))
+      const char *id;
+      while ((id = poptGetArg(optCon)))
       {
-	poptPrintUsage (optCon, stderr, 0);
-	errx (1, "Specify twitter IDs to follow");
+         ids = realloc(ids, sizeof(*ids) * (++idn));
+         if (!(ids[idn - 1] = strtoull(id, NULL, 0)))
+            errx(1, "Cannot parse id %s. Use twitter numeric ID", id);
       }
-    const char *id;
-    while ((id = poptGetArg (optCon)))
+      if (!debug && !idn)
       {
-	ids = realloc (ids, sizeof (*ids) * (++idn));
-	if (!(ids[idn - 1] = strtoull (id, NULL, 0)))
-	  errx (1, "Cannot parse id %s. Use twitter numeric ID", id);
+         poptPrintUsage(optCon, stderr, 0);
+         errx(1, "Specify twitter IDs to follow");
       }
-    poptFreeContext (optCon);
-  }
-  if (background)
-    {
-      if (fork ())
-	return 0;
-      daemon (0, 1);
-    }
+      poptFreeContext(optCon);
+   }
+   if (background)
+   {
+      if (fork())
+         return 0;
+      daemon(0, 1);
+   }
 
-  int e = mosquitto_lib_init ();
-  if (e)
-    errx (1, "MQTT init failed %s", mosquitto_strerror (e));
-  struct mosquitto *mqtt = mosquitto_new (mqttid, 1, NULL);
-  if (mqttusername)
-    {
-      e = mosquitto_username_pw_set (mqtt, mqttusername, mqttpassword);
+   int e = mosquitto_lib_init();
+   if (e)
+      errx(1, "MQTT init failed %s", mosquitto_strerror(e));
+   struct mosquitto *mqtt = mosquitto_new(mqttid, 1, NULL);
+   if (mqttusername)
+   {
+      e = mosquitto_username_pw_set(mqtt, mqttusername, mqttpassword);
       if (e)
-	errx (1, "MQTT auth failed %s", mosquitto_strerror (e));
-    }
-  if (mqttcafile && (e = mosquitto_tls_set (mqtt, mqttcafile, NULL, NULL, NULL, NULL)))
-    warnx ("MQTT cert failed (%s) %s", mqttcafile, mosquitto_strerror (e));
-  e = mosquitto_connect (mqtt, mqtthostname ? : "localhost", mqttport ? : mqttcafile ? 8883 : 1883, 60);
-  if (e)
-    errx (1, "MQTT connect failed %s", mosquitto_strerror (e));
-  mosquitto_loop_start (mqtt);
+         errx(1, "MQTT auth failed %s", mosquitto_strerror(e));
+   }
+   if (mqttcafile && (e = mosquitto_tls_set(mqtt, mqttcafile, NULL, NULL, NULL, NULL)))
+      warnx("MQTT cert failed (%s) %s", mqttcafile, mosquitto_strerror(e));
+   e = mosquitto_connect(mqtt, mqtthostname ? : "localhost", mqttport ? : mqttcafile ? 8883 : 1883, 60);
+   if (e)
+      errx(1, "MQTT connect failed %s", mosquitto_strerror(e));
+   mosquitto_loop_start(mqtt);
 
-  char *topic = NULL;
-  if (asprintf (&topic, "command/ASR33/%s/text", tty ? : "*") < 0)
-    errx (1, "malloc");
+   char *topic = NULL;
+   if (asprintf(&topic, "command/ASR33/%s/text", tty ? : "*") < 0)
+      errx(1, "malloc");
 
-  FILE *i = stdin;
-  if (idn)
-    {
+   FILE *i = stdin;
+   if (idn)
+   {
       char *cmd = NULL;
       size_t l;
-      FILE *o = open_memstream (&cmd, &l);
-      fprintf (o, "twarc --log /dev/null filter --follow ");
+      FILE *o = open_memstream(&cmd, &l);
+      fprintf(o, "twarc --log /dev/null filter --follow ");
       for (int i = 0; i < idn; i++)
-	fprintf (o, "%s%lld", i ? "," : "", ids[i]);
-      fclose (o);
-      i = popen (cmd, "r");
+         fprintf(o, "%s%lld", i ? "," : "", ids[i]);
+      fclose(o);
+      i = popen(cmd, "r");
       if (!i)
-	err (1, "failed: %s", cmd);
+         err(1, "failed: %s", cmd);
       if (debug)
-	warnx ("%s", cmd);
-      free (cmd);
-    }
+         warnx("%s", cmd);
+      free(cmd);
+   }
 
-  ajl_t p = ajl_read (i);
-  j_t j = j_create ();
-  while (1)
-    {
-      const char *er = j_recv (j, p);
+   ajl_t p = ajl_read(i);
+   j_t j = j_create();
+   while (1)
+   {
+      const char *er = j_recv(j, p);
       if (er && !*er)
-	break;
+         break;
       if (er)
-	errx (1, "failed: %s", er);
+         errx(1, "failed: %s", er);
       if (debug)
-	j_err (j_write_pretty (j, stderr));
-      long long id = strtoull (j_get (j, "user.id"), NULL, 0);
-      int i;
-      for (i = 0; i < idn && id != ids[i]; i++);
-      if (i == idn)
-	continue;
+         j_err(j_write_pretty(j, stderr));
+      long long id = strtoull(j_get(j, "user.id"), NULL, 0);
+      int i = 0;
+      if (idn)
+      {
+         for (i = 0; i < idn && id != ids[i]; i++);
+         if (i == idn)
+            continue;
+      }
       char *msg = NULL;
       size_t l = 0;
-      FILE *o = open_memstream (&msg, &l);
-      unsigned long long tsms = strtoull (j_get (j, "timestamp_ms"), NULL, 0);
+      FILE *o = open_memstream(&msg, &l);
+      unsigned long long tsms = strtoull(j_get(j, "timestamp_ms"), NULL, 0);
       time_t ts = tsms / 1000;
       struct tm tm;
-      gmtime_r (&ts, &tm);
+      gmtime_r(&ts, &tm);
       char when[100];
-      strftime (when, sizeof (when), "%FT%T", &tm);
-      const char *name = (i ? NULL : alias), *at = "";
+      strftime(when, sizeof(when), "%FT%T", &tm);
+      const char *name = (i ? NULL : alias),
+          *at = "";
       if (!name)
-	{
-	  name = j_get (j, "user.name");
-	  if (!name || !*name || strlen (name) > 20 || (*name & 0x80))
-	    {
-	      at = "@";
-	      name = j_get (j, "user.screen_name");
-	    }
-	}
+      {
+         name = j_get(j, "user.name");
+         if (!name || !*name || strlen(name) > 20 || (*name & 0x80))
+         {
+            at = "@";
+            name = j_get(j, "user.screen_name");
+         }
+      }
+      char *text = strdup(j_get(j, "extended_tweet.full_text") ? : j_get(j, "text") ? : "");
+      {                         // WTF is twitter XML coding stuff in JSON, really. De-XML stuff
+         char *o = text,
+             *i = text;
+         while (*i)
+         {
+            if (!strncmp(i, "&amp;", 5))
+            {
+               i += 5;
+               *o++ = '&';
+               continue;
+            }
+            if (!strncmp(i, "&lt;", 4))
+            {
+               i += 4;
+               *o++ = '<';
+               continue;
+            }
+            if (!strncmp(i, "&gt;", 4))
+            {
+               i += 4;
+               *o++ = '>';
+               continue;
+            }
+            *o++ = *i++;
+         }
+         *o = 0;
+      }
       // Simple write out
-      fprintf (o, "\n");
-      fprintf (o, "+++ %s.%03dZ message from %s%s +++\n", when, (int) (tsms % 1000), at, name);
-      fprintf (o, "%s\n", j_get (j, "text"));
+      fprintf(o, "\n");
+      fprintf(o, "+++ %s.%03dZ message from %s%s +++\n", when, (int) (tsms % 1000), at, name);
+      fprintf(o, "%s\n", text);
       if (!i && footnote)
-	fprintf (o, "*** %s ***\n", footnote);
-      fclose (o);
-      int e = mosquitto_publish (mqtt, NULL, topic, l, msg, 0, 0);
+         fprintf(o, "*** %s ***\n", footnote);
+      fclose(o);
+      int e = mosquitto_publish(mqtt, NULL, topic, l, msg, 0, 0);
       if (e)
-	warnx ("MQTT publish failed %s (%s) %d bytes", mosquitto_strerror (e), topic, l);
+         warnx("MQTT publish failed %s (%s) %d bytes", mosquitto_strerror(e), topic, l);
       if (debug)
-	fprintf (stderr, "%s", msg);
-      free (msg);
-    }
-  j_free (j);
+         fprintf(stderr, "%s", msg);
+      free(msg);
+      free(text);
+   }
+   j_free(j);
 
-  return 0;
+   return 0;
 }
