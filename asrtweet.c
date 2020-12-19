@@ -154,7 +154,7 @@ int main(int argc, const char *argv[])
             name = j_get(j, "user.screen_name");
          }
       }
-      j_t entities = j_find(j, "entities");
+      j_t entities = j_find(j, "extended_tweet.entities") ? : j_find(j, "entities");
       char *in = strdup(j_get(j, "extended_tweet.full_text") ? : j_get(j, "text") ? : "");
       int lenin = strlen(in),
           lenout = lenin;
