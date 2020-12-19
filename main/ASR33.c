@@ -134,6 +134,7 @@ void power_off(void)
       revk_state("power", "%d", power = 0);
       revk_raw(NULL, sonoff, 1, "0", 0);
       sleep(1);
+      uart_write_bytes(uart, "", 1);    // NULL
    }
    manual = 0;
    done = 0;

@@ -39,6 +39,7 @@ int main(int argc, const char *argv[])
          { "mqtt-ca", 'C', POPT_ARG_STRING, &mqttcafile, 0, "MQTT CA", "filename" },
          { "mqtt-port", 0, POPT_ARG_INT, &mqttport, 0, "MQTT port", "port" },
          { "mqtt-id", 0, POPT_ARG_STRING, &mqttid, 0, "MQTT id", "id" },
+         { "tty", 0, POPT_ARG_STRING, &tty, 0, "ASR33", "id" },
          { "out-only", 'O', POPT_ARG_NONE, &outonly, 0, "Out only so no need to leave on" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
