@@ -18,7 +18,7 @@ asr33: asr33.c
 punch: punch.c main/smallfont.h
 	cc -O -o punch punch.c -lpopt 
 
-AJL/ajl.o: AJL/ajl.c
+AJL/ajl.o: AJL/ajl.c AJL/ajlparse.c
 	make -C AJL
 
 asrtweet: asrtweet.c Makefile AJL/ajl.o
