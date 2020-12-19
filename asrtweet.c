@@ -168,7 +168,7 @@ int main(int argc, const char *argv[])
                if (len < 0 || !new)
                   return;
                int newlen = strlen(new);
-               if (len > newlen)
+               if (newlen != len)
                   out = realloc(out, lenout += newlen - len);
                memcpy(out + o, new, newlen);
                o += newlen;
