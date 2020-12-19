@@ -137,9 +137,6 @@ int main(int argc, const char *argv[])
          if (i == idn)
             continue;
       }
-      char *msg = NULL;
-      size_t l = 0;
-      FILE *o = open_memstream(&msg, &l);
       unsigned long long tsms = strtoull(j_get(j, "timestamp_ms"), NULL, 0);
       time_t ts = tsms / 1000;
       struct tm tm;
@@ -168,7 +165,7 @@ int main(int argc, const char *argv[])
          while (in[i])
          {
             if (entities)
-            {
+            {                   // URLS
                j_t u = NULL;
                for (u = j_first(j_find(entities, "urls")); u; u = j_next(u))
                {
@@ -190,6 +187,31 @@ int main(int argc, const char *argv[])
                   }
                }
                if (u)
+                  continue;     // found
+            }
+            if (entities)
+            {                   // media
+               j_t m = NULL;
+               for (m = j_first(j_find(entities, "media")); m; m = j_next(m))
+               {
+                  j_t ind = j_find(m, "indices");
+                  if (j_isarray(ind) && j_len(ind) == 2 && atoi(j_val(j_index(ind, 0))) == i)
+                  {
+                     int n = atoi(j_val(j_index(ind, 1))) - i;
+                     if (n > 0)
+                     {
+                        const char *display = "[media]";
+                        int dl = strlen(display);
+                        if (n > dl)
+                           out = realloc(out, lenout += dl - n);
+                        memcpy(out + o, display, dl);
+                        o += dl;
+                        i += n;
+                        break;
+                     }
+                  }
+               }
+               if (m)
                   continue;     // found
             }
             if (!strncmp(in + i, "&amp;", 5))
@@ -216,7 +238,15 @@ int main(int argc, const char *argv[])
       }
       free(in);
       const char *place = j_get(j, "place.name");
+      if (!strcmp(out, "[media]"))
+      {                         // No print printing if just media
+         free(out);
+         continue;
+      }
       // Simple write out
+      char *msg = NULL;
+      size_t l = 0;
+      FILE *o = open_memstream(&msg, &l);
       fprintf(o, "\n");
       fprintf(o, "+++ %s.%03dZ FROM %s%s", when, (int) (tsms % 1000), at, name);
       if (place)
