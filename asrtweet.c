@@ -164,6 +164,16 @@ int main(int argc, const char *argv[])
              o = 0;
          while (in[i])
          {
+            void replace(int len, const char *new) {
+               if (len < 0 || !new)
+                  return;
+               int newlen = strlen(new);
+               if (len > newlen)
+                  out = realloc(out, lenout += newlen - len);
+               memcpy(out + o, new, newlen);
+               o += newlen;
+               i += len;
+            }
             if (entities)
             {                   // URLS
                j_t u = NULL;
@@ -172,18 +182,8 @@ int main(int argc, const char *argv[])
                   j_t ind = j_find(u, "indices");
                   if (j_isarray(ind) && j_len(ind) == 2 && atoi(j_val(j_index(ind, 0))) == i)
                   {
-                     int n = atoi(j_val(j_index(ind, 1))) - i;
-                     if (n > 0)
-                     {
-                        const char *display = j_get(u, "display_url") ? : "";
-                        int dl = strlen(display);
-                        if (n > dl)
-                           out = realloc(out, lenout += dl - n);
-                        memcpy(out + o, display, dl);
-                        o += dl;
-                        i += n;
-                        break;
-                     }
+                     replace(atoi(j_val(j_index(ind, 1))) - i, j_get(u, "display_url"));
+                     break;
                   }
                }
                if (u)
@@ -197,18 +197,8 @@ int main(int argc, const char *argv[])
                   j_t ind = j_find(m, "indices");
                   if (j_isarray(ind) && j_len(ind) == 2 && atoi(j_val(j_index(ind, 0))) == i)
                   {
-                     int n = atoi(j_val(j_index(ind, 1))) - i;
-                     if (n > 0)
-                     {
-                        const char *display = "[media]";
-                        int dl = strlen(display);
-                        if (n > dl)
-                           out = realloc(out, lenout += dl - n);
-                        memcpy(out + o, display, dl);
-                        o += dl;
-                        i += n;
-                        break;
-                     }
+                     replace(atoi(j_val(j_index(ind, 1))) - i, "[media]");
+                     break;
                   }
                }
                if (m)
@@ -216,20 +206,17 @@ int main(int argc, const char *argv[])
             }
             if (!strncmp(in + i, "&amp;", 5))
             {
-               i += 5;
-               out[o++] = '&';
+               replace(5, "&");
                continue;
             }
             if (!strncmp(in + i, "&lt;", 4))
             {
-               i += 4;
-               out[o++] = '<';
+               replace(4, "<");
                continue;
             }
             if (!strncmp(in + i, "&gt;", 4))
             {
-               i += 4;
-               out[o++] = '>';
+               replace(4, ">");
                continue;
             }
             out[o++] = in[i++];
