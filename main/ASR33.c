@@ -134,7 +134,6 @@ void power_off(void)
       revk_state("power", "%d", power = 0);
       revk_raw(NULL, sonoff, 1, "0", 0);
       sleep(1);
-      uart_write_bytes(uart, "", 1);    // NULL
    }
    manual = 0;
    done = 0;
@@ -153,6 +152,7 @@ void power_on(void)
       revk_state("power", "%d", power = 1);
       revk_raw(NULL, sonoff, 1, "1", 0);
       sleep(1);
+      uart_write_bytes(uart, "", 1);    // NULL - not sure first byte always clean
    }
    uart_flush(uart);
    timeout(0);
@@ -161,12 +161,9 @@ void power_on(void)
 void power_needed(void)
 {                               // Power on if needed, queue \r
    if (wantpower)
-      return;
-   pos = 0;                     // Known place
-   queuebyte(0);                // Note sure first byte always clean
-   queuebyte(pe('\r'));         // CR ensures we are in known place
-   queuebyte(0);                // Allows for long line before CR
-   wantpower = 1;
+      return;                   // Power already on
+   pos = 72;                    // Unknown
+   cr();                        // Move to known place
 }
 
 const char *app_command(const char *tag, unsigned int len, const unsigned char *value)
@@ -357,9 +354,10 @@ void asr33_main(void *param)
          {                      // Button pressed
             pressed = 1;
             manual = 0;
-            wantpower = 1 - wantpower;
-            if (wantpower)
-               queuebyte(pe('\r'));     // CR
+            if (!wantpower)
+               power_needed();
+            else
+               wantpower = 0;
             revk_event("on", "%d", wantpower);
          }
       } else
