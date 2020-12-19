@@ -158,6 +158,17 @@ void power_on(void)
    timeout(0);
 }
 
+void power_needed(void)
+{                               // Power on if needed, queue \r
+   if (wantpower)
+      return;
+   pos = 0;                     // Known place
+   queuebyte(0);                // Note sure first byte always clean
+   queuebyte(pe('\r'));         // CR ensures we are in known place
+   queuebyte(0);                // Allows for long line before CR
+   wantpower = 1;
+}
+
 const char *app_command(const char *tag, unsigned int len, const unsigned char *value)
 {
    if (!strcmp(tag, "connect"))
@@ -174,7 +185,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    if (!strcmp(tag, "on"))
    {
       manual = 1;
-      wantpower = 1;
+      power_needed();
    }
    if (!strcmp(tag, "off"))
    {
@@ -187,17 +198,13 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       doecho = 0;
    if (!strcmp(tag, "tx"))
    {                            // raw send
-      if (!wantpower)
-         queuebyte(pe('\r'));   // start of line on power up
-      wantpower = 1;
+      power_needed();
       while (len--)
          queuebyte(*value++);
    }
    if (!strcmp(tag, "text"))
    {                            // Text send
-      if (!wantpower)
-         queuebyte(pe('\r'));   // start of line on power up
-      wantpower = 1;
+      power_needed();
       while (len--)
       {
          uint32_t b = *value++;
@@ -241,7 +248,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    }
    if (!strcmp(tag, "punch"))
    {                            // Raw punched data (with DC2/DC4)
-      wantpower = 1;
+      power_needed();
       if (!nodc4)
          queuebyte(DC2);        // Tape on
       for (int i = 0; i < tapelead; i++)
@@ -260,7 +267,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    }
    if (!strcmp(tag, "tape"))
    {                            // Punched tape text
-      wantpower = 1;
+      power_needed();
       if (!nodc4)
          queuebyte(DC2);        // Tape on
       for (int i = 0; i < tapelead; i++)
