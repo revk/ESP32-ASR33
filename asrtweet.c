@@ -143,10 +143,12 @@ int main(int argc, const char *argv[])
       time_t ts = tsms / 1000;
       struct tm tm;
       gmtime_r(&ts, &tm);
-      char when[100];
+      char when[100] = "";
       if (ts)
-         strftime(when, sizeof(when), "%FT%T", &tm);
-      else
+      {
+         strftime(when, sizeof(when) - 5, "%FT%T", &tm);
+         sprintf(when + strlen(when), ".%03dZ", tsms % 1000);
+      } else
          strncpy(when, j_get(j, "created_at") ? : "", sizeof(when));
       const char *name = (i ? NULL : alias),
           *at = "";
@@ -283,7 +285,7 @@ int main(int argc, const char *argv[])
       size_t l = 0;
       FILE *o = open_memstream(&msg, &l);
       fprintf(o, "\n");
-      fprintf(o, "+++ %s.%03dZ FROM %s%s", when, (int) (tsms % 1000), at, name);
+      fprintf(o, "+++ %s FROM %s%s", when, at, name);
       if (place)
          fprintf(o, " IN %s", place);
       fprintf(o, " +++\n");
@@ -311,18 +313,20 @@ int main(int argc, const char *argv[])
             int pos = 0;
             char *q = p,
                 *b = p;
-            while (*q && pos < 72)
+            while (*q && *q != '\n' && pos < 72)
             {
                if (*q == ' ')
                   p = q;
-               if ((*q & 0xC0) != 0x80)
+               if (*q >= ' ' && (*q & 0xC0) != 0x80)
                   pos++;
                q++;
             }
-            if (!p || !*q || (q - b) < wrap / 2)
+            if (!p || !*q || *q == '\n' || (q - b) < wrap / 2)
                p = q;
             fprintf(o, "%.*s\n", (int) (p - b), b);
             while (*p == ' ')
+               p++;
+            if (*p == '\n')
                p++;
          }
       } else
