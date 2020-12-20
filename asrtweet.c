@@ -137,12 +137,15 @@ int main(int argc, const char *argv[])
          if (i == idn)
             continue;
       }
-      unsigned long long tsms = strtoull(j_get(j, "timestamp_ms"), NULL, 0);
+      unsigned long long tsms = strtoull(j_get(j, "timestamp_ms") ? : "", NULL, 0);
       time_t ts = tsms / 1000;
       struct tm tm;
       gmtime_r(&ts, &tm);
       char when[100];
-      strftime(when, sizeof(when), "%FT%T", &tm);
+      if (ts)
+         strftime(when, sizeof(when), "%FT%T", &tm);
+      else
+         strncpy(when, j_get(j, "created_at") ? : "", sizeof(when));
       const char *name = (i ? NULL : alias),
           *at = "";
       if (!name)
@@ -155,7 +158,7 @@ int main(int argc, const char *argv[])
          }
       }
       j_t entities = j_find(j, "extended_tweet.entities") ? : j_find(j, "entities");
-      char *in = strdup(j_get(j, "extended_tweet.full_text") ? : j_get(j, "text") ? : "");
+      char *in = strdup(j_get(j, "extended_tweet.full_text") ? : j_get(j, "full_text") ? : j_get(j, "text") ? : "");
       int lenin = strlen(in),
           lenout = lenin + 1;
       char *out = malloc(lenout);
