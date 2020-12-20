@@ -305,47 +305,47 @@ int main(int argc, const char *argv[])
          if (j_isstring(reply))
             fprintf(o, "[In reply to @%s]\n", j_val(reply));
       }
-   }
-   if (wrap)
-   {                            // Line wrap
-      char *p = out;
-      while (*p)
-      {
-         int pos = 0;
-         char *q = p,
-             *b = p;
-         while (*q && *q != '\n' && pos < 72)
+      if (wrap)
+      {                         // Line wrap
+         char *p = out;
+         while (*p)
          {
-            if (*q == ' ')
+            int pos = 0;
+            char *q = p,
+                *b = p;
+            while (*q && *q != '\n' && pos < 72)
+            {
+               if (*q == ' ')
+                  p = q;
+               if (*q >= ' ' && (*q & 0xC0) != 0x80)
+                  pos++;
+               q++;
+            }
+            if (!p || !*q || *q == '\n' || (q - b) < wrap / 2)
                p = q;
-            if (*q >= ' ' && (*q & 0xC0) != 0x80)
-               pos++;
-            q++;
+            fprintf(o, "%.*s\n", (int) (p - b), b);
+            while (*p == ' ')
+               p++;
+            if (*p == '\n')
+               p++;
          }
-         if (!p || !*q || *q == '\n' || (q - b) < wrap / 2)
-            p = q;
-         fprintf(o, "%.*s\n", (int) (p - b), b);
-         while (*p == ' ')
-            p++;
-         if (*p == '\n')
-            p++;
-      }
-   } else
-      fprintf(o, "%s\n", out);
-   if (!i && footnote)
-      fprintf(o, "*** %s ***\n", footnote);
-   {                            // Quoted
-      j_t quoted = j_find(j, "quoted_status");
-      if (quoted)
-      {
-         const char *name = j_get(quoted, "user.name"),
-             *at = "";
-         if (*name & 0x80)
+      } else
+         fprintf(o, "%s\n", out);
+      if (!i && footnote)
+         fprintf(o, "*** %s ***\n", footnote);
+      {                         // Quoted
+         j_t quoted = j_find(j, "quoted_status");
+         if (quoted)
          {
-            name = j_get(quoted, "user.screen_name");
-            at = "@";
+            const char *name = j_get(quoted, "user.name"),
+                *at = "";
+            if (*name & 0x80)
+            {
+               name = j_get(quoted, "user.screen_name");
+               at = "@";
+            }
+            fprintf(o, "[Quoted %s%s %s]\n", at, name, j_get(quoted, "created_at"));
          }
-         fprintf(o, "[Quoted %s%s %s]\n", at, name, j_get(quoted, "created_at"));
       }
       fclose(o);
       int e = mosquitto_publish(mqtt, NULL, topic, l, msg, 0, 0);
