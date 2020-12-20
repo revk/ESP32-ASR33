@@ -298,41 +298,55 @@ int main(int argc, const char *argv[])
             name = j_get(t, "user.screen_name");
             at = "@";
          }
-         fprintf(o, "Retweet %s%s %s\n", at, name, j_get(t, "created_at"));
+         fprintf(o, "[Retweet %s%s %s]\n", at, name, j_get(t, "created_at"));
       }
-      {
+      {                         // Reply
          j_t reply = j_find(j, "in_reply_to_screen_name");
          if (j_isstring(reply))
-            fprintf(o, "In reply to @%s\n", j_val(reply));
+            fprintf(o, "[In reply to @%s]\n", j_val(reply));
       }
-      if (wrap)
-      {                         // Line wrap
-         char *p = out;
-         while (*p)
+   }
+   if (wrap)
+   {                            // Line wrap
+      char *p = out;
+      while (*p)
+      {
+         int pos = 0;
+         char *q = p,
+             *b = p;
+         while (*q && *q != '\n' && pos < 72)
          {
-            int pos = 0;
-            char *q = p,
-                *b = p;
-            while (*q && *q != '\n' && pos < 72)
-            {
-               if (*q == ' ')
-                  p = q;
-               if (*q >= ' ' && (*q & 0xC0) != 0x80)
-                  pos++;
-               q++;
-            }
-            if (!p || !*q || *q == '\n' || (q - b) < wrap / 2)
+            if (*q == ' ')
                p = q;
-            fprintf(o, "%.*s\n", (int) (p - b), b);
-            while (*p == ' ')
-               p++;
-            if (*p == '\n')
-               p++;
+            if (*q >= ' ' && (*q & 0xC0) != 0x80)
+               pos++;
+            q++;
          }
-      } else
-         fprintf(o, "%s\n", out);
-      if (!i && footnote)
-         fprintf(o, "*** %s ***\n", footnote);
+         if (!p || !*q || *q == '\n' || (q - b) < wrap / 2)
+            p = q;
+         fprintf(o, "%.*s\n", (int) (p - b), b);
+         while (*p == ' ')
+            p++;
+         if (*p == '\n')
+            p++;
+      }
+   } else
+      fprintf(o, "%s\n", out);
+   if (!i && footnote)
+      fprintf(o, "*** %s ***\n", footnote);
+   {                            // Quoted
+      j_t quoted = j_find(j, "quoted_status");
+      if (quoted)
+      {
+         const char *name = j_get(quoted, "user.name"),
+             *at = "";
+         if (*name & 0x80)
+         {
+            name = j_get(quoted, "user.screen_name");
+            at = "@";
+         }
+         fprintf(o, "[Quoted %s%s %s]\n", at, name, j_get(quoted, "created_at"));
+      }
       fclose(o);
       int e = mosquitto_publish(mqtt, NULL, topic, l, msg, 0, 0);
       if (e)
