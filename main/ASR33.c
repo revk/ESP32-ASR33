@@ -323,7 +323,7 @@ void asr33_main(void *param)
 #undef u1
 
    doecho = echo;
-   ESP_ERROR_CHECK(uart_driver_install(uart, 10240, 10240, 0, NULL, 0));
+   ESP_ERROR_CHECK(uart_driver_install(uart, 1024, 1024, 0, NULL, 0));
    uart_config_t uart_config = {
       .baud_rate = 110,
       .data_bits = UART_DATA_8_BITS,
