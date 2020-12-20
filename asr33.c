@@ -73,10 +73,47 @@ int main(int argc, const char *argv[])
    }
    pid_t pid = 0;
    int pts = -1;
+   int busy = 0;
 
    int e = mosquitto_lib_init();
    if (e)
       errx(1, "MQTT init failed %s", mosquitto_strerror(e));
+   void dofork(void) {
+      if (pid)
+         return;
+      pts = posix_openpt(O_RDWR);
+      if (pts < 0)
+         err(1, "PTS");
+      grantpt(pts);
+      unlockpt(pts);
+      pid = fork();
+      if (pid < 0)
+         err(1, "fork");
+      if (!pid)
+      {
+         int f = open(ptsname(pts), O_RDWR);
+         if (f < 0)
+            err(1, "PTS");
+         dup2(f, fileno(stdin));
+         dup2(f, fileno(stdout));
+         dup2(f, fileno(stderr));
+         close(f);
+         close(pts);
+         setenv("TERM", "tty33", 1);
+         if (execvp(cmd, cmdargs) < 0)
+            err(1, "exec of %s failed", cmd);
+      }
+      if (debug)
+         warnx("Running %s", cmd);
+   }
+   void donefork(void) {
+      if (!pid)
+         return;
+      kill(pid, SIGTERM);
+      close(pts);
+      pts = -1;
+      pid = 0;
+   }
    void connect(struct mosquitto *mqtt, void *obj, int rc) {
       char *sub;
       if (asprintf(&sub, "event/ASR33/%s/rx", tty ? : "+") < 0)
@@ -87,46 +124,47 @@ int main(int argc, const char *argv[])
       if (debug)
          warnx("sub %s", sub);
       free(sub);
+      if (asprintf(&sub, "state/ASR33/%s/busy", tty ? : "+") < 0)
+         errx(1, "malloc");
+      e = mosquitto_subscribe(mqtt, NULL, sub, 0);
+      if (e)
+         warnx("MQTT subscribe failed %s (%s)", mosquitto_strerror(e), sub);
+      if (debug)
+         warnx("sub %s", sub);
+      free(sub);
       if (debug)
          warnx("Connect");
-      if (!pid)
-      {
-         pts = posix_openpt(O_RDWR);
-         grantpt(pts);
-         unlockpt(pts);
-         pid = fork();
-         if (pid < 0)
-            err(1, "fork");
-         if (!pid)
-         {
-            int f = open(ptsname(pts), O_RDWR);
-            dup2(f, fileno(stdin));
-            dup2(f, fileno(stdout));
-            close(f);
-            close(pts);
-            if (execvp(cmd, cmdargs) < 0)
-               err(1, "exec of %s failed", cmd);
-         }
-         if (debug)
-            warnx("Running %s", cmd);
-      }
+      dofork();
+
    }
    void disconnect(struct mosquitto *mqtt, void *obj, int rc) {
       if (debug)
          warnx("Disconnect");
-      if (pid)
-      {
-         kill(pid, SIGTERM);
-         close(pts);
-      }
-      pid = 0;
+      donefork();
    }
    void message(struct mosquitto *mqtt, void *obj, const struct mosquitto_message *msg) {
-      for (int i = 0; i < msg->payloadlen; i++)
-         ((char *) msg->payload)[i] &= 0x7F;    // Parity
       if (debug)
-         warnx("tx %.*s", msg->payloadlen, msg->payload);
-      write(pts, msg->payload, msg->payloadlen);
+         warnx("msg %s", msg->topic);
+      int l = strlen(msg->topic);
+      if (l >= 3 && !strcmp(msg->topic + l - 3, "/rx"))
+      {
+         for (int i = 0; i < msg->payloadlen; i++)
+            ((char *) msg->payload)[i] &= 0x7F; // Parity
+         if (debug)
+            warnx("tx %.*s", msg->payloadlen, msg->payload);
+         write(pts, msg->payload, msg->payloadlen);
+         return;
+      }
+      if (l >= 5 && !strcmp(msg->topic + l - 5, "/busy"))
+      {
+         if (*(char *) msg->payload == '1')
+            busy = 1;
+         else
+            busy = 0;
+         if (debug)
+            warnx("Busy %d", busy);
+         return;
+      }
    }
 
    struct mosquitto *mqtt = mosquitto_new(mqttid, 1, NULL);
@@ -182,12 +220,17 @@ int main(int argc, const char *argv[])
          while ((l = read(pts, buf, sizeof(buf))) > 0)
          {
             if (debug)
-               warnx("rx %.*s", (int) l, buf);
+               warnx("rx (%d) %.*s", (int) l, (int) l, buf);
             int e = mosquitto_publish(mqtt, NULL, topic, l, buf, 0, 0);
             if (e)
                warnx("MQTT publish failed %s (%s) %d bytes", mosquitto_strerror(e), topic, l);
+            while (busy)
+               sleep(1);
          }
          free(topic);
+         donefork();
+         // dofork(); // restart
+         break;                 // closed
       }
    }
    mosquitto_lib_cleanup();
