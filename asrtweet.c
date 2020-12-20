@@ -33,6 +33,7 @@ int main(int argc, const char *argv[])
    int background = 0;
    int idn = 0;
    long long *ids = NULL;
+   int wrap = 72;
    {                            // POPT
       poptContext optCon;       // context for parsing command-line options
       const struct poptOption optionsTable[] = {
@@ -46,6 +47,7 @@ int main(int argc, const char *argv[])
          { "alias", 'a', POPT_ARG_STRING, &alias, 0, "Alias (1st ID)", "name" },
          { "footnote", 'f', POPT_ARG_STRING, &footnote, 0, "footnote (1st ID)", "text" },
          { "alias", 'a', POPT_ARG_STRING, &alias, 0, "Alias", "name" },
+         { "wrap", 0, POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &wrap, 0, "Wrap", "Chars" },
          { "daemon", 'D', POPT_ARG_NONE, &background, 0, "Daemon" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
@@ -297,11 +299,34 @@ int main(int argc, const char *argv[])
          fprintf(o, "Retweet %s%s %s\n", at, name, j_get(t, "created_at"));
       }
       {
-         const char *reply = j_get(j, "in_reply_to_screen_name");
-         if (reply)
-            fprintf(o, "In reply to @%s\n", reply);
+         j_t reply = j_find(j, "in_reply_to_screen_name");
+         if (j_isstring(reply))
+            fprintf(o, "In reply to @%s\n", j_val(reply));
       }
-      fprintf(o, "%s\n", out);
+      if (wrap)
+      {                         // Line wrap
+         char *p = out;
+         while (*p)
+         {
+            int pos = 0;
+            char *q = p,
+                *b = p;
+            while (*q && pos < 72)
+            {
+               if (*q == ' ')
+                  p = q;
+               if ((*q & 0xC0) != 0x80)
+                  pos++;
+               q++;
+            }
+            if (!p || !*q || (q - b) < wrap / 2)
+               p = q;
+            fprintf(o, "%.*s\n", (int) (p - b), b);
+            while (*p == ' ')
+               p++;
+         }
+      } else
+         fprintf(o, "%s\n", out);
       if (!i && footnote)
          fprintf(o, "*** %s ***\n", footnote);
       fclose(o);
