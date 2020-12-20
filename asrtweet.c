@@ -294,7 +294,12 @@ int main(int argc, const char *argv[])
             name = j_get(t, "user.screen_name");
             at = "@";
          }
-         fprintf(o, "RT %s%s %s\n", at, name, j_get(t, "created_at"));
+         fprintf(o, "Retweet %s%s %s\n", at, name, j_get(t, "created_at"));
+      }
+      {
+         const char *reply = j_get(j, "in_reply_to_screen_name");
+         if (reply)
+            fprintf(o, "In reply to @%s\n", reply);
       }
       fprintf(o, "%s\n", out);
       if (!i && footnote)
