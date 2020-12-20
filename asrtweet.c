@@ -229,6 +229,7 @@ int main(int argc, const char *argv[])
                check("&lt;", "<");
                check("&gt;", ">");
                check("£", "GBP");      // Cannot print £
+               check("…", "...");     // Obviously
             }
             pos++;              // Count unicode pos
             if (!skip)
