@@ -157,14 +157,15 @@ int main(int argc, const char *argv[])
             name = j_get(j, "user.screen_name");
          }
       }
-      j_t entities = j_find(j, "extended_tweet.entities") ? : j_find(j, "entities");
-      char *in = strdup(j_get(j, "extended_tweet.full_text") ? : j_get(j, "full_text") ? : j_get(j, "text") ? : "");
+      j_t t = j_find(j, "retweeted_status") ? : j;
+      j_t entities = j_find(t, "extended_tweet.entities") ? : j_find(t, "entities");
+      char *in = strdup(j_get(t, "extended_tweet.full_text") ? : j_get(t, "full_text") ? : j_get(t, "text") ? : "");
       int lenin = strlen(in),
           lenout = lenin + 1;
       char *out = malloc(lenout);
       int text = 0;
       int pos = 0;
-      int skip = atoi(j_val(j_index(j_find(j, "extended_tweet.display_text_range") ? : j_find(j, "display_text_range"), 0)) ? : "");;
+      int skip = atoi(j_val(j_index(j_find(t, "extended_tweet.display_text_range") ? : j_find(t, "display_text_range"), 0)) ? : "");;
       {                         // WTF is twitter XML coding stuff in JSON, really. De-XML stuff
          int i = 0,
              o = 0;
@@ -190,6 +191,23 @@ int main(int argc, const char *argv[])
                      return 0;  // Not found
                   replace(len, to);     // Replace
                   return 1;
+               }
+               if (entities)
+               {                // User mentions
+                  j_t u = NULL;
+                  for (u = j_first(j_find(entities, "user_mentions")); u; u = j_next(u))
+                  {
+                     j_t ind = j_find(u, "indices");
+                     if (j_isarray(ind) && j_len(ind) == 2 && atoi(j_val(j_index(ind, 0))) == pos)
+                     {
+                        const char *name = j_get(u, "name");
+                        if (!(*name * 0x80))
+                           replace(atoi(j_val(j_index(ind, 1))) - pos, j_get(u, "name"));
+                        break;
+                     }
+                  }
+                  if (u)
+                     continue;  // found
                }
                if (entities)
                {                // URLS
@@ -265,6 +283,17 @@ int main(int argc, const char *argv[])
       if (place)
          fprintf(o, " IN %s", place);
       fprintf(o, " +++\n");
+      if (j != t)
+      {                         // Is a retweet
+         const char *name = j_get(t, "user.name"),
+             *at = "";
+         if (*name & 0x80)
+         {
+            name = j_get(t, "user.screen_name");
+            at = "@";
+         }
+         fprintf(o, "RT %s%s %s\n", at, name, j_get(t, "created_at"));
+      }
       fprintf(o, "%s\n", out);
       if (!i && footnote)
          fprintf(o, "*** %s ***\n", footnote);
