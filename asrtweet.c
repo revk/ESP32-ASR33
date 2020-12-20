@@ -203,6 +203,8 @@ int main(int argc, const char *argv[])
                         const char *name = j_get(u, "name");
                         if (!(*name * 0x80))
                            replace(atoi(j_val(j_index(ind, 1))) - pos, j_get(u, "name"));
+                        else
+                           u = NULL;
                         break;
                      }
                   }
