@@ -205,7 +205,7 @@ int main(int argc, const char *argv[])
                      if (j_isarray(ind) && j_len(ind) == 2 && atoi(j_val(j_index(ind, 0))) == pos)
                      {
                         const char *name = j_get(u, "name");
-                        if (!(*name * 0x80))
+                        if (!(*name & 0x80))
                            replace(atoi(j_val(j_index(ind, 1))) - pos, j_get(u, "name"));
                         else
                            u = NULL;
