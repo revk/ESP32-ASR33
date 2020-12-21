@@ -284,7 +284,6 @@ int main(int argc, const char *argv[])
       char *msg = NULL;
       size_t l = 0;
       FILE *o = open_memstream(&msg, &l);
-      fprintf(o, "\n");
       fprintf(o, "+++ %s FROM %s%s", when, at, name);
       if (place)
          fprintf(o, " IN %s", place);
@@ -347,6 +346,7 @@ int main(int argc, const char *argv[])
             fprintf(o, "[Quoted %s%s %s]\n", at, name, j_get(quoted, "created_at"));
          }
       }
+      fprintf(o, "\n");
       fclose(o);
       int e = mosquitto_publish(mqtt, NULL, topic, l, msg, 0, 0);
       if (e)
