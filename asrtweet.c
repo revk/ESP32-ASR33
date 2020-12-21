@@ -336,7 +336,7 @@ int main(int argc, const char *argv[])
          }
       } else
          fprintf(o, "%s\n", out);
-      if (!i && footnote)
+      if (!i && footnote && j == t)
          fprintf(o, "*** %s ***\n", footnote);
       {                         // Quoted
          j_t quoted = j_find(j, "quoted_status");
