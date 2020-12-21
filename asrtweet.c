@@ -348,7 +348,7 @@ int main(int argc, const char *argv[])
             fprintf(o, "[Quoted %s%s %s]\n", at, name, j_get(quoted, "created_at"));
          }
       }
-      fprintf(o, "\n");
+      fprintf(o, "\n\n");
       fclose(o);
       int e = mosquitto_publish(mqtt, NULL, topic, l, msg, 0, 0);
       if (e)
