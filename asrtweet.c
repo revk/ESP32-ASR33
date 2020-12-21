@@ -279,11 +279,14 @@ int main(int argc, const char *argv[])
          free(out);
          continue;
       }
+      int more = 0;
+      if (strtoull(j_get(j, "in_reply_to_user_id"), NULL, 0) == strtoull(j_get(j, "user.id"), NULL, 0))
+         more = 1;
       // Simple write out
       char *msg = NULL;
       size_t l = 0;
       FILE *o = open_memstream(&msg, &l);
-      fprintf(o, "+++ %s FROM %s%s", when, at, name);
+      fprintf(o, "+++ %s %sFROM %s%s", when, more ? "MORE " : "", at, name);
       if (place)
          fprintf(o, " IN %s", place);
       fprintf(o, " +++\n");
@@ -298,12 +301,13 @@ int main(int argc, const char *argv[])
          }
          fprintf(o, "[Retweet %s%s %s]\n", at, name, j_get(t, "created_at"));
       }
+      if (!more)
       {                         // Reply
          j_t reply = j_find(j, "in_reply_to_screen_name");
          if (j_isstring(reply))
             fprintf(o, "[In reply to @%s]\n", j_val(reply));
       }
-      for (char *p = out; *p; p++)
+      for (unsigned char *p = out; *p; p++)
          if (p[0] == 0xE2 && p[1] == 0x80 && p[2] == 0xA6)
             p[0] = p[1] = p[2] = '.';   // Ellipsis, done here as used in expanded URLs
       if (wrap)
@@ -359,6 +363,5 @@ int main(int argc, const char *argv[])
       free(out);
    }
    j_free(j);
-
    return 0;
 }
