@@ -253,7 +253,6 @@ int main(int argc, const char *argv[])
                check("&lt;", "<");
                check("&gt;", ">");
                check("£", "GBP");      // Cannot print £
-               check("…", "...");     // Obviously
             }
             pos++;              // Count unicode pos
             if (!skip)
@@ -304,6 +303,9 @@ int main(int argc, const char *argv[])
          if (j_isstring(reply))
             fprintf(o, "[In reply to @%s]\n", j_val(reply));
       }
+      for (char *p = out; *p; p++)
+         if (p[0] == 0xE2 && p[1] == 0x80 && p[2] == 0xA6)
+            p[0] = p[1] = p[2] = '.';   // Ellipsis, done here as used in expanded URLs
       if (wrap)
       {                         // Line wrap
          char *p = out;
