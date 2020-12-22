@@ -245,7 +245,10 @@ int main(int argc, const char *argv[])
          if (self)
             fprintf(o, " MORE");
          fprintf(o, " FROM ");
-         nameuser(o, j_find(j, "user"));
+         if (alias && idn && !i)
+            fprintf(o, "%s", alias);
+         else
+            nameuser(o, j_find(j, "user"));
          const char *place = j_get(j, "place.name");
          if (place)
             fprintf(o, " IN %s", place);
