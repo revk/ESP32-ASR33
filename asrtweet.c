@@ -278,7 +278,7 @@ int main(int argc, const char *argv[])
          fprintf(o, " %s]\n", j_get(quoted, "created_at"));
          count += expand(o, quoted);
       }
-      fprintf(o, "\n\n");       // Gap
+      fprintf(o, "\n\n\007\007\007");       // Gap / bell
       fclose(o);
       for (unsigned char *p = msg; *p; p++)
          if (p[0] == 0xE2 && p[1] == 0x80 && p[2] == 0xA6)
