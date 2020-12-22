@@ -91,7 +91,7 @@ int expand(FILE * o, j_t t)
                pos++;
          return 1;
       }
-      if (check("&amp;", "&") || check("&lt;", "<") || check("&gt;", ">") || check("£", "GBP"))
+      if (check("&amp;", "&") || check("&lt;", "<") || check("&gt;", ">") || check("£", "GBP") || check("“", "\"") || check("”", "\"") || check("—", "-") || check("{", "[") || check("}", "]"))
          continue;
       // Next character
       count++;
