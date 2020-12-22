@@ -301,7 +301,7 @@ int main(int argc, const char *argv[])
                   pos++;
                q++;
             }
-            if (!p || !*q || *q == '\n' || (q - b) < wrap / 2)
+            if (!*q || *q == '\n' || (p - b) < wrap / 2)
                p = q;
             fprintf(o, "%.*s\n", (int) (p - b), b);
             while (*p == ' ')
