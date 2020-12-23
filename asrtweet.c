@@ -260,7 +260,7 @@ int main(int argc, const char *argv[])
          if (j_isstring(reply))
             fprintf(o, "[IN REPLY TO @%s]\n", j_val(reply));
       }
-      j_t retweet = j_find(j, "retweet_status");
+      j_t retweet = j_find(j, "retweeted_status");
       if (j_isobject(retweet))
       {
          fprintf(o, "[RETWEET ");
