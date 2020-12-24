@@ -5,6 +5,16 @@ Direct control of an ASR33 and connection to MQTT
 This uses ESP32-RevK and so has the commands and settings as per that library
 https://github.com/revk/ESP32-RevK
 
+The ESP is intended to control the teletype power, so it can turn on, print something and
+turn off. This is done when told to print via MQTT, or if pressing a button (mine has a
+MOTOR START button). It can also be told to stay on by MQTT. When on it does local echo as
+well (which can be disabled via MQTT). The actual power control can be via MQTT using, say, 
+a sonoff and tasmota, but can also be done from a direct GPIO. If you have direct control
+of the motor separate from power, that allows motor start and stop whilst holding the selector
+solenoid and hence avoiding a gash character print when power goes on or off.
+
+There are some other features and settings too.
+
 Additional settings, e.g. setting/ASR33/[name]/[setting] [value]
 - uart:	UART number
 - tx:	Tx pin
