@@ -74,6 +74,7 @@ int main(int argc, const char *argv[])
    pid_t pid = 0;
    int pts = -1;
    int busy = 0;
+   int esc = 0;
 
    int e = mosquitto_lib_init();
    if (e)
@@ -149,10 +150,23 @@ int main(int argc, const char *argv[])
       if (l >= 3 && !strcmp(msg->topic + l - 3, "/rx"))
       {
          for (int i = 0; i < msg->payloadlen; i++)
-            ((char *) msg->payload)[i] &= 0x7F; // Parity
+         {
+            // ESC prefix on a letter causes it to (stay) upper case.
+            char c = (((char *) msg->payload)[i] &= 0x7F);      // Parity
+            if (esc)
+            {
+               esc = 0;
+            } else if (c == 27)
+            {
+               esc = 1;
+               c = 0;
+            } else if (isupper(c))
+               c = tolower(c);
+            if (c)
+               write(pts, &c, 1);
+         }
          if (debug)
             warnx("tx %.*s", msg->payloadlen, msg->payload);
-         write(pts, msg->payload, msg->payloadlen);
          return;
       }
       if (l >= 5 && !strcmp(msg->topic + l - 5, "/busy"))
