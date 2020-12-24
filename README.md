@@ -9,8 +9,10 @@ Additional settings, e.g. setting/ASR33/[name]/[setting] [value]
 - uart:	UART number
 - tx:	Tx pin
 - rx:	Rx pin
-- pu:   Extra pulled up input pin, if extra pull up needed on rx, put in parallel
-- on:	On pin (a low on this wakes up)(
+- pu:   Extra pulled up input pin, if extra pull up needed on rx, put in parallel to rx
+- on:	On pin (a low on this wakes up)
+- power: Output pin (low=active) to directly control power
+- motor: Output pin (low=active) to directly control motor
 - sonoff:	The topic to use for power on/off the teletype
 - idle:	The number of seconds before powering off after printing done
 - keyidle: The number of seconds before powering off in manual mode (i.e. on function not just printing)

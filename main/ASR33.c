@@ -18,6 +18,8 @@
   u8(rx,16);	\
   u8(on,4);	\
   u8(pu,0xFF);	\
+  u8(power,0xFF)\
+  u8(motor,0xFF)\
   u1(echo);	\
   t(sonoff);	\
   t(wru);	\
@@ -51,7 +53,7 @@ int8_t busy = 0;                // Busy state
 uint8_t pressed = 0;            // Button pressed
 uint8_t doecho = 0;             // Do echo (set each start up)
 uint8_t docave = 0;             // Fun advent()
-volatile uint8_t power = 0;     // Power state
+volatile uint8_t havepower = 0; // Power state
 volatile uint8_t wantpower = 0; // Power state wanted
 uint8_t buf[MAXTX];             // Tx pending buffer
 volatile uint32_t txi = 0;      // Tx buffer in pointer
@@ -127,11 +129,21 @@ void nl(void)
 
 void power_off(void)
 {
-   if (power == 0)
+   if (havepower == 0)
       return;
+   if (GPIO_IS_VALID_GPIO(motor))
+   {                            // Motor direct control, off
+      gpio_set_level(motor, 1);
+      sleep(1);
+   }
+   if (GPIO_IS_VALID_GPIO(power))
+   {                            // Power direct control, off
+      gpio_set_level(power, 1);
+      sleep(1);
+   }
    if (sonoff)
-   {
-      revk_state("power", "%d", power = 0);
+   {                            // Power, sonoff/mqtt, off
+      revk_state("power", "%d", havepower = 0);
       revk_raw(NULL, sonoff, 1, "0", 0);
       sleep(1);
    }
@@ -145,16 +157,26 @@ void power_off(void)
 
 void power_on(void)
 {
-   if (power == 1)
+   if (havepower == 1)
       return;
    if (sonoff)
-   {
-      revk_state("power", "%d", power = 1);
+   {                            // Power, sonoff/mqtt, on
+      revk_state("power", "%d", havepower = 1);
       revk_raw(NULL, sonoff, 1, "1", 0);
       sleep(1);
-      uart_write_bytes(uart, "", 1);    // NULL - not sure first byte always clean
+   }
+   if (GPIO_IS_VALID_GPIO(power))
+   {                            // Power, direct control, on
+      gpio_set_level(power, 0);
+      sleep(1);
+   }
+   if (GPIO_IS_VALID_GPIO(motor))
+   {                            // Motor, direct control, on
+      gpio_set_level(motor, 0);
+      sleep(1);
    }
    uart_flush(uart);
+   uart_write_bytes(uart, "", 1);       // NULL - not sure first byte always clean
    timeout(0);
 }
 
@@ -171,8 +193,8 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    if (!strcmp(tag, "connect"))
    {
       if (sonoff)
-         revk_raw(NULL, sonoff, 1, power ? "1" : "0", 0);       // Ensure power as wanted
-      revk_state("power", "%d", power); // Report power state
+         revk_raw(NULL, sonoff, 1, havepower ? "1" : "0", 0);   // Ensure power as wanted
+      revk_state("power", "%d", havepower);     // Report power state
       revk_state("busy", "%d", busy);   // Report busy state
    }
    if (!strcmp(tag, "restart"))
@@ -247,8 +269,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
          {
             cr();               // We want a carriage return
             queuebyte(0);       // Assuming no LF, need extra null
-         }
-         else
+         } else
             queuebyte(pe(b));
       }
    }
@@ -352,6 +373,16 @@ void asr33_main(void *param)
       gpio_set_direction(pu, GPIO_MODE_INPUT);
       gpio_set_pull_mode(pu, GPIO_PULLUP_ONLY);
       gpio_pullup_en(pu);
+   }
+   if (GPIO_IS_VALID_GPIO(power))
+   {
+      gpio_set_level(power, 1);
+      gpio_set_direction(power, GPIO_MODE_OUTPUT);
+   }
+   if (GPIO_IS_VALID_GPIO(motor))
+   {
+      gpio_set_level(motor, 1);
+      gpio_set_direction(motor, GPIO_MODE_OUTPUT);
    }
 
    while (1)
