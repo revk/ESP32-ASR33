@@ -224,8 +224,9 @@ int main(int argc, const char *argv[])
             int e = mosquitto_publish(mqtt, NULL, topic, l, buf, 0, 0);
             if (e)
                warnx("MQTT publish failed %s (%s) %d bytes", mosquitto_strerror(e), topic, l);
-            while (busy)
-               sleep(1);
+            do
+               usleep(100000);
+            while (busy);
          }
          free(topic);
          donefork();
