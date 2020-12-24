@@ -244,7 +244,10 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
          if (b == '\n')
             nl();               // We want a new line
          else if (b == '\r')
+         {
             cr();               // We want a carriage return
+            queuebyte(0);       // Assuming no LF, need extra null
+         }
          else
             queuebyte(pe(b));
       }
