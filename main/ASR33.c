@@ -283,7 +283,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       while (len--)
       {
          queuebyte(*value);
-         if (!nodc4 && *value == DC4)
+         if (!nodc4 && (*value & 0x7F) == DC4)
             queuebyte(DC2);     // Turn tape back on
          value++;
       }
@@ -315,7 +315,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
          while (l--)
          {
             queuebyte(*d);
-            if (!nodc4 && *d == DC4)
+            if (!nodc4 && (*d & 0x7F) == DC4)
                queuebyte(DC2);
             d++;
          }
