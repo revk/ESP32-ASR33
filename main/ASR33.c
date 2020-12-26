@@ -176,7 +176,6 @@ void power_on(void)
       sleep(1);
    }
    uart_flush(uart);
-   uart_write_bytes(uart, "", 1);       // NULL - not sure first byte always clean
    timeout(0);
 }
 
@@ -459,14 +458,14 @@ void asr33_main(void *param)
             }
          }
       }
-      if (wantpower != power)
+      if (wantpower != havepower)
       {                         // Change power state (does any necessary timing sequence)
          if (wantpower == 0)
             power_off();
          else if (wantpower == 1)
             power_on();
       }
-      if (sonoff && power != 1)
+      if (sonoff && havepower != 1)
          continue;              // Not running
       int64_t now = esp_timer_get_time();
       // Check tx
