@@ -38,8 +38,10 @@ Commands, e.g. command/ASR33/[name]/[command]
 - off: Turn off now (automatically done after idle delay)
 - tx:	Raw 8 bit data to send to teletype
 - text:	Text, adding carriage returns and setting even parity, and skipping utf-8 (print up arrow)
-- punch: Data to punch, handles DC2/DC4 logic
-- tape: Punch 5 hole lettering
+- punch: Data to punch, handles DC2/DC4 logic, with DC2/blanks and blanks/DC4 at ends
+- punchraw: Punch,handling of any embedded DC2/DC4 but no blanks/DC2/DC4 at ends
+- tape: Punch 5 hole lettering, with DC2/blanks and blanks/DC4 at ends
+- taperaw: Punch 5 hole lettering, without blanks/DC2/DC4
 - cave: Let's play a game
 
 Status, e.g. status/ASR33/[name]/[status]

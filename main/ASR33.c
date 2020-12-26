@@ -214,7 +214,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       doecho = 1;
    if (!strcmp(tag, "noecho"))
       doecho = 0;
-   if (!strcmp(tag, "tx"))
+   if (!strcmp(tag, "tx") || !strcmp(tag, "txraw") || !strcmp(tag, "raw"))
    {                            // raw send
       power_needed();
       while (len--)
@@ -272,13 +272,16 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             queuebyte(pe(b));
       }
    }
-   if (!strcmp(tag, "punch"))
+   if (!strcmp(tag, "punch") || !strcmp(tag, "punchraw"))
    {                            // Raw punched data (with DC2/DC4)
       power_needed();
-      if (!nodc4)
-         queuebyte(DC2);        // Tape on
-      for (int i = 0; i < tapelead; i++)
-         queuebyte(0);
+      if (!tag[5])
+      {
+         if (!nodc4)
+            queuebyte(DC2);     // Tape on
+         for (int i = 0; i < tapelead; i++)
+            queuebyte(0);
+      }
       while (len--)
       {
          queuebyte(*value);
@@ -286,18 +289,24 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             queuebyte(DC2);     // Turn tape back on
          value++;
       }
-      for (int i = 0; i < tapetail; i++)
-         queuebyte(0);
-      if (!nodc4)
-         queuebyte(DC4);        // Tape off
+      if (!tag[5])
+      {
+         for (int i = 0; i < tapetail; i++)
+            queuebyte(0);
+         if (!nodc4)
+            queuebyte(DC4);     // Tape off
+      }
    }
-   if (!strcmp(tag, "tape"))
+   if (!strcmp(tag, "tape") || !strcmp(tag, "taperaw"))
    {                            // Punched tape text
       power_needed();
-      if (!nodc4)
-         queuebyte(DC2);        // Tape on
-      for (int i = 0; i < tapelead; i++)
-         queuebyte(0);
+      if (!tag[4])
+      {
+         if (!nodc4)
+            queuebyte(DC2);     // Tape on
+         for (int i = 0; i < tapelead; i++)
+            queuebyte(0);
+      }
       while (len--)
       {
          int c = *value++;
@@ -321,10 +330,13 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
          if (len)
             queuebyte(0);
       }
-      for (int i = 0; i < tapetail; i++)
-         queuebyte(0);
-      if (!nodc4)
-         queuebyte(DC4);        // Tape off
+      if (!tag[4])
+      {
+         for (int i = 0; i < tapetail; i++)
+            queuebyte(0);
+         if (!nodc4)
+            queuebyte(DC4);     // Tape off
+      }
    }
    return "";
 }
