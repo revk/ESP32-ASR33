@@ -174,7 +174,7 @@ void power_on(void)
    if (GPIO_IS_VALID_GPIO(motor))
    {                            // Motor, direct control, on
       gpio_set_level(motor, 0);
-      usleep(200000);           // Min 100ms for a null character from power off, and some for motor to start and get to speed
+      usleep(250000);           // Min 100ms for a null character from power off, and some for motor to start and get to speed
    }
    uart_flush(uart);
    timeout(0);
@@ -186,10 +186,17 @@ void power_needed(void)
       return;                   // Power already on
    if (pos < 0)
       cr();                     // Move to known place
+   wantpower = 1;
 }
 
 const char *app_command(const char *tag, unsigned int len, const unsigned char *value)
 {
+   if (!strcmp(tag, "status"))
+   {
+      revk_state("power", "%d", havepower);     // Report power state
+      revk_state("busy", "%d", busy);   // Report busy state
+      revk_info("wantpower", "%d", wantpower);
+   }
    if (!strcmp(tag, "connect"))
    {
       if (sonoff)
