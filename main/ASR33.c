@@ -138,19 +138,15 @@ void power_off(void)
    if (GPIO_IS_VALID_GPIO(motor))
    {                            // Motor direct control, off
       gpio_set_level(motor, 1);
-      sleep(1);
+      sleep(1);                 // Takes time for motor to spin down - ensure this is done before power goes off
    } else
       pos = -1;                 // No direct motor control, assume gash character(s) so pos unknown
    if (GPIO_IS_VALID_GPIO(power))
-   {                            // Power direct control, off
       gpio_set_level(power, 1);
-      sleep(1);
-   }
    if (sonoff)
    {                            // Power, sonoff/mqtt, off
       revk_state("power", "%d", havepower = 0);
       revk_raw(NULL, sonoff, 1, "0", 0);
-      sleep(1);
    }
    manual = 0;
    done = 0;
@@ -168,17 +164,17 @@ void power_on(void)
    {                            // Power, sonoff/mqtt, on
       revk_state("power", "%d", havepower = 1);
       revk_raw(NULL, sonoff, 1, "1", 0);
-      sleep(1);
+      sleep(1);                 // Allow time for MQTT, etc
    }
    if (GPIO_IS_VALID_GPIO(power))
    {                            // Power, direct control, on
       gpio_set_level(power, 0);
-      sleep(1);
+      usleep(100000);           // Min is 20ms for zero crossing, and 9ms for one bit for solenoid, but can be longer for safety
    }
    if (GPIO_IS_VALID_GPIO(motor))
    {                            // Motor, direct control, on
       gpio_set_level(motor, 0);
-      sleep(1);
+      usleep(200000);           // Min 100ms for a null character from power off, and some for motor to start and get to speed
    }
    uart_flush(uart);
    timeout(0);
