@@ -413,7 +413,7 @@ void asr33_main(void *param)
          if (!pressed)
          {                      // Button pressed
             pressed = 1;
-            manual = 0;
+            manual = 1;
             if (!wantpower)
                power_needed();
             else
