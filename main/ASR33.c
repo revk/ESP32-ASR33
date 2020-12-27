@@ -135,6 +135,7 @@ void power_off(void)
 {
    if (havepower == 0)
       return;
+   revk_state("power", "%d", havepower = 0);
    if (GPIO_IS_VALID_GPIO(motor))
    {                            // Motor direct control, off
       gpio_set_level(motor, 1);
@@ -143,9 +144,8 @@ void power_off(void)
       pos = -1;                 // No direct motor control, assume gash character(s) so pos unknown
    if (GPIO_IS_VALID_GPIO(power))
       gpio_set_level(power, 1);
-   if (sonoff)
+   if (sonoff && *sonoff)
    {                            // Power, sonoff/mqtt, off
-      revk_state("power", "%d", havepower = 0);
       revk_raw(NULL, sonoff, 1, "0", 0);
    }
    manual = 0;
@@ -160,9 +160,9 @@ void power_on(void)
 {
    if (havepower == 1)
       return;
-   if (sonoff)
+   revk_state("power", "%d", havepower = 1);
+   if (sonoff && *sonoff)
    {                            // Power, sonoff/mqtt, on
-      revk_state("power", "%d", havepower = 1);
       revk_raw(NULL, sonoff, 1, "1", 0);
       sleep(1);                 // Allow time for MQTT, etc
    }
@@ -193,13 +193,14 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
 {
    if (!strcmp(tag, "status"))
    {
+      revk_info("uptime", "%lld", esp_timer_get_time());
       revk_state("power", "%d", havepower);     // Report power state
       revk_state("busy", "%d", busy);   // Report busy state
       revk_info("wantpower", "%d", wantpower);
    }
    if (!strcmp(tag, "connect"))
    {
-      if (sonoff)
+      if (sonoff && *sonoff)
          revk_raw(NULL, sonoff, 1, havepower ? "1" : "0", 0);   // Ensure power as wanted
       revk_state("power", "%d", havepower);     // Report power state
       revk_state("busy", "%d", busy);   // Report busy state
@@ -406,7 +407,7 @@ void asr33_main(void *param)
 
    while (1)
    {
-      usleep(10000);
+      usleep(50000);
       if (GPIO_IS_VALID_GPIO(on) && gpio_get_level(on))
       {                         // Key press to start/stop
          if (!pressed)
@@ -428,6 +429,15 @@ void asr33_main(void *param)
          revk_state("busy", "%d", busy = 0);
       if (txi != txo)
          wantpower = 1;
+      if (wantpower != havepower)
+      {                         // Change power state (does any necessary timing sequence)
+         if (wantpower == 0)
+            power_off();
+         else if (wantpower == 1)
+            power_on();
+      }
+      if ((GPIO_IS_VALID_GPIO(power) || (sonoff && *sonoff)) && havepower != 1)
+         continue;              // Not running
       // Check rx
       size_t len;
       uart_get_buffered_data_len(uart, &len);
@@ -478,15 +488,6 @@ void asr33_main(void *param)
             }
          }
       }
-      if (wantpower != havepower)
-      {                         // Change power state (does any necessary timing sequence)
-         if (wantpower == 0)
-            power_off();
-         else if (wantpower == 1)
-            power_on();
-      }
-      if (sonoff && havepower != 1)
-         continue;              // Not running
       int64_t now = esp_timer_get_time();
       // Check tx
       if (txi == txo)
