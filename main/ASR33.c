@@ -464,13 +464,13 @@ void asr33_main(void *param)
                queuebyte(b);
             if (b == pe(RU))
                docave = 1;
-            if (b == pe(WRU) && (ver || wru))
+            if (b == pe(WRU) && (ver || (wru && *wru)))
             {                   // WRU
                // See 3.27 of ISS 8, SECTION 574-122-700TC
                queuebyte(pe('\r'));     // CR
                queuebyte(pe('\n'));     // LF
                queuebyte(pe(0x7F));     // RO
-               if (wru)
+               if (wru && *wru)
                   for (const char *p = wru; *p; p++)
                      queuebyte(pe(*p));
                if (ver)
