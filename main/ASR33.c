@@ -48,6 +48,8 @@ settings;
 #define	MAXTX	65536           // Tx buffer max
 #define	MAXRX	256             // Line max
 
+#define	LINELEN	72              // ASR33 line len
+
 volatile int8_t manual = 0;     // Manual power override (eg key pressed, etc)
 int8_t busy = 0;                // Busy state
 uint8_t pressed = 0;            // Button pressed
@@ -62,7 +64,7 @@ uint8_t line[MAXRX];            // Rx line buffer
 uint32_t rxp = 0;               // Rx line buffer pointer
 int64_t eot = 0;                // When tx expected to end
 volatile int64_t done = 0;      // When to next turn off
-uint8_t pos = 0;                // Position (ignores local echo)
+int8_t pos = -1;                // Position (-1 is unknown)
 SemaphoreHandle_t queue_mutex = NULL;
 
 const unsigned char small_f[256][5] = {
@@ -102,7 +104,7 @@ void queuebyte(uint8_t b)
       b &= 0x7F;
       if (b == '\r')
          pos = 0;
-      else if (b >= ' ' && b < 0x7F && pos < 72)
+      else if (b >= ' ' && b < 0x7F && pos < LINELEN)
          pos++;
    }
    xSemaphoreGive(queue_mutex);
@@ -111,11 +113,13 @@ void queuebyte(uint8_t b)
 
 void cr(void)
 {                               // Do a carriage return
-   uint8_t p = pos;
+   int8_t p = pos;
    if (p)
    {
       queuebyte(pe('\r'));      // CR
-      if (p > 40)
+      if (p < 0 || p > 40)
+         queuebyte(0);          // allow extra time for CR
+      if (p < 0)
          queuebyte(0);          // allow extra time for CR
    }
 }
@@ -135,7 +139,8 @@ void power_off(void)
    {                            // Motor direct control, off
       gpio_set_level(motor, 1);
       sleep(1);
-   }
+   } else
+      pos = -1;                 // No direct motor control, assume gash character(s) so pos unknown
    if (GPIO_IS_VALID_GPIO(power))
    {                            // Power direct control, off
       gpio_set_level(power, 1);
@@ -183,8 +188,8 @@ void power_needed(void)
 {                               // Power on if needed, queue \r
    if (wantpower)
       return;                   // Power already on
-   pos = 72;                    // Unknown
-   cr();                        // Move to known place
+   if (pos < 0)
+      cr();                     // Move to known place
 }
 
 const char *app_command(const char *tag, unsigned int len, const unsigned char *value)
@@ -260,12 +265,12 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             b = '"';            // Common quote escape
          if (b >= 0x80)
             b = 0x5E;           // Other unicode so print as Up arrow
-         if (b >= ' ' && b < 0x7F && pos >= 72)
+         if (b >= ' ' && b < 0x7F && pos >= LINELEN)
             nl();               // Force newline as would overprint
          if (b == '\n')
-            nl();               // We want a new line
+            nl();               // We want a new line (does CR too)
          else if (b == '\r')
-         {
+         {                      // Explicit CR, let's assume no NL
             cr();               // We want a carriage return
             queuebyte(0);       // Assuming no LF, need extra null
          } else
