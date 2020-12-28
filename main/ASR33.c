@@ -13,19 +13,18 @@
 #define	DC4	0x14
 
 #define settings  \
-  u8(uart,1);	\
-  u8(tx,17);	\
-  u8(rx,16);	\
-  u8(on,4);	\
-  u8(pu,0xFF);	\
-  u8(power,0xFF)\
-  u8(motor,0xFF)\
-  u1(echo);	\
-  t(sonoff);	\
-  t(wru);	\
-  u1(ver);	\
+  u8(uart,1)	\
+  u8(tx,17)	\
+  u8(rx,16)	\
+  u8(on,5)	\
+  u8(power,2)	\
+  u8(motor,4)	\
+  u1(echo)	\
+  t(sonoff)	\
+  t(wru)	\
+  u1(ver)	\
   u32(wake,1)	\
-  u32(idle,10)	\
+  u32(idle,1)	\
   u32(keyidle,600)	\
   u8(ack,6)	\
   u8(think,10)	\
@@ -387,12 +386,6 @@ void asr33_main(void *param)
       gpio_set_direction(on, GPIO_MODE_INPUT);
       gpio_set_pull_mode(on, GPIO_PULLUP_ONLY);
       gpio_pullup_en(on);
-   }
-   if (GPIO_IS_VALID_GPIO(pu))
-   {                            // Extra pull up
-      gpio_set_direction(pu, GPIO_MODE_INPUT);
-      gpio_set_pull_mode(pu, GPIO_PULLUP_ONLY);
-      gpio_pullup_en(pu);
    }
    if (GPIO_IS_VALID_GPIO(power))
    {

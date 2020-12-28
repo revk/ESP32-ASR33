@@ -19,7 +19,6 @@ Additional settings, e.g. setting/ASR33/[name]/[setting] [value]
 - uart:	UART number
 - tx:	Tx pin
 - rx:	Rx pin
-- pu:   Extra pulled up input pin, if extra pull up needed on rx, put in parallel to rx
 - on:	On pin (a high toggles on/off)
 - power: Output pin (low=active) to directly control power
 - motor: Output pin (low=active) to directly control motor
