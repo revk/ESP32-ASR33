@@ -415,8 +415,11 @@ void asr33_main(void *param)
             pressed = 1;
             manual = 1;
             if (!wantpower)
+            {
                power_needed();
-            else
+               if (cave)
+                  docave = 1;   // Only playing a game
+            } else
                wantpower = 0;
             revk_event("on", "%d", wantpower);
          }
@@ -492,7 +495,7 @@ void asr33_main(void *param)
       // Check tx
       if (txi == txo)
       {                         // Nothing to send
-         if (cave || docave)
+         if (docave)
          {                      // Let's play a game
             docave = 0;
             extern int advent(void);
