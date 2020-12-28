@@ -146,7 +146,7 @@ void power_off(void)
       pos = -1;                 // No direct motor control, assume gash character(s) so pos unknown
    if (GPIO_IS_VALID_GPIO(power))
       gpio_set_level(power, 1);
-   if (sonoff && *sonoff)
+   if (*sonoff)
       revk_raw(NULL, sonoff, 1, "0", 0);        // Power, sonoff/mqtt, off
    manual = 0;
    done = 0;
@@ -160,7 +160,7 @@ void power_on(void)
 {
    if (havepower == 1)
       return;
-   if (sonoff && *sonoff)
+   if (*sonoff)
    {                            // Power, sonoff/mqtt, on
       revk_raw(NULL, sonoff, 1, "1", 0);
       sleep(1);                 // Allow time for MQTT, etc
@@ -200,7 +200,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
    }
    if (!strcmp(tag, "connect"))
    {
-      if (sonoff && *sonoff)
+      if (*sonoff)
          revk_raw(NULL, sonoff, 1, havepower ? "1" : "0", 0);   // Ensure power as wanted
       revk_state("power", "%d", havepower);     // Report power state
       revk_state("busy", "%d", busy);   // Report busy state
@@ -439,7 +439,7 @@ void asr33_main(void *param)
          else if (wantpower == 1)
             power_on();
       }
-      if ((GPIO_IS_VALID_GPIO(power) || (sonoff && *sonoff)) && havepower != 1)
+      if ((GPIO_IS_VALID_GPIO(power) || *sonoff) && havepower != 1)
          continue;              // Not running
       // Check rx
       size_t len;
@@ -467,13 +467,13 @@ void asr33_main(void *param)
                queuebyte(b);
             if (b == pe(RU))
                docave = 1;
-            if (b == pe(WRU) && (ver || (wru && *wru)))
+            if (b == pe(WRU) && (ver || *wru))
             {                   // WRU
                // See 3.27 of ISS 8, SECTION 574-122-700TC
                queuebyte(pe('\r'));     // CR
                queuebyte(pe('\n'));     // LF
                queuebyte(pe(0x7F));     // RO
-               if (wru && *wru)
+               if (*wru)
                   for (const char *p = wru; *p; p++)
                      queuebyte(pe(*p));
                if (ver)
