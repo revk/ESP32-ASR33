@@ -135,9 +135,11 @@ void power_off(void)
 {
    if (havepower == 0)
       return;
+   uart_wait_tx_done(uart, portMAX_DELAY);      // Should be clear, but just in case...
    revk_state("power", "%d", havepower = 0);
    if (GPIO_IS_VALID_GPIO(motor))
    {                            // Motor direct control, off
+      usleep(100000);           // If final character being printed...
       gpio_set_level(motor, 1);
       sleep(1);                 // Takes time for motor to spin down - ensure this is done before power goes off
    } else
@@ -145,9 +147,7 @@ void power_off(void)
    if (GPIO_IS_VALID_GPIO(power))
       gpio_set_level(power, 1);
    if (sonoff && *sonoff)
-   {                            // Power, sonoff/mqtt, off
-      revk_raw(NULL, sonoff, 1, "0", 0);
-   }
+      revk_raw(NULL, sonoff, 1, "0", 0);        // Power, sonoff/mqtt, off
    manual = 0;
    done = 0;
    txi = 0;
@@ -160,7 +160,6 @@ void power_on(void)
 {
    if (havepower == 1)
       return;
-   revk_state("power", "%d", havepower = 1);
    if (sonoff && *sonoff)
    {                            // Power, sonoff/mqtt, on
       revk_raw(NULL, sonoff, 1, "1", 0);
@@ -176,6 +175,7 @@ void power_on(void)
       gpio_set_level(motor, 0);
       usleep(250000);           // Min 100ms for a null character from power off, and some for motor to start and get to speed
    }
+   revk_state("power", "%d", havepower = 1);
    uart_flush(uart);
    timeout(0);
 }
@@ -499,6 +499,7 @@ void asr33_main(void *param)
             if (!busy)
                revk_state("busy", "%d", busy = 1);
             advent();
+            manual = 0;
          }
          if (done < now)
             wantpower = 0;      // Idle complete, power off
