@@ -17,8 +17,8 @@
   u8(tx,17)	\
   u8(rx,16)	\
   u8(on,5)	\
-  u8(power,2)	\
-  u8(motor,4)	\
+  u8(power,4)	\
+  u8(motor,2)	\
   u1(echo)	\
   t(sonoff)	\
   t(wru)	\
