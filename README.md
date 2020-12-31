@@ -25,9 +25,11 @@ Additional settings, e.g. setting/ASR33/[name]/[setting] [value]
 - sonoff:	The topic to use for power on/off the teletype
 - idle:	The number of seconds before powering off after printing done
 - keyidle: The number of seconds before powering off in manual mode (i.e. on function not just printing)
-- echo:	If echo on or off
-- wru:	String to send for WRU
-- ver:	Flag, if set, send version info for WRU
+- noecho: Don't default to local echo
+- nobig: Don't do big tape punch lettering for DC2/DC4 from keyboard
+- nocave: Don't do game on RU
+- wru:	String to send for WR
+- nover: Don't do version for WRU
 - ack:  Value of ACK - 0x7C in 1963, 0x06 in later editions
 - cave: Flag, always play a game
 - nodc4: ASR33 does not do DC2/DC4 so don't send to start/stop tape

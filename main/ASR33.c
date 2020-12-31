@@ -9,7 +9,9 @@
 #define	EOT	4
 #define	WRU	5
 #define	RU	6
+#define	DC1	0x11
 #define	DC2	0x12
+#define	DC3	0x13
 #define	DC4	0x14
 
 #define settings  \
@@ -19,15 +21,17 @@
   u8(on,5)	\
   u8(power,4)	\
   u8(motor,2)	\
-  u1(echo)	\
+  u1(noecho)	\
+  u1(nobig)	\
+  u1(nover)	\
   t(sonoff)	\
   t(wru)	\
-  u1(ver)	\
   u32(wake,1)	\
   u32(idle,1)	\
   u32(keyidle,600)	\
   u8(ack,6)	\
   u8(think,10)	\
+  u1(nocave)	\
   u1(cave)	\
   u1(nodc4)	\
   u8(tapelead,15) \
@@ -53,6 +57,7 @@ volatile int8_t manual = 0;     // Manual power override (eg key pressed, etc)
 int8_t busy = 0;                // Busy state
 uint8_t pressed = 0;            // Button pressed
 uint8_t doecho = 0;             // Do echo (set each start up)
+uint8_t dobig = 0;              // Do big lettering on tape
 uint8_t docave = 0;             // Fun advent()
 volatile uint8_t havepower = 0; // Power state
 volatile uint8_t wantpower = 0; // Power state wanted
@@ -110,6 +115,30 @@ void queuebyte(uint8_t b)
    wantpower = 1;
 }
 
+int queuebig(int c)
+{                               // Send a big character for tape
+   if (c >= sizeof(small_f) / sizeof(&small_f))
+      return 0;
+   const unsigned char *d = small_f[c];
+   if (!*d && c >= 'a' && c <= 'z')
+      d = small_f[c - 32];      // Try upper case
+   int l = 5;
+   while (l && !d[l - 1])
+      l--;
+   if (c == ' ' && l < 3)
+      l = 3;
+   if (!l)
+      return 0;
+   while (l--)
+   {
+      queuebyte(*d);
+      if (!nodc4 && (*d & 0x7F) == DC4)
+         queuebyte(DC2);
+      d++;
+   }
+   return 1;
+}
+
 void cr(void)
 {                               // Do a carriage return
    int8_t p = pos;
@@ -152,7 +181,7 @@ void power_off(void)
    txi = 0;
    txo = 0;
    rxp = 0;
-   doecho = echo;
+   doecho = !noecho;
 }
 
 void power_on(void)
@@ -317,24 +346,8 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       }
       while (len--)
       {
-         int c = *value++;
-         const unsigned char *d = small_f[c];
-         if (!*d && c >= 'a' && c <= 'z')
-            d = small_f[c - 32];        // Try upper case
-         int l = 5;
-         while (l && !d[l - 1])
-            l--;
-         if (c == ' ' && l < 3)
-            l = 3;
-         if (!l)
+         if (!queuebig(*value++))
             continue;
-         while (l--)
-         {
-            queuebyte(*d);
-            if (!nodc4 && (*d & 0x7F) == DC4)
-               queuebyte(DC2);
-            d++;
-         }
          if (len)
             queuebyte(0);
       }
@@ -365,7 +378,7 @@ void asr33_main(void *param)
 #undef u8
 #undef u1
 
-   doecho = echo;
+   doecho = !noecho;
    ESP_ERROR_CHECK(uart_driver_install(uart, 1024, 1024, 0, NULL, 0));
    uart_config_t uart_config = {
       .baud_rate = 110,
@@ -456,31 +469,54 @@ void asr33_main(void *param)
                rxp = 0;
             } else if ((b & 0x7F) != '\r' && rxp < MAXRX)
                line[rxp++] = (b & 0x7F);
-            if (doecho)
-               queuebyte(b);
-            if (b == pe(RU))
-               docave = 1;
-            if (b == pe(WRU) && (ver || *wru))
-            {                   // WRU
-               // See 3.27 of ISS 8, SECTION 574-122-700TC
-               queuebyte(pe('\r'));     // CR
-               queuebyte(pe('\n'));     // LF
-               queuebyte(pe(0x7F));     // RO
-               if (*wru)
-                  for (const char *p = wru; *p; p++)
-                     queuebyte(pe(*p));
-               if (ver)
-               {
-                  for (const char *p = revk_app; *p; p++)
-                     queuebyte(pe(*p));
-                  for (const char *p = " BUILD "; *p; p++)
-                     queuebyte(pe(*p));
-                  for (const char *p = revk_version; *p; p++)
-                     queuebyte(pe(*p));
+            if (dobig)
+            {                   // Doing large lettering
+               if (b == pe(DC4))
+               {                // End
+                  for (int i = 0; i < 9; i++)
+                     queuebyte(0);
+                  queuebyte(pe(DC4));
+                  dobig = 0;
+               } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
+                  queuebyte(0);
+            } else
+            {                   // Normal (not big)
+               if (doecho)
+                  queuebyte(b);
+               if (b == pe(DC2) && doecho && !nobig)
+               {                // Start big lettering
+                  // DC2 queued already
+                  for (int i = 0; i < 10; i++)
+                     queuebyte(0);
+                  dobig = 1;
+               } else if (b == pe(RU) && !nocave)
+                  docave = 1;
+               else if (b == pe(DC1))
+                  doecho = 1;
+               else if (b == pe(DC3))
+                  doecho = 0;
+               else if (b == pe(WRU) && (!nover || *wru))
+               {                // WRU
+                  // See 3.27 of ISS 8, SECTION 574-122-700TC
+                  queuebyte(pe('\r'));  // CR
+                  queuebyte(pe('\n'));  // LF
+                  queuebyte(pe(0x7F));  // RO
+                  if (*wru)
+                     for (const char *p = wru; *p; p++)
+                        queuebyte(pe(*p));
+                  if (!nover)
+                  {
+                     for (const char *p = revk_app; *p; p++)
+                        queuebyte(pe(*p));
+                     for (const char *p = " BUILD "; *p; p++)
+                        queuebyte(pe(*p));
+                     for (const char *p = revk_version; *p; p++)
+                        queuebyte(pe(*p));
+                  }
+                  queuebyte(pe('\r'));  // CR
+                  queuebyte(pe('\n'));  // LF
+                  queuebyte(pe(ack));   // ACK
                }
-               queuebyte(pe('\r'));     // CR
-               queuebyte(pe('\n'));     // LF
-               queuebyte(pe(ack));      // ACK
             }
          }
       }
