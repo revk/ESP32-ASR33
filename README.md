@@ -53,6 +53,13 @@ Events, e.g. event/ASR33/[name]/[event]
 - rx:	Raw 8 bit data from teletype (one character at a time)
 - line:	Text typed, parity stripped, a whole line of typed text
 
+Keyboard:
+- WRU:	Print string and version (unless wru blank and never set)
+- RU:	Start a game (unless nocave set)
+- XON/XOFF: Control local echo
+- TAPE/XTAPE: Start/stop tape printing large text
+- EOT: Power off
+
 Can be connected using a 100 ohm resistor directly
 (see https://www.revk.uk/2020/12/connecting-asr33-teletype-to-esp32.html)
 
