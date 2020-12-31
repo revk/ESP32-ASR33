@@ -479,45 +479,43 @@ void asr33_main(void *param)
                   dobig = 0;
                } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
                   queuebyte(0);
-            } else
-            {                   // Normal (not big)
-               if (doecho)
-                  queuebyte(b);
-               if (b == pe(DC2) && doecho && !nobig)
-               {                // Start big lettering
-                  // DC2 queued already
-                  for (int i = 0; i < 10; i++)
-                     queuebyte(0);
-                  dobig = 1;
-               } else if (b == pe(RU) && !nocave)
-                  docave = 1;
-               else if (b == pe(DC1))
-                  doecho = 1;
-               else if (b == pe(DC3))
-                  doecho = 0;
-               else if (b == pe(WRU) && (!nover || *wru))
-               {                // WRU
-                  // See 3.27 of ISS 8, SECTION 574-122-700TC
-                  queuebyte(pe('\r'));  // CR
-                  queuebyte(pe('\n'));  // LF
-                  queuebyte(pe(0x7F));  // RO
+            } else if (b == pe(DC2) && doecho && !nobig)
+            {                   // Start big lettering
+               queuebyte(pe(DC2));
+               for (int i = 0; i < 10; i++)
+                  queuebyte(0);
+               dobig = 1;
+            } else if (b == pe(RU) && !nocave)
+               docave = 1;
+            else if (b == pe(DC1))
+               doecho = 1;
+            else if (b == pe(DC3))
+               doecho = 0;
+            else if (b == pe(WRU) && (!nover || *wru))
+            {                   // WRU
+               // See 3.27 of ISS 8, SECTION 574-122-700TC
+               queuebyte(pe('\r'));     // CR
+               queuebyte(pe('\n'));     // LF
+               queuebyte(pe(0x7f));     // RO
+               if (*wru)
+                  for (const char *p = wru; *p; p++)
+                     queuebyte(pe(*p));
+               if (!nover)
+               {
                   if (*wru)
-                     for (const char *p = wru; *p; p++)
-                        queuebyte(pe(*p));
-                  if (!nover)
-                  {
-                     for (const char *p = revk_app; *p; p++)
-                        queuebyte(pe(*p));
-                     for (const char *p = " BUILD "; *p; p++)
-                        queuebyte(pe(*p));
-                     for (const char *p = revk_version; *p; p++)
-                        queuebyte(pe(*p));
-                  }
-                  queuebyte(pe('\r'));  // CR
-                  queuebyte(pe('\n'));  // LF
-                  queuebyte(pe(ack));   // ACK
+                     queuebyte(pe(' '));
+                  for (const char *p = revk_app; *p; p++)
+                     queuebyte(pe(*p));
+                  for (const char *p = " BUILD "; *p; p++)
+                     queuebyte(pe(*p));
+                  for (const char *p = revk_version; *p; p++)
+                     queuebyte(pe(*p));
                }
-            }
+               queuebyte(pe('\r'));     // CR
+               queuebyte(pe('\n'));     // LF
+               queuebyte(pe(ack));      // ACK
+            } else if (doecho)
+               queuebyte(b);
          }
       }
       int64_t now = esp_timer_get_time();
