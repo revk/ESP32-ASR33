@@ -394,6 +394,7 @@ void asr33_main(void *param)
    uart_set_rx_full_threshold(uart, 1);
    gpio_set_pull_mode(rx, GPIO_PULLUP_ONLY);
    gpio_pullup_en(rx);
+   gpio_set_drive_capability(tx, GPIO_DRIVE_CAP_3);
    if (GPIO_IS_VALID_GPIO(on))
    {                            // On input
       gpio_set_direction(on, GPIO_MODE_INPUT);
