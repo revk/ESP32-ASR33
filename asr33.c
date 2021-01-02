@@ -248,6 +248,14 @@ int main(int argc, const char *argv[])
          break;                 // closed
       }
    }
+   // No local echo
+   if (asprintf(&topic, "command/ASR33/%s/noecho", tty ? : "*") < 0)
+      errx(1, "malloc");
+   e = mosquitto_publish(mqtt, NULL, topic, 0, "", 0, 0);
+   if (e)
+      warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
+   free(topic);
+   sleep(1);
    mosquitto_lib_cleanup();
    return 0;
 }
