@@ -56,6 +56,7 @@ settings;
 volatile int8_t manual = 0;     // Manual power override (eg key pressed, etc)
 int8_t busy = 0;                // Busy state
 uint8_t pressed = 0;            // Button pressed
+uint8_t xoff = 0;               // Manual no echo
 uint8_t doecho = 0;             // Do echo (set each start up)
 uint8_t dobig = 0;              // Do big lettering on tape
 uint8_t docave = 0;             // Fun advent()
@@ -190,6 +191,7 @@ void power_off(void)
    txo = 0;
    rxp = 0;
    doecho = !noecho;
+   xoff = 0;
 }
 
 void power_on(void)
@@ -487,53 +489,56 @@ void asr33_main(void *param)
                rxp = 0;
             } else if ((b & 0x7F) != '\r' && rxp < MAXRX)
                line[rxp++] = (b & 0x7F);
-            if (dobig)
-            {                   // Doing large lettering
-               if (b == pe(DC4))
-               {                // End
-                  for (int i = 0; i < 9; i++)
+            if (doecho)
+            {                   // Handling local characters and echoing (maybe, depends on xoff too)
+               if (dobig)
+               {                // Doing large lettering
+                  if (b == pe(DC4))
+                  {             // End
+                     for (int i = 0; i < 9; i++)
+                        queuebyte(0);
+                     queuebyte(pe(DC4));
+                     dobig = 0;
+                  } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
                      queuebyte(0);
-                  queuebyte(pe(DC4));
-                  dobig = 0;
-               } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
-                  queuebyte(0);
-            } else if (b == pe(DC2) && doecho && !nobig)
-            {                   // Start big lettering
-               queuebyte(pe(DC2));
-               for (int i = 0; i < 10; i++)
-                  queuebyte(0);
-               dobig = 1;
-            } else if (b == pe(RU) && !nocave)
-               docave = 1;
-            else if (b == pe(DC1))
-               doecho = 1;
-            else if (b == pe(DC3))
-               doecho = 0;
-            else if (b == pe(WRU) && (!nover || *wru))
-            {                   // WRU
-               // See 3.27 of ISS 8, SECTION 574-122-700TC
-               queuebyte(pe('\r'));     // CR
-               queuebyte(pe('\n'));     // LF
-               queuebyte(pe(0x7f));     // RO
-               if (*wru)
-                  for (const char *p = wru; *p; p++)
-                     queuebyte(pe(*p));
-               if (!nover)
-               {
+               } else if (b == pe(DC2) && doecho && !nobig)
+               {                // Start big lettering
+                  queuebyte(pe(DC2));
+                  for (int i = 0; i < 10; i++)
+                     queuebyte(0);
+                  dobig = 1;
+               } else if (b == pe(RU) && !nocave)
+                  docave = 1;
+               else if (b == pe(DC1))
+                  xoff = 0;
+               else if (b == pe(DC3))
+                  xoff = 1;
+               else if (b == pe(WRU) && (!nover || *wru))
+               {                // WRU
+                  // See 3.27 of ISS 8, SECTION 574-122-700TC
+                  queuebyte(pe('\r'));  // CR
+                  queuebyte(pe('\n'));  // LF
+                  queuebyte(pe(0x7f));  // RO
                   if (*wru)
-                     queuebyte(pe(' '));
-                  for (const char *p = revk_app; *p; p++)
-                     queuebyte(pe(*p));
-                  for (const char *p = " BUILD "; *p; p++)
-                     queuebyte(pe(*p));
-                  for (const char *p = revk_version; *p; p++)
-                     queuebyte(pe(*p));
-               }
-               queuebyte(pe('\r'));     // CR
-               queuebyte(pe('\n'));     // LF
-               queuebyte(pe(ack));      // ACK
-            } else if (doecho)
-               queuebyte(b);
+                     for (const char *p = wru; *p; p++)
+                        queuebyte(pe(*p));
+                  if (!nover)
+                  {
+                     if (*wru)
+                        queuebyte(pe(' '));
+                     for (const char *p = revk_app; *p; p++)
+                        queuebyte(pe(*p));
+                     for (const char *p = " BUILD "; *p; p++)
+                        queuebyte(pe(*p));
+                     for (const char *p = revk_version; *p; p++)
+                        queuebyte(pe(*p));
+                  }
+                  queuebyte(pe('\r'));  // CR
+                  queuebyte(pe('\n'));  // LF
+                  queuebyte(pe(ack));   // ACK
+               } else if (!xoff)
+                  queuebyte(b);
+            }
          }
          lastrx = now;
       }
