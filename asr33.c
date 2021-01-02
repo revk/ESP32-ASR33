@@ -198,6 +198,7 @@ int main(int argc, const char *argv[])
       errx(1, "MQTT connect failed %s", mosquitto_strerror(e));
    mosquitto_loop_start(mqtt);
 
+   char *topic = NULL;
    while (1)
    {
       if (debug)
@@ -210,7 +211,6 @@ int main(int argc, const char *argv[])
             warnx("rx start");
          char buf[1024];
          ssize_t l;
-         char *topic = NULL;
          if (!outonly)
          {
             // Manual on
