@@ -59,6 +59,7 @@ uint8_t pressed = 0;            // Button pressed
 uint8_t doecho = 0;             // Do echo (set each start up)
 uint8_t dobig = 0;              // Do big lettering on tape
 uint8_t docave = 0;             // Fun advent()
+uint8_t suppress = 0;           // Suppress WRU
 volatile uint8_t havepower = 0; // Power state
 volatile uint8_t wantpower = 0; // Power state wanted
 uint8_t buf[MAXTX];             // Tx pending buffer
@@ -68,6 +69,7 @@ uint8_t line[MAXRX];            // Rx line buffer
 uint32_t rxp = 0;               // Rx line buffer pointer
 int64_t eot = 0;                // When tx expected to end
 volatile int64_t done = 0;      // When to next turn off
+int64_t lastrx = 0;             // Last rx
 int8_t pos = -1;                // Position (-1 is unknown)
 SemaphoreHandle_t queue_mutex = NULL;
 
@@ -131,10 +133,16 @@ int queuebig(int c)
       return 0;
    while (l--)
    {
-      queuebyte(*d);
-      if (!nodc4 && (*d & 0x7F) == DC4)
+      uint8_t c = *d++;
+      queuebyte(c);
+      c &= 0x7f;
+      if (!nodc4 && c == DC4)
          queuebyte(DC2);
-      d++;
+      if (c == WRU)
+      {
+         suppress = 1;
+         lastrx = 0;
+      }
    }
    return 1;
 }
@@ -321,10 +329,16 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
       }
       while (len--)
       {
-         queuebyte(*value);
-         if (!nodc4 && (*value & 0x7F) == DC4)
+         uint8_t c = *value++;
+         queuebyte(c);
+         c &= 0x7f;
+         if (!nodc4 && c == DC4)
             queuebyte(DC2);     // Turn tape back on
-         value++;
+         if (c == WRU)
+         {
+            suppress = 1;       // Suppress WRU response
+            lastrx = 0;
+         }
       }
       if (!tag[5])
       {
@@ -448,14 +462,17 @@ void asr33_main(void *param)
       }
       if ((GPIO_IS_VALID_GPIO(power) || *sonoff) && havepower != 1)
          continue;              // Not running
+      int64_t now = esp_timer_get_time();
       // Check rx
       size_t len;
       uart_get_buffered_data_len(uart, &len);
       if (len > 0)
       {
          uint8_t b;
-         if (uart_read_bytes(uart, &b, 1, 0) > 0)
+         if (uart_read_bytes(uart, &b, 1, 0) > 0 && (!suppress || lastrx + 250000 < now))
          {
+            if (lastrx)
+               suppress = 0;
             if (b && b != 0xFF && b == pe(b))
             {
                if (b == pe(EOT))
@@ -518,8 +535,8 @@ void asr33_main(void *param)
             } else if (doecho)
                queuebyte(b);
          }
+         lastrx = now;
       }
-      int64_t now = esp_timer_get_time();
       // Check tx
       if (txi == txo)
       {                         // Nothing to send
