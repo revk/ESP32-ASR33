@@ -24,6 +24,7 @@ int main(int argc, const char *argv[])
    const char *mqttpassword = NULL;
    const char *mqttid = NULL;
    const char *mqttcafile = NULL;
+   const char *readfn = NULL;
    int mqttport = 0;
    const char *tty = NULL;
    const char *cmd = NULL;
@@ -41,6 +42,7 @@ int main(int argc, const char *argv[])
          { "mqtt-id", 0, POPT_ARG_STRING, &mqttid, 0, "MQTT id", "id" },
          { "tty", 0, POPT_ARG_STRING, &tty, 0, "ASR33", "id" },
          { "out-only", 'O', POPT_ARG_NONE, &outonly, 0, "Out only so no need to leave on" },
+         { "read", 0, POPT_ARG_STRING, &readfn, 0, "Read to file", "filename" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
@@ -52,35 +54,44 @@ int main(int argc, const char *argv[])
       if ((c = poptGetNextOpt(optCon)) < -1)
          errx(1, "%s: %s\n", poptBadOption(optCon, POPT_BADOPTION_NOALIAS), poptStrerror(c));
 
-      if (!poptPeekArg(optCon))
+      if (!readfn && !poptPeekArg(optCon))
       {
          poptPrintUsage(optCon, stderr, 0);
          errx(1, "Command required");
       }
 
-      cmd = poptGetArg(optCon);
-      cmdargs = realloc(cmdargs, sizeof(*cmdargs) * (++cmdargc));
-      cmdargs[cmdargc - 1] = (void *) cmd;
-
-      while (poptPeekArg(optCon))
+      if (poptPeekArg(optCon))
       {
+         cmd = poptGetArg(optCon);
          cmdargs = realloc(cmdargs, sizeof(*cmdargs) * (++cmdargc));
-         cmdargs[cmdargc - 1] = (void *) poptGetArg(optCon);
+         cmdargs[cmdargc - 1] = (void *) cmd;
+
+         while (poptPeekArg(optCon))
+         {
+            cmdargs = realloc(cmdargs, sizeof(*cmdargs) * (++cmdargc));
+            cmdargs[cmdargc - 1] = (void *) poptGetArg(optCon);
+         }
+         cmdargs = realloc(cmdargs, sizeof(*cmdargs) * (++cmdargc));
+         cmdargs[cmdargc - 1] = NULL;
       }
-      cmdargs = realloc(cmdargs, sizeof(*cmdargs) * (++cmdargc));
-      cmdargs[cmdargc - 1] = NULL;
       poptFreeContext(optCon);
    }
    pid_t pid = 0;
    int pts = -1;
    int busy = 0;
    int esc = 0;
+   int rfn = -1;
+   int off = 0;
+   if (readfn)
+      rfn = open(readfn, O_WRONLY | O_CREAT, 0777);
 
    int e = mosquitto_lib_init();
    if (e)
       errx(1, "MQTT init failed %s", mosquitto_strerror(e));
    void dofork(void) {
       if (pid)
+         return;
+      if (!cmd)
          return;
       pts = posix_openpt(O_RDWR);
       if (pts < 0)
@@ -117,7 +128,7 @@ int main(int argc, const char *argv[])
    }
    void connect(struct mosquitto *mqtt, void *obj, int rc) {
       char *sub;
-      if (asprintf(&sub, "event/ASR33/%s/rx", tty ? : "+") < 0)
+      if (asprintf(&sub, "event/ASR33/%s/#", tty ? : "+") < 0)
          errx(1, "malloc");
       int e = mosquitto_subscribe(mqtt, NULL, sub, 0);
       if (e)
@@ -147,23 +158,30 @@ int main(int argc, const char *argv[])
       if (debug)
          warnx("msg %s", msg->topic);
       int l = strlen(msg->topic);
+      if (l >= 4 && !strcmp(msg->topic + l - 4, "/off"))
+         off = 1;
       if (l >= 3 && !strcmp(msg->topic + l - 3, "/rx"))
       {
          for (int i = 0; i < msg->payloadlen; i++)
          {
             // ESC prefix on a letter causes it to (stay) upper case.
             char c = (((char *) msg->payload)[i] &= 0x7F);      // Parity
-            if (esc)
-            {
-               esc = 0;
-            } else if (c == 27)
-            {
-               esc = 1;
-               c = 0;
-            } else if (isupper(c))
-               c = tolower(c);
-            if (c)
-               write(pts, &c, 1);
+            if (rfn >= 0)
+               write(rfn, &c, 1);
+            if (pts >= 0)
+            {                   // Process keys
+               if (esc)
+               {
+                  esc = 0;
+               } else if (c == 27)
+               {
+                  esc = 1;
+                  c = 0;
+               } else if (isupper(c))
+                  c = tolower(c);
+               if (c)
+                  write(pts, &c, 1);
+            }
          }
          if (debug)
             warnx("tx %.*s", msg->payloadlen, msg->payload);
@@ -197,9 +215,37 @@ int main(int argc, const char *argv[])
    if (e)
       errx(1, "MQTT connect failed %s", mosquitto_strerror(e));
    mosquitto_loop_start(mqtt);
-
    char *topic = NULL;
-   while (1)
+
+   if (!outonly)
+   {
+      // Manual on
+      if (asprintf(&topic, "command/ASR33/%s/on", tty ? : "*") < 0)
+         errx(1, "malloc");
+      int e = mosquitto_publish(mqtt, NULL, topic, 0, "", 0, 0);
+      if (e)
+         warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
+      free(topic);
+      // No local echo
+      if (asprintf(&topic, "command/ASR33/%s/noecho", tty ? : "*") < 0)
+         errx(1, "malloc");
+      e = mosquitto_publish(mqtt, NULL, topic, 0, "", 0, 0);
+      if (e)
+         warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
+      free(topic);
+   }
+   if (rfn >= 0)
+   {
+      if (asprintf(&topic, "command/ASR33/%s/tx", tty ? : "*") < 0)
+         errx(1, "malloc");
+      const char *intro = "\rREAD TAPE\021";
+      int e = mosquitto_publish(mqtt, NULL, topic, strlen(intro), intro, 0, 0);
+      if (e)
+         warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
+      free(topic);
+   }
+
+   while (!off)
    {
       if (debug)
          warnx("idle");
@@ -211,23 +257,6 @@ int main(int argc, const char *argv[])
             warnx("rx start");
          char buf[1024];
          ssize_t l;
-         if (!outonly)
-         {
-            // Manual on
-            if (asprintf(&topic, "command/ASR33/%s/on", tty ? : "*") < 0)
-               errx(1, "malloc");
-            int e = mosquitto_publish(mqtt, NULL, topic, 0, "", 0, 0);
-            if (e)
-               warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
-            free(topic);
-            // No local echo
-            if (asprintf(&topic, "command/ASR33/%s/noecho", tty ? : "*") < 0)
-               errx(1, "malloc");
-            e = mosquitto_publish(mqtt, NULL, topic, 0, "", 0, 0);
-            if (e)
-               warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
-            free(topic);
-         }
          // Topic for the text
          if (asprintf(&topic, "command/ASR33/%s/text", tty ? : "*") < 0)
             errx(1, "malloc");
@@ -248,14 +277,18 @@ int main(int argc, const char *argv[])
          break;                 // closed
       }
    }
-   // No local echo
-   if (asprintf(&topic, "command/ASR33/%s/noecho", tty ? : "*") < 0)
-      errx(1, "malloc");
-   e = mosquitto_publish(mqtt, NULL, topic, 0, "", 0, 0);
-   if (e)
-      warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
-   free(topic);
-   sleep(1);
+   if (rfn >= 0)
+   {
+      close(rfn);
+      if (asprintf(&topic, "command/ASR33/%s/tx", tty ? : "*") < 0)
+         errx(1, "malloc");
+      const char *done = "\023 - DONE\r\r\n";
+      int e = mosquitto_publish(mqtt, NULL, topic, strlen(done), done, 0, 0);
+      if (e)
+         warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
+      free(topic);
+      sleep(1);
+   }
    mosquitto_lib_cleanup();
    return 0;
 }

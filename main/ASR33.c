@@ -172,8 +172,15 @@ void power_off(void)
 {
    if (havepower == 0)
       return;
-   uart_wait_tx_done(uart, portMAX_DELAY);      // Should be clear, but just in case...
+   manual = 0;
+   done = 0;
+   txi = 0;
+   txo = 0;
+   rxp = 0;
+   doecho = !noecho;
+   xoff = 0;
    revk_state("power", "%d", havepower = 0);
+   uart_wait_tx_done(uart, portMAX_DELAY);      // Should be clear, but just in case...
    if (GPIO_IS_VALID_GPIO(motor))
    {                            // Motor direct control, off
       usleep(100000);           // If final character being printed...
@@ -185,13 +192,6 @@ void power_off(void)
       gpio_set_level(power, 1);
    if (*sonoff)
       revk_raw(NULL, sonoff, 1, "0", 0);        // Power, sonoff/mqtt, off
-   manual = 0;
-   done = 0;
-   txi = 0;
-   txo = 0;
-   rxp = 0;
-   doecho = !noecho;
-   xoff = 0;
 }
 
 void power_on(void)
