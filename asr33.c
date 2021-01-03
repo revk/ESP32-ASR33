@@ -236,7 +236,7 @@ int main(int argc, const char *argv[])
          warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
       free(topic);
    }
-   if (rfn >= 0)
+   if (rfn >= 0 && !cmd)
    {
       if (asprintf(&topic, "command/ASR33/%s/tx", tty ? : "*") < 0)
          errx(1, "malloc");
@@ -279,9 +279,8 @@ int main(int argc, const char *argv[])
          break;                 // closed
       }
    }
-   if (rfn >= 0)
+   if (rfn >= 0 && !cmd)
    {
-      close(rfn);
       if (asprintf(&topic, "command/ASR33/%s/tx", tty ? : "*") < 0)
          errx(1, "malloc");
       char *msg = NULL;
@@ -294,6 +293,8 @@ int main(int argc, const char *argv[])
       free(msg);
       sleep(1);
    }
+   if (rfn >= 0)
+      close(rfn);
    mosquitto_lib_cleanup();
    return 0;
 }
