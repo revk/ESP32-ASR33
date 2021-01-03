@@ -167,11 +167,12 @@ int main(int argc, const char *argv[])
          {
             count++;
             // ESC prefix on a letter causes it to (stay) upper case.
-            char c = (((char *) msg->payload)[i] &= 0x7F);      // Parity
+            char c = ((char *) msg->payload)[i];
             if (rfn >= 0)
                write(rfn, &c, 1);
             if (pts >= 0)
             {                   // Process keys
+               c &= 0x7F;       // Strip parity
                if (esc)
                {
                   esc = 0;
@@ -183,10 +184,10 @@ int main(int argc, const char *argv[])
                   c = tolower(c);
                if (c)
                   write(pts, &c, 1);
+               if (debug)
+                  warnx("tx %c", c);
             }
          }
-         if (debug)
-            warnx("tx %.*s", msg->payloadlen, msg->payload);
          return;
       }
       if (l >= 5 && !strcmp(msg->topic + l - 5, "/busy"))
@@ -249,7 +250,7 @@ int main(int argc, const char *argv[])
 
    while (!off)
    {
-      if (debug)
+      if (debug && cmd)
          warnx("idle");
       if (!pid)
          sleep(1);
