@@ -241,7 +241,7 @@ int main(int argc, const char *argv[])
             sprintf(when + strlen(when), ".%03dZ", tsms % 1000);
          } else
             strncpy(when, j_get(j, "created_at") ? : "", sizeof(when));
-         fprintf(o, "+++ %s", when);
+         fprintf(o, "\r+++ %s", when);
          if (self)
             fprintf(o, " MORE");
          fprintf(o, " FROM ");
