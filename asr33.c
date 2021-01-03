@@ -240,7 +240,7 @@ int main(int argc, const char *argv[])
    {
       if (asprintf(&topic, "command/ASR33/%s/tx", tty ? : "*") < 0)
          errx(1, "malloc");
-      const char *intro = "\rREAD TAPE\021";
+      const char *intro = "\024\rREAD TAPE\021";
       int e = mosquitto_publish(mqtt, NULL, topic, strlen(intro), intro, 0, 0);
       if (e)
          warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
@@ -284,7 +284,7 @@ int main(int argc, const char *argv[])
       if (asprintf(&topic, "command/ASR33/%s/tx", tty ? : "*") < 0)
          errx(1, "malloc");
       char *msg = NULL;
-      if (asprintf(&msg, " - DONE %d bytes\r\r\n", count) < 0)
+      if (asprintf(&msg, "\023 - DONE %d bytes\r\r\n", count) < 0)
          errx(1, "malloc");
       int e = mosquitto_publish(mqtt, NULL, topic, strlen(msg), msg, 0, 0);
       if (e)
