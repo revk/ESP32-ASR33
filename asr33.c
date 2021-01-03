@@ -165,11 +165,13 @@ int main(int argc, const char *argv[])
       {
          for (int i = 0; i < msg->payloadlen; i++)
          {
-            count++;
             // ESC prefix on a letter causes it to (stay) upper case.
             char c = ((char *) msg->payload)[i];
-            if (rfn >= 0)
+            if (rfn >= 0 && (count || c))
+            {                   // Copy to file (ignore leading nulls)
+               count++;
                write(rfn, &c, 1);
+            }
             if (pts >= 0)
             {                   // Process keys
                c &= 0x7F;       // Strip parity
