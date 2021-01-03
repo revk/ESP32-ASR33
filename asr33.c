@@ -82,9 +82,10 @@ int main(int argc, const char *argv[])
    int esc = 0;
    int rfn = -1;
    int off = 0;
+   int nulls = 0;
    int count = 0;
    if (readfn)
-      rfn = open(readfn, O_WRONLY | O_CREAT, 0777);
+      rfn = open(readfn, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 
    int e = mosquitto_lib_init();
    if (e)
@@ -167,10 +168,24 @@ int main(int argc, const char *argv[])
          {
             // ESC prefix on a letter causes it to (stay) upper case.
             char c = ((char *) msg->payload)[i];
-            if (rfn >= 0 && (count || c))
+            if (rfn >= 0)
             {                   // Copy to file (ignore leading nulls)
-               count++;
-               write(rfn, &c, 1);
+               if (!c)
+                  nulls++;      // Count nulls (so ignores trailing nulls)
+               else
+               {
+                  if (!count)
+                     nulls = 0; // Ignore leading nulls
+                  if (nulls)
+                  {             // Missed nulls
+                     count += nulls;
+                     char z = 0;
+                     while (nulls--)
+                        write(rfn, &z, 1);
+                  }
+                  count++;
+                  write(rfn, &c, 1);
+               }
             }
             if (pts >= 0)
             {                   // Process keys
