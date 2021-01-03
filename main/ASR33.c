@@ -444,7 +444,7 @@ void asr33_main(void *param)
                   docave = 1;   // Only playing a game
             } else
                wantpower = 0;
-            revk_event("on", "%d", wantpower);
+            revk_event(wantpower ? "on" : "off", "");
          }
       } else
          pressed = 0;

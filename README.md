@@ -52,6 +52,8 @@ Status, e.g. status/ASR33/[name]/[status]
 Events, e.g. event/ASR33/[name]/[event]
 - rx:	Raw 8 bit data from teletype (one character at a time)
 - line:	Text typed, parity stripped, a whole line of typed text
+- on:	Manual on
+- off:	Manual off
 
 Keyboard:
 - WRU:	Print string and version (unless wru blank and never set)
