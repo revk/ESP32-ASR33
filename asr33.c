@@ -82,6 +82,7 @@ int main(int argc, const char *argv[])
    int esc = 0;
    int rfn = -1;
    int off = 0;
+   int count = 0;
    if (readfn)
       rfn = open(readfn, O_WRONLY | O_CREAT, 0777);
 
@@ -164,6 +165,7 @@ int main(int argc, const char *argv[])
       {
          for (int i = 0; i < msg->payloadlen; i++)
          {
+            count++;
             // ESC prefix on a letter causes it to (stay) upper case.
             char c = (((char *) msg->payload)[i] &= 0x7F);      // Parity
             if (rfn >= 0)
@@ -282,11 +284,14 @@ int main(int argc, const char *argv[])
       close(rfn);
       if (asprintf(&topic, "command/ASR33/%s/tx", tty ? : "*") < 0)
          errx(1, "malloc");
-      const char *done = "\023 - DONE\r\r\n";
-      int e = mosquitto_publish(mqtt, NULL, topic, strlen(done), done, 0, 0);
+      char *msg = NULL;
+      if (asprintf(&msg, " - DONE %d bytes\r\r\n", count) < 0)
+         errx(1, "malloc");
+      int e = mosquitto_publish(mqtt, NULL, topic, strlen(msg), msg, 0, 0);
       if (e)
          warnx("MQTT publish failed %s (%s)", mosquitto_strerror(e), topic);
       free(topic);
+      free(msg);
       sleep(1);
    }
    mosquitto_lib_cleanup();
