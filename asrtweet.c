@@ -296,11 +296,11 @@ int main(int argc, const char *argv[])
             int pos = 0;
             char *q = p,
                 *b = p;
-            while (*q && *q != '\n' && pos < 72)
+            while (*q && *q != '\n' && pos < wrap)
             {
                if (*q == ' ')
                   p = q;
-               if (*q >= ' ' && (*q & 0xC0) != 0x80)
+               if ((unsigned char) *q >= ' ' && (*q & 0xC0) != 0x80)
                   pos++;
                q++;
             }
