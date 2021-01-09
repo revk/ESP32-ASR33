@@ -140,24 +140,50 @@ int main(int argc, const char *argv[])
       };
 
       optCon = poptGetContext(NULL, argc, argv, optionsTable, 0);
-      poptSetOtherOptionHelp(optCon, "[tweet-ids]");
+      poptSetOtherOptionHelp(optCon, "[tweet-handles]");
 
       int c;
       if ((c = poptGetNextOpt(optCon)) < -1)
          errx(1, "%s: %s\n", poptBadOption(optCon, POPT_BADOPTION_NOALIAS), poptStrerror(c));
 
+      char *cmd = NULL;
+      size_t l;
+      FILE *o = open_memstream(&cmd, &l);
+      fprintf(o, "twarc users ");
       const char *id;
       while ((id = poptGetArg(optCon)))
       {
-         ids = realloc(ids, sizeof(*ids) * (++idn));
-         if (!(ids[idn - 1] = strtoull(id, NULL, 0)))
-            errx(1, "Cannot parse id %s. Use twitter numeric ID", id);
+         if (*id == '@')
+            id++;
+         fprintf(o, "%s,", id);
       }
-      if (!debug && !idn)
+      fclose(o);
+      cmd[--l] = 0;
+      FILE *i = popen(cmd, "r");
+      if (!i)
+         err(1, "failed: %s", cmd);
+      free(cmd);
+      ajl_t p = ajl_read(i);
+      j_t j = j_create();
+      while (1)
       {
-         poptPrintUsage(optCon, stderr, 0);
-         errx(1, "Specify twitter IDs to follow");
+         const char *er = j_recv(j, p);
+         if (er && !*er)
+            break;
+         if (er)
+            errx(1, "failed: %s", er);
+         const char *id = j_get(j, "id");
+         if (id)
+         {
+            ids = realloc(ids, sizeof(*ids) * (++idn));
+            if (!(ids[idn - 1] = strtoull(id, NULL, 0)))
+               errx(1, "Cannot parse id %s. Use twitter numeric ID", id);
+            if (debug)
+               warnx("Following %s: @%s %s (%s) with %s followers.", id, j_get(j, "screen_name"), j_get(j, "name"), j_get(j, "description"), j_get(j, "followers_count"));
+         }
       }
+      j_delete(&j);
+      fclose(i);
       poptFreeContext(optCon);
    }
    if (background)
