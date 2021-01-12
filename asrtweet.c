@@ -85,6 +85,7 @@ int expand(FILE * o, j_t t)
          int l = strlen(from);
          if (strncmp(i, from, l))
             return 0;
+         count += l;
          fprintf(o, "%s", to);
          while (l--)
             if ((*i++ & 0xC0) != 0x80)
@@ -94,7 +95,8 @@ int expand(FILE * o, j_t t)
       if (check("&amp;", "&") || check("&lt;", "<") || check("&gt;", ">") || check("£", "GBP") || check("“", "\"") || check("”", "\"") || check("—", "--") || check("{", "[") || check("}", "]") || check("_", "-"))
          continue;
       // Next character
-      count++;
+      if (*i > ' ' && *i < 0x7F)
+         count++;
       pos++;
       fputc(*i++, o);
       while ((*i & 0xC0) == 0x80)
