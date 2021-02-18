@@ -78,7 +78,7 @@ const unsigned char small_f[256][5] = {
 #include "smallfont.h"
 };
 
-inline uint8_t pe(uint8_t b)
+static inline uint8_t pe(uint8_t b)
 {                               // Make even parity
    b &= 0x7F;
    for (int i = 0; i < 7; i++)
