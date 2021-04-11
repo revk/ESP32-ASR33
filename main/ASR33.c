@@ -16,16 +16,16 @@
 
 #define settings  \
   u8(uart,1)	\
-  u8(tx,17)	\
-  u8(rx,16)	\
-  u8(on,5)	\
-  u8(power,4)	\
-  u8(motor,2)	\
+  u8(tx,15)	\
+  u8(rx,13)	\
+  u8(on,2)	\
+  u8(power,16)	\
+  u8(motor,4)	\
   u1(ipower)	\
   u1(imotor)	\
   u1(itx)	\
-  u1(irx)	\
-  u1(ion)	\
+  u1t(irx)	\
+  u1t(ion)	\
   u1(noecho)	\
   u1(nobig)	\
   u1(nover)	\
@@ -46,6 +46,7 @@
 #define u16(n,d) uint16_t n;
 #define u8(n,d) uint8_t n;
 #define u1(n) uint8_t n;
+#define u1t(n) uint8_t n;
 #define t(n) const char*n=NULL;
 settings;
 #undef t
@@ -53,6 +54,7 @@ settings;
 #undef u16
 #undef u8
 #undef u1
+#undef u1t
 #define	MAXTX	65536           // Tx buffer max
 #define	MAXRX	256             // Line max
 
@@ -391,6 +393,7 @@ void asr33_main(void *param)
 #define u16(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u8(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u1(n) revk_register(#n,0,sizeof(n),&n,NULL,SETTING_BOOLEAN);
+#define u1t(n) revk_register(#n,0,sizeof(n),&n,"1",SETTING_BOOLEAN);
 #define t(n) revk_register(#n,0,0,&n,NULL,0);
    settings;
 #undef t
@@ -398,6 +401,7 @@ void asr33_main(void *param)
 #undef u16
 #undef u8
 #undef u1
+#undef u1t
 
    doecho = !noecho;
    ESP_ERROR_CHECK(uart_driver_install(uart, 1024, 1024, 0, NULL, 0));
