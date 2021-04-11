@@ -72,6 +72,8 @@ This whole system works well with the simple OTA PCB design
 (see https://github.com/revk/ESP32-OTA/tree/master/KiCad)
 Default pins 1:GND, 2:Rx(pull up in module), 3:Tx(inline resistor), 4:On, 5:Power, 6:Motor
 
+![IMG_8203](https://user-images.githubusercontent.com/996983/114298084-77ce6700-9aac-11eb-8384-a4184f0103cc.jpg)
+
 Note:
 - Typing WRU (^R) will response with wru string and version if either is configured/set
 - Typing RU (^F) will run Colossal Cave - have fun
