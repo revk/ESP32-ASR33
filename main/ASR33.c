@@ -24,6 +24,7 @@
   u1(ipower)	\
   u1(imotor)	\
   u1(itx)	\
+  u1(odtx)	\
   u1t(irx)	\
   u1t(ion)	\
   u1(noecho)	\
@@ -188,15 +189,15 @@ void power_off(void)
    xoff = 0;
    revk_state("power", "%d", havepower = 0);
    uart_wait_tx_done(uart, portMAX_DELAY);      // Should be clear, but just in case...
-   if (GPIO_IS_VALID_GPIO(motor))
+   if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
    {                            // Motor direct control, off
       usleep(100000);           // If final character being printed...
-      gpio_set_level(motor, imotor); // Off
+      gpio_set_level(motor, imotor);    // Off
       sleep(1);                 // Takes time for motor to spin down - ensure this is done before power goes off
    } else
       pos = -1;                 // No direct motor control, assume gash character(s) so pos unknown
-   if (GPIO_IS_VALID_GPIO(power))
-      gpio_set_level(power, ipower); // Off
+   if (GPIO_IS_VALID_OUTPUT_GPIO(power))
+      gpio_set_level(power, ipower);    // Off
    if (*sonoff)
       revk_raw(NULL, sonoff, 1, "0", 0);        // Power, sonoff/mqtt, off
 }
@@ -210,14 +211,14 @@ void power_on(void)
       revk_raw(NULL, sonoff, 1, "1", 0);
       sleep(1);                 // Allow time for MQTT, etc
    }
-   if (GPIO_IS_VALID_GPIO(power))
+   if (GPIO_IS_VALID_OUTPUT_GPIO(power))
    {                            // Power, direct control, on
-      gpio_set_level(power, 1 - ipower); // On
+      gpio_set_level(power, 1 - ipower);        // On
       usleep(100000);           // Min is 20ms for zero crossing, and 9ms for one bit for solenoid, but can be longer for safety
    }
-   if (GPIO_IS_VALID_GPIO(motor))
+   if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
    {                            // Motor, direct control, on
-      gpio_set_level(motor, 1 - imotor); // On
+      gpio_set_level(motor, 1 - imotor);        // On
       usleep(250000);           // Min 100ms for a null character from power off, and some for motor to start and get to speed
    }
    revk_state("power", "%d", havepower = 1);
@@ -412,28 +413,36 @@ void asr33_main(void *param)
       .stop_bits = UART_STOP_BITS_2,
       .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
    };
-// Configure UART parameters
+   // Configure UART parameters
    uart_param_config(uart, &uart_config);
+   if (GPIO_IS_VALID_OUTPUT_GPIO(tx) && odtx)
+      gpio_set_direction(tx, GPIO_MODE_DEF_OD); // Assume external pull up, do before mapping UART!
    uart_set_pin(uart, tx, rx, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
    uart_set_line_inverse(uart, (irx ? UART_SIGNAL_RXD_INV : 0) + (itx ? UART_SIGNAL_TXD_INV : 0));
    uart_set_rx_full_threshold(uart, 1);
-   gpio_set_pull_mode(rx, GPIO_PULLUP_ONLY);
-   gpio_pullup_en(rx);
-   gpio_set_drive_capability(tx, GPIO_DRIVE_CAP_3);
+   if (GPIO_IS_VALID_GPIO(rx))
+   {
+      gpio_pullup_dis(rx);      // Assume external pull up / cap
+   }
+   if (GPIO_IS_VALID_OUTPUT_GPIO(tx))
+   {
+      gpio_pullup_dis(tx);      // Assume external pull up
+      gpio_set_drive_capability(tx, GPIO_DRIVE_CAP_3);
+   }
    if (GPIO_IS_VALID_GPIO(on))
    {                            // On input
       gpio_set_direction(on, GPIO_MODE_INPUT);
       gpio_set_pull_mode(on, GPIO_PULLUP_ONLY);
       gpio_pullup_en(on);
    }
-   if (GPIO_IS_VALID_GPIO(power))
+   if (GPIO_IS_VALID_OUTPUT_GPIO(power))
    {
-      gpio_set_level(power, ipower); // Off
+      gpio_set_level(power, ipower);    // Off
       gpio_set_direction(power, GPIO_MODE_OUTPUT);
    }
-   if (GPIO_IS_VALID_GPIO(motor))
+   if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
    {
-      gpio_set_level(motor, imotor); // Off
+      gpio_set_level(motor, imotor);    // Off
       gpio_set_direction(motor, GPIO_MODE_OUTPUT);
    }
 
@@ -471,7 +480,7 @@ void asr33_main(void *param)
          else if (wantpower == 1)
             power_on();
       }
-      if ((GPIO_IS_VALID_GPIO(power) || *sonoff) && havepower != 1)
+      if ((GPIO_IS_VALID_OUTPUT_GPIO(power) || *sonoff) && havepower != 1)
          continue;              // Not running
       int64_t now = esp_timer_get_time();
       // Check rx

@@ -4,7 +4,7 @@
 
 const char *arbitrary_messages[] = {
    NULL,
-   "Somewhere nearby is Colossal Cave, where others have found fortunes in\ntreasure and gold, though it is rumored that some who enter are never\nseen again.  Magic is said to work in the cave.  I will be your eyes\nand hands.  Direct me with commands of 1 or 2 words.  I should warn\nyou that I look at only the first five letters of each word, so you\'ll\nhave to enter \"northeast\" as \"ne\" to distinguish it from \"north\".\nYou can type \"help\" for some general hints.  For information on how\nto end your adventure, scoring, etc., type \"info\".\n\t\t\t      - - -\nThis program was originally developed by Willie Crowther.  Most of the\nfeatures of the current program were added by Don Woods.",
+   "Somewhere nearby is Colossal Cave, where others have found fortunes in\ntreasure and gold, though it is rumored that some who enter are never\nseen again.  Magic is said to work in the cave.  I will be your eyes\nand hands.  Direct me with commands of 1 or 2 words.  I should warn\nyou that I look at only the first five letters of each word, so you\'ll\nhave to enter \"northeast\" as \"ne\" to distinguish it from \"north\".\nYou can type \"help\" for some general hints.  For information on how\nto end your adventure, scoring, etc., type \"info\".\n\t\t\t      - - -\nThis program was originally developed by Willie Crowther.  Most of the\nfeatures of the current program were added by Don Woods.\nThe gave was adapted for use on an ASR33 Teletype by Adrian Kennard.",
    "A little dwarf with a big knife blocks your way.",
    "A little dwarf just walked around a corner, saw you, threw a little\naxe at you which missed, cursed, and ran away.",
    "There are %d threatening little dwarves in the room with you.",

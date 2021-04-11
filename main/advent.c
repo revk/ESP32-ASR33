@@ -58,7 +58,7 @@ int advent(void)
    revk_info(TAG, "Game over");
    /* show score and exit */
    terminate(quitgame);
-   sendline("+++ GAME OVER +++\r\n", -1);
+   sendline("\r\n+++ GAME OVER +++\r\n\r\n+++ WOULD YOU LIKE TO PLAY A NICE GAME OF CHESS? +++\r\n\r\nPERHAPS NOT...\r\n", -1);
    return 0;
 }
 

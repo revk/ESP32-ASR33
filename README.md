@@ -22,6 +22,7 @@ Additional settings, e.g. setting/ASR33/[name]/[setting] [value]
 - on:	On pin (a high toggles on/off)
 - power: Output pin (low=active) to directly control power
 - motor: Output pin (low=active) to directly control motor
+- odtx: boolean set tx to open drain (assumes external pull up for current drive)
 - itx, irx, ion, ipower, imotor: Boolean to invert each pin
 - sonoff:	The topic to use for power on/off the teletype
 - idle:	The number of seconds before powering off after printing done
@@ -70,7 +71,8 @@ Rx needs 10k pull up typically, and may need a capacitor as well.
 
 This whole system works well with the simple OTA PCB design
 (see https://github.com/revk/ESP32-OTA/tree/master/KiCad)
-Default pins 1:GND, 2:Rx(pull up in module), 3:Tx(inline resistor), 4:On, 5:Power, 6:Motor
+Default pins 1:GND, 2:Rx, 3:Tx, 4:On, 5:Power, 6:Motor
+Put 100R in line with Tx, and fit a 10k pull up on Rx
 
 ![IMG_8203](https://user-images.githubusercontent.com/996983/114298084-77ce6700-9aac-11eb-8384-a4184f0103cc.jpg)
 
