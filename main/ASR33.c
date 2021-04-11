@@ -26,7 +26,7 @@
   u1(itx)	\
   u1(odtx)	\
   u1t(irx)	\
-  u1t(ion)	\
+  u1(ion)	\
   u1(noecho)	\
   u1(nobig)	\
   u1(nover)	\
