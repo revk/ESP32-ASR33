@@ -22,6 +22,7 @@ Additional settings, e.g. setting/ASR33/[name]/[setting] [value]
 - on:	On pin (a high toggles on/off)
 - power: Output pin (low=active) to directly control power
 - motor: Output pin (low=active) to directly control motor
+- itx, irx, ion, ipower, imotor: Boolean to invert each pin
 - sonoff:	The topic to use for power on/off the teletype
 - idle:	The number of seconds before powering off after printing done
 - keyidle: The number of seconds before powering off in manual mode (i.e. on function not just printing)
@@ -62,11 +63,17 @@ Keyboard:
 - TAPE/XTAPE: Start/stop tape printing large text
 - EOT: Power off
 
-Can be connected using a 100 ohm resistor directly
+Tx can be connected using a 100 ohm resistor directly
 (see https://www.revk.uk/2020/12/connecting-asr33-teletype-to-esp32.html)
+
+Rx needs 10k pull up typically, and may need a capacitor as well.
+
+This whole system works well with the simple OTA PCB design
+(see https://github.com/revk/ESP32-OTA/tree/master/KiCad)
+Default pins 1:GND, 2:Rx(pull up in module), 3:Tx(inline resistor), 4:On, 5:Power, 6:Motor
 
 Note:
 - Typing WRU (^R) will response with wru string and version if either is configured/set
 - Typing RU (^F) will run Colossal Cave - have fun
 
-Copyright © 2020 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
+Copyright © 202021 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
