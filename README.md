@@ -73,6 +73,7 @@ This whole system works well with the simple OTA PCB design
 (see https://github.com/revk/ESP32-OTA/tree/master/KiCad)
 Default pins 1:GND, 2:Rx, 3:Tx, 4:On, 5:Power, 6:Motor
 Put 100R in line with Tx, and fit a 10k pull up on Rx
+(Later (V3) of the OTA board can have the series resistor on the board and different pin outs)
 
 ![IMG_8203](https://user-images.githubusercontent.com/996983/114298084-77ce6700-9aac-11eb-8384-a4184f0103cc.jpg)
 
