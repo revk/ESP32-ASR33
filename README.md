@@ -64,16 +64,15 @@ Keyboard:
 - TAPE/XTAPE: Start/stop tape printing large text
 - EOT: Power off
 
-Tx can be connected using a 100 ohm resistor directly
+Tx can be connected using a series 100 ohm resistor.
 (see https://www.revk.uk/2020/12/connecting-asr33-teletype-to-esp32.html)
 
 Rx needs 10k pull up typically, and may need a capacitor as well.
 
 This whole system works well with the simple OTA PCB design
 (see https://github.com/revk/ESP32-OTA/tree/master/KiCad)
-Default pins 1:GND, 2:Rx, 3:Tx, 4:On, 5:Power, 6:Motor
-Put 100R in line with Tx, and fit a 10k pull up on Rx
-(Later (V3) of the OTA board can have the series resistor on the board and different pin outs)
+Default pins for this OTA board (V3) are 1:GND, 2:Rx, 3:On, 4:Power, 5:Motor, 6:Tx.
+Fit 100R in line on 6, fit 10k pull up on 2, and optionally 100nF to GND on 2.
 
 ![IMG_8203](https://user-images.githubusercontent.com/996983/114298084-77ce6700-9aac-11eb-8384-a4184f0103cc.jpg)
 

@@ -16,11 +16,11 @@
 
 #define settings  \
   u8(uart,1)	\
-  u8(tx,15)	\
-  u8(rx,13)	\
-  u8(on,2)	\
-  u8(power,16)	\
-  u8(motor,4)	\
+  u8(rx,13)     \
+  u8(on,15)  \
+  u8(power,2)      \
+  u8(motor,16)  \
+  u8(tx,4)      \
   u1(ipower)	\
   u1(imotor)	\
   u1(itx)	\
