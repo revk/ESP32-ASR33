@@ -81,4 +81,4 @@ Note:
 - Typing WRU (^R) will response with wru string and version if either is configured/set
 - Typing RU (^F) will run Colossal Cave - have fun
 
-Copyright © 202021 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
+Copyright © 2020-21 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
