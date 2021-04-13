@@ -19,11 +19,11 @@ Additional settings, e.g. setting/ASR33/[name]/[setting] [value]
 - uart:	UART number
 - tx:	Tx pin
 - rx:	Rx pin
-- on:	On pin (a high toggles on/off)
-- power: Output pin (low=active) to directly control power
-- motor: Output pin (low=active) to directly control motor
-- odtx: boolean set tx to open drain (assumes external pull up for current drive)
+- on:	On/off button pin
+- power: Output pin to directly control power
+- motor: Output pin to directly control motor
 - itx, irx, ion, ipower, imotor: Boolean to invert each pin
+- odtx: boolean set tx to open drain
 - sonoff:	The topic to use for power on/off the teletype
 - idle:	The number of seconds before powering off after printing done
 - keyidle: The number of seconds before powering off in manual mode (i.e. on function not just printing)
