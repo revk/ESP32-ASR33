@@ -2,6 +2,7 @@
 // Copyright © 2019 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
 
 #include "revk.h"
+#include "jo.h"
 #include <esp_spi_flash.h>
 #include <driver/uart.h>
 #include <driver/gpio.h>
@@ -176,6 +177,18 @@ void nl(void)
    queuebyte(pe('\n'));         // LF (allows time for CR as well)
 }
 
+void reportstate(void)
+{
+   uint64_t t = esp_timer_get_time();
+   jo_t j = jo_create_alloc();
+   jo_object(j, NULL);
+   jo_litf(j, "up", "%d.%06d", (uint32_t) (t / 1000000LL), (uint32_t) (t % 1000000LL));
+   jo_bool(j, "power", havepower);
+   jo_bool(j, "busy", busy);
+   //jo_bool(j, "wantpower", wantpower);
+   revk_state("status", "%s", jo_result_free(&j) ? : "");
+}
+
 void power_off(void)
 {
    if (havepower == 0)
@@ -187,7 +200,8 @@ void power_off(void)
    rxp = 0;
    doecho = !noecho;
    xoff = 0;
-   revk_state("power", "%d", havepower = 0);
+   havepower = 0;
+   reportstate();
    uart_wait_tx_done(uart, portMAX_DELAY);      // Should be clear, but just in case...
    if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
    {                            // Motor direct control, off
@@ -221,7 +235,8 @@ void power_on(void)
       gpio_set_level(motor, 1 - imotor);        // On
       usleep(250000);           // Min 100ms for a null character from power off, and some for motor to start and get to speed
    }
-   revk_state("power", "%d", havepower = 1);
+   havepower = 1;
+   reportstate();
    uart_flush(uart);
    timeout(0);
 }
@@ -238,18 +253,12 @@ void power_needed(void)
 const char *app_command(const char *tag, unsigned int len, const unsigned char *value)
 {
    if (!strcmp(tag, "status"))
-   {
-      revk_info("uptime", "%lld", esp_timer_get_time());
-      revk_state("power", "%d", havepower);     // Report power state
-      revk_state("busy", "%d", busy);   // Report busy state
-      revk_info("wantpower", "%d", wantpower);
-   }
+      reportstate();
    if (!strcmp(tag, "connect"))
    {
       if (*sonoff)
          revk_raw(NULL, sonoff, 1, havepower ? "1" : "0", 0);   // Ensure power as wanted
-      revk_state("power", "%d", havepower);     // Report power state
-      revk_state("busy", "%d", busy);   // Report busy state
+      reportstate();
    }
    if (!strcmp(tag, "restart"))
       wantpower = 0;
@@ -468,9 +477,14 @@ void asr33_main(void *param)
          pressed = 0;
       // Check tx buffer usage
       if ((txi + MAXTX - txo) % MAXTX > MAXTX * 2 / 3 && busy != 1)
-         revk_state("busy", "%d", busy = 1);
-      if ((txi + MAXTX - txo) % MAXTX < MAXTX * 1 / 3 && busy != 0)
-         revk_state("busy", "%d", busy = 0);
+      {
+         busy = 1;
+         reportstate();
+      } else if ((txi + MAXTX - txo) % MAXTX < MAXTX * 1 / 3 && busy != 0)
+      {
+         busy = 0;
+         reportstate();
+      }
       if (txi != txo)
          wantpower = 1;
       if (wantpower != havepower)
@@ -568,7 +582,10 @@ void asr33_main(void *param)
             docave = 0;
             extern int advent(void);
             if (!busy)
-               revk_state("busy", "%d", busy = 1);
+            {
+               busy = 1;
+               reportstate();
+            }
             advent();
             manual = 0;
          }

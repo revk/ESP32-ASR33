@@ -159,6 +159,7 @@ int main(int argc, const char *argv[])
    void message(struct mosquitto *mqtt, void *obj, const struct mosquitto_message *msg) {
       if (debug)
          warnx("msg %s", msg->topic);
+      // TODO handle JSON messages
       int l = strlen(msg->topic);
       if (l >= 4 && !strcmp(msg->topic + l - 4, "/off"))
          off = 1;
