@@ -186,7 +186,12 @@ void reportstate(void)
    jo_bool(j, "power", havepower);
    jo_bool(j, "busy", busy);
    //jo_bool(j, "wantpower", wantpower);
-   revk_state("status", "%s", jo_result_free(&j) ? : "");
+   char *res = jo_finisha(&j);
+   if (res)
+   {
+      revk_state("status", "%s", res);
+      free(res);
+   }
 }
 
 void power_off(void)
