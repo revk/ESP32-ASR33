@@ -30,7 +30,7 @@ static void *xcalloc(size_t size)
    {
       // LCOV_EXCL_START
       // exclude from coverage analysis because we can't simulate an out of memory error in testing
-      revk_error("advent", "Out of memory");
+      ESP_LOGE("advent", "Out of memory");
       sendline("+++ out of memory +++\r\n", -1);
       sleep(10);
       exit(EXIT_FAILURE);
@@ -731,7 +731,10 @@ int32_t randrange(int32_t range)
 // LCOV_EXCL_START
 void bug(enum bugtype num, const char *error_string)
 {
-   revk_error("advent", "Fatal error %d: %s", num, error_string);
+   jo_t j = jo_object_alloc();
+   jo_int(j, "code", num);
+   jo_string(j, "description", error_string);
+   revk_error("advent", &j);
    sendline("+++ FATAL ERROR +++\r\n", -1);
    sleep(10);
    exit(EXIT_FAILURE);

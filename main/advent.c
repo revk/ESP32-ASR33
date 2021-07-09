@@ -42,7 +42,9 @@ int advent(void)
    if (game.novice)
       game.limit = NOVICELIMIT;
 
-   revk_info(TAG, "Game start");
+   jo_t j = jo_create_alloc();
+   jo_string(j, "game", "Start");
+   revk_info(TAG, &j);
    /* interpret commands until EOF or interrupt */
    gameover = 0;
    while (!gameover)
@@ -55,7 +57,9 @@ int advent(void)
       if (!do_command())
          break;
    }
-   revk_info(TAG, "Game over");
+   j = jo_create_alloc();
+   jo_string(j, "game", "Over");
+   revk_info(TAG, &j);
    /* show score and exit */
    terminate(quitgame);
    sendline("\r\n+++ GAME OVER +++\r\n\r\n+++ WOULD YOU LIKE TO PLAY A NICE GAME OF CHESS? +++\r\n\r\nPERHAPS NOT...\r\n", -1);
