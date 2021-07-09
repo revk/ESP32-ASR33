@@ -481,7 +481,11 @@ void asr33_main(void *param)
                   docave = 1;   // Only playing a game
             } else
                wantpower = 0;
-            revk_event(wantpower ? "on" : "off", "");
+	    {
+		    jo_t j=jo_create_alloc();
+		    jo_string(j,NULL,wantpower ? "on" : "off");
+		    revk_event(NULL,&j);
+	    }
          }
       } else
          pressed = 0;
@@ -524,10 +528,14 @@ void asr33_main(void *param)
                else
                   manual = 1;   // Typing
             }
-            revk_event("rx", "%c", b);
+	    jo_t j=jo_object_alloc();
+	    jo_int(j,"byte",b);
+            revk_event("rx",&j);
             if ((b & 0x7F) == '\n')
             {
-               revk_event("line", "%.*s", rxp, line);
+		      jo_t j=jo_create_alloc();
+		      jo_stringn(j,NULL,line,rxp);
+		      revk_event("line",&j);
                rxp = 0;
             } else if ((b & 0x7F) != '\r' && rxp < MAXRX)
                line[rxp++] = (b & 0x7F);
