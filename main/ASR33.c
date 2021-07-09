@@ -249,7 +249,7 @@ void power_needed(void)
    wantpower = 1;
 }
 
-const char *app_callback(int client, const char *prefix, const char *target, const char *suffix, jo_t)
+const char *app_callback(int client, const char *prefix, const char *target, const char *suffix, jo_t j)
 {
    if (client || target || !prefix || strcmp(prefix, "command"))
       return NULL;              // Not what we want
@@ -279,6 +279,14 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       doecho = 1;
    if (!strcmp(suffix, "noecho"))
       doecho = 0;
+   // Commands that expect data - send as JSON string
+   int len = jo_strlen(j);
+   if (len < 0)
+      return "JSON string expected";
+   char *buf = jo_strdup(j),
+       *value = buf;
+   if (!buf)
+      return "Malloc";
    if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw"))
    {                            // raw send
       power_needed();
@@ -393,6 +401,7 @@ const char *app_callback(int client, const char *prefix, const char *target, con
             queuebyte(DC4);     // Tape off
       }
    }
+   free(buf);
    return "";
 }
 
