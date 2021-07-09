@@ -185,12 +185,7 @@ void reportstate(void)
    jo_bool(j, "power", havepower);
    jo_bool(j, "busy", busy);
    //jo_bool(j, "wantpower", wantpower);
-   char *res = jo_finisha(&j);
-   if (res)
-   {
-      revk_state("status", "%s", res);
-      free(res);
-   }
+   revk_state(NULL, &j);
 }
 
 void power_off(void)
@@ -217,7 +212,7 @@ void power_off(void)
    if (GPIO_IS_VALID_OUTPUT_GPIO(power))
       gpio_set_level(power, ipower);    // Off
    if (*sonoff)
-      revk_raw(NULL, sonoff, 1, "0", 0);        // Power, sonoff/mqtt, off
+      revk_mqtt_send_raw(sonoff, 0, "0", 0);
 }
 
 void power_on(void)
@@ -226,7 +221,7 @@ void power_on(void)
       return;
    if (*sonoff)
    {                            // Power, sonoff/mqtt, on
-      revk_raw(NULL, sonoff, 1, "1", 0);
+      revk_mqtt_send_raw(sonoff, 0, "1", 0);
       sleep(1);                 // Allow time for MQTT, etc
    }
    if (GPIO_IS_VALID_OUTPUT_GPIO(power))
@@ -254,41 +249,43 @@ void power_needed(void)
    wantpower = 1;
 }
 
-const char *app_command(const char *tag, unsigned int len, const unsigned char *value)
+const char *app_callback(int client, const char *prefix, const char *target, const char *suffix, jo_t)
 {
-   if (!strcmp(tag, "status"))
+   if (client || target || !prefix || strcmp(prefix, "command"))
+      return NULL;              // Not what we want
+   if (!strcmp(suffix, "status"))
       reportstate();
-   if (!strcmp(tag, "connect"))
+   if (!strcmp(suffix, "connect"))
    {
       if (*sonoff)
-         revk_raw(NULL, sonoff, 1, havepower ? "1" : "0", 0);   // Ensure power as wanted
+         revk_mqtt_send_raw(sonoff, 0, havepower ? "1" : "0", 0);
       reportstate();
    }
-   if (!strcmp(tag, "restart"))
+   if (!strcmp(suffix, "restart"))
       wantpower = 0;
-   if (!strcmp(tag, "cave"))
+   if (!strcmp(suffix, "cave"))
       docave = 1;
-   if (!strcmp(tag, "on"))
+   if (!strcmp(suffix, "on"))
    {
       manual = 1;
       power_needed();
    }
-   if (!strcmp(tag, "off"))
+   if (!strcmp(suffix, "off"))
    {
       wantpower = 0;
       manual = 0;
    }
-   if (!strcmp(tag, "echo"))
+   if (!strcmp(suffix, "echo"))
       doecho = 1;
-   if (!strcmp(tag, "noecho"))
+   if (!strcmp(suffix, "noecho"))
       doecho = 0;
-   if (!strcmp(tag, "tx") || !strcmp(tag, "txraw") || !strcmp(tag, "raw"))
+   if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw"))
    {                            // raw send
       power_needed();
       while (len--)
          queuebyte(*value++);
    }
-   if (!strcmp(tag, "text"))
+   if (!strcmp(suffix, "text"))
    {                            // Text send
       power_needed();
       while (len--)
@@ -340,10 +337,10 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             queuebyte(pe(b));
       }
    }
-   if (!strcmp(tag, "punch") || !strcmp(tag, "punchraw"))
+   if (!strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
    {                            // Raw punched data (with DC2/DC4)
       power_needed();
-      if (!tag[5])
+      if (!suffix[5])
       {
          if (!nodc4)
             queuebyte(DC2);     // Tape on
@@ -363,7 +360,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             lastrx = 0;
          }
       }
-      if (!tag[5])
+      if (!suffix[5])
       {
          for (int i = 0; i < tapetail; i++)
             queuebyte(0);
@@ -371,10 +368,10 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
             queuebyte(DC4);     // Tape off
       }
    }
-   if (!strcmp(tag, "tape") || !strcmp(tag, "taperaw"))
+   if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw"))
    {                            // Punched tape text
       power_needed();
-      if (!tag[4])
+      if (!suffix[4])
       {
          if (!nodc4)
             queuebyte(DC2);     // Tape on
@@ -388,7 +385,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
          if (len)
             queuebyte(0);
       }
-      if (!tag[4])
+      if (!suffix[4])
       {
          for (int i = 0; i < tapetail; i++)
             queuebyte(0);
@@ -402,7 +399,7 @@ const char *app_command(const char *tag, unsigned int len, const unsigned char *
 void asr33_main(void *param)
 {
    queue_mutex = xSemaphoreCreateMutex();
-   revk_init(&app_command);
+   revk_init(&app_callback);
 #define u32(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u16(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u8(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
