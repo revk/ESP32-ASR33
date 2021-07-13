@@ -279,71 +279,110 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       doecho = 1;
    if (!strcmp(suffix, "noecho"))
       doecho = 0;
-   // Commands that expect data - send as JSON string
-   int len = jo_strlen(j);
+
+
+   if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw") || !strcmp(suffix, "text"))
+   {                            // Plain text functions - simple JSON string
+      int len = jo_strlen(j);
+      if (len < 0)
+         return "JSON string expected";
+      char *buf = jo_strdup(j),
+          *value = buf;
+      if (!buf)
+         return "Malloc";
+      if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw"))
+      {                         // Punched tape text
+         power_needed();
+         if (!suffix[4])
+         {
+            if (!nodc4)
+               queuebyte(DC2);  // Tape on
+            for (int i = 0; i < tapelead; i++)
+               queuebyte(0);
+         }
+         while (len--)
+         {
+            if (!queuebig(*value++))
+               continue;
+            if (len)
+               queuebyte(0);
+         }
+         if (!suffix[4])
+         {
+            for (int i = 0; i < tapetail; i++)
+               queuebyte(0);
+            if (!nodc4)
+               queuebyte(DC4);  // Tape off
+         }
+      }
+      if (!strcmp(suffix, "text"))
+      {
+         power_needed();
+         while (len--)
+         {
+            uint32_t b = *value++;
+            // We assume this is utf-8
+            if ((b & 0xC0) == 0x80)
+               b = 0x7F;        // Silly, not even utf-8, rub out
+            else if ((b & 0xF8) == 0xF0 && len >= 3 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80 && (value[2] & 0xC0) == 0x80)
+            {
+               b = (value[2] & 0x3F) + ((value[1] & 0x3F) << 6) + ((value[0] & 0x3F) << 12) + ((b & 0x07) << 18);
+               value += 3;
+               len -= 3;
+            } else if ((b & 0xF0) == 0xE0 && len >= 2 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80)
+            {
+               b = (value[1] & 0x3F) + ((value[0] & 0x3F) << 6) + ((b & 0x0F) << 12);
+               value += 2;
+               len -= 2;
+            } else if ((b & 0xE0) == 0xC0 && len >= 1 && (value[0] & 0xC0) == 0x80)
+            {
+               b = (value[0] & 0x3F) + ((b & 0x1F) << 6);
+               value += 1;
+               len -= 1;
+            }
+            // Handle some unicode we understand
+            if (b >= 0x1D670 && b < 0x1D670 + 26)
+               b = 'A' + b - 0x1D670;   // Maths monospace characters
+            else if (b >= 0x1D68A && b < 0x1D68A + 26)
+               b = 'a' + b - 0x1D68A;
+            else if (b >= 0x1D7F6 && b < 0x1D7F6 + 10)
+               b = '0' + b - 0x1D7F6;
+            else if (b == 0x2014)
+               b = '-';         // Common hyphen (long)
+            else if (b == 0x2018 || b == 0x2019)
+               b = '\'';        // Common quote escape
+            else if (b == 0x201c || b == 0x201d)
+               b = '"';         // Common quote escape
+            if (b >= 0x80)
+               b = 0x5E;        // Other unicode so print as Up arrow
+            if (b >= ' ' && b < 0x7F && pos >= LINELEN)
+               nl();            // Force newline as would overprint
+            if (b == '\n')
+               nl();            // We want a new line (does CR too)
+            else if (b == '\r')
+            {                   // Explicit CR, let's assume no NL
+               cr();            // We want a carriage return
+               queuebyte(0);    // Assuming no LF, need extra null
+            } else
+               queuebyte(pe(b));
+         }
+      }
+      return "";
+   }
+   // Functions that expect hex data
+   int len = jo_strncpy(j, NULL, 0);
    if (len < 0)
       return "JSON string expected";
-   char *buf = jo_strdup(j),
+   char *buf = malloc(len),
        *value = buf;
    if (!buf)
       return "Malloc";
+   jo_strncpy(j, buf, len);
    if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw"))
    {                            // raw send
       power_needed();
       while (len--)
          queuebyte(*value++);
-   }
-   if (!strcmp(suffix, "text"))
-   {                            // Text send
-      power_needed();
-      while (len--)
-      {
-         uint32_t b = *value++;
-         // We assume this is utf-8
-         if ((b & 0xC0) == 0x80)
-            b = 0x7F;           // Silly, not even utf-8, rub out
-         else if ((b & 0xF8) == 0xF0 && len >= 3 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80 && (value[2] & 0xC0) == 0x80)
-         {
-            b = (value[2] & 0x3F) + ((value[1] & 0x3F) << 6) + ((value[0] & 0x3F) << 12) + ((b & 0x07) << 18);
-            value += 3;
-            len -= 3;
-         } else if ((b & 0xF0) == 0xE0 && len >= 2 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80)
-         {
-            b = (value[1] & 0x3F) + ((value[0] & 0x3F) << 6) + ((b & 0x0F) << 12);
-            value += 2;
-            len -= 2;
-         } else if ((b & 0xE0) == 0xC0 && len >= 1 && (value[0] & 0xC0) == 0x80)
-         {
-            b = (value[0] & 0x3F) + ((b & 0x1F) << 6);
-            value += 1;
-            len -= 1;
-         }
-         // Handle some unicode we understand
-         if (b >= 0x1D670 && b < 0x1D670 + 26)
-            b = 'A' + b - 0x1D670;      // Maths monospace characters
-         else if (b >= 0x1D68A && b < 0x1D68A + 26)
-            b = 'a' + b - 0x1D68A;
-         else if (b >= 0x1D7F6 && b < 0x1D7F6 + 10)
-            b = '0' + b - 0x1D7F6;
-         else if (b == 0x2014)
-            b = '-';            // Common hyphen (long)
-         else if (b == 0x2018 || b == 0x2019)
-            b = '\'';           // Common quote escape
-         else if (b == 0x201c || b == 0x201d)
-            b = '"';            // Common quote escape
-         if (b >= 0x80)
-            b = 0x5E;           // Other unicode so print as Up arrow
-         if (b >= ' ' && b < 0x7F && pos >= LINELEN)
-            nl();               // Force newline as would overprint
-         if (b == '\n')
-            nl();               // We want a new line (does CR too)
-         else if (b == '\r')
-         {                      // Explicit CR, let's assume no NL
-            cr();               // We want a carriage return
-            queuebyte(0);       // Assuming no LF, need extra null
-         } else
-            queuebyte(pe(b));
-      }
    }
    if (!strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
    {                            // Raw punched data (with DC2/DC4)
@@ -369,31 +408,6 @@ const char *app_callback(int client, const char *prefix, const char *target, con
          }
       }
       if (!suffix[5])
-      {
-         for (int i = 0; i < tapetail; i++)
-            queuebyte(0);
-         if (!nodc4)
-            queuebyte(DC4);     // Tape off
-      }
-   }
-   if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw"))
-   {                            // Punched tape text
-      power_needed();
-      if (!suffix[4])
-      {
-         if (!nodc4)
-            queuebyte(DC2);     // Tape on
-         for (int i = 0; i < tapelead; i++)
-            queuebyte(0);
-      }
-      while (len--)
-      {
-         if (!queuebig(*value++))
-            continue;
-         if (len)
-            queuebyte(0);
-      }
-      if (!suffix[4])
       {
          for (int i = 0; i < tapetail; i++)
             queuebyte(0);
