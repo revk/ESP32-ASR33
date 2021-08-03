@@ -422,7 +422,7 @@ const char *app_callback(int client, const char *prefix, const char *target, con
 void asr33_main(void *param)
 {
    queue_mutex = xSemaphoreCreateMutex();
-   revk_init(&app_callback);
+   revk_boot(&app_callback);
 #define u32(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u16(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u8(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
@@ -436,7 +436,7 @@ void asr33_main(void *param)
 #undef u8
 #undef u1
 #undef u1t
-
+   revk_start();
    doecho = !noecho;
    ESP_ERROR_CHECK(uart_driver_install(uart, 1024, 1024, 0, NULL, 0));
    uart_config_t uart_config = {
