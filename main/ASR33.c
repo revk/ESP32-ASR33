@@ -19,7 +19,7 @@
   u8(rx,13)     \
   u8(on,15)  \
   u8(power,2)      \
-  u8(motor,16)  \
+  u8(motor,27)  \
   u8(tx,4)      \
   u1(ipower)	\
   u1(imotor)	\
