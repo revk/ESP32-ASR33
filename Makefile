@@ -7,6 +7,9 @@ PROJECT_NAME := ASR33
 
 include $(IDF_PATH)/make/project.mk
 
+pull:
+	git pull
+	git submodule update --recursive
 
 update:
 	git submodule update --init --recursive --remote
