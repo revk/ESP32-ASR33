@@ -5,7 +5,20 @@
 
 PROJECT_NAME := ASR33
 
-include $(IDF_PATH)/make/project.mk
+all:
+	idf.py build
+
+flash:
+	idf.py flash
+
+monitor:
+	idf.py monitor
+
+clean:
+	idf.py clean
+
+menuconfig:
+	idf.py menuconfig
 
 pull:
 	git pull
