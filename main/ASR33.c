@@ -281,7 +281,7 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       doecho = 0;
 
 
-   if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw") || !strcmp(suffix, "text"))
+   if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw") || !strcmp(suffix, "text") || !strcmp(suffix, "line") || !strcmp(suffix, "bell"))
    {                            // Plain text functions - simple JSON string
       int len = jo_strlen(j);
       if (len < 0)
@@ -315,7 +315,7 @@ const char *app_callback(int client, const char *prefix, const char *target, con
                queuebyte(DC4);  // Tape off
          }
       }
-      if (!strcmp(suffix, "text"))
+      if (!strcmp(suffix, "text") || !strcmp(suffix, "line") || !strcmp(suffix, "bell"))
       {
          power_needed();
          while (len--)
@@ -365,6 +365,13 @@ const char *app_callback(int client, const char *prefix, const char *target, con
                queuebyte(0);    // Assuming no LF, need extra null
             } else
                queuebyte(pe(b));
+         }
+         if (!strcmp(suffix, "line") || !strcmp(suffix, "bell"))
+         {
+            cr();
+            nl();
+            if (!strcmp(suffix, "bell"))
+               queuebyte(pe(7));
          }
       }
       return "";
