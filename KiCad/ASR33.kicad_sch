@@ -2230,6 +2230,12 @@
     (uuid ff3e9ca9-6dc0-4496-aebe-20f4a6d61445)
   )
 
+  (text "Look in to clamp diode on Rx\nCheck all GPIO are clean\nAdd QR code"
+    (at 29.845 127.635 0)
+    (effects (font (size 10 10) (thickness 2) bold) (justify left bottom))
+    (uuid a15739ab-9211-4aeb-9603-bc7b827421d7)
+  )
+
   (global_label "MOTOR" (shape input) (at 127 113.03 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 00ed3eb0-d808-4cba-a8bc-4d41c999b3f4)
