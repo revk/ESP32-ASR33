@@ -223,10 +223,10 @@
       (options (clearance outline) (anchor rect))
       (primitives
     (gr_arc (start 2.89 -3.045) (mid 0 -0.155) (end -2.89 -3.045) (width 0.25))
-    (gr_arc (start 4.294753 -3.49127) (mid -0.020907 -1.02625) (end -4.315692 -3.527464) (width 0.25))
+    (gr_arc (start 4.294753 -3.49127) (mid -0.016568 -1.026234) (end -4.311371 -3.519937) (width 0.25))
     (gr_arc (start -3.2 -2.485) (mid -4.015 -3.3) (end -3.2 -4.115) (width 0.25))
     (gr_arc (start 3.2 -4.115) (mid 4.015 -3.3) (end 3.2 -2.485) (width 0.25))
-    (gr_arc (start -4.32 0.635) (mid 0 -1.154403) (end 4.32 0.635) (width 0.25))
+    (gr_arc (start -4.32 0.635) (mid -0.000001 -1.154403) (end 4.319999 0.634999) (width 0.25))
         (gr_poly (pts
             (xy 3.75 0.085)
             (xy -3.75 0.085)
@@ -1086,7 +1086,7 @@
 
   (footprint "RevK:Hidden" (layer "F.Cu")
     (tedit 61D164EC) (tstamp 00000000-0000-0000-0000-000061273bb8)
-    (at 125.95 121.14 180)
+    (at 125.35 120.65 180)
     (property "Note" "0603 or 0805")
     (property "Part No" "")
     (property "Sheetfile" "ASR33.kicad_sch")
@@ -1117,7 +1117,7 @@
 
   (footprint "RevK:Hidden" (layer "F.Cu")
     (tedit 61D164EC) (tstamp 00000000-0000-0000-0000-000061273bbe)
-    (at 125.95 114.9 180)
+    (at 125.35 114.4 180)
     (property "Note" "0603 or 0805")
     (property "Part No" "")
     (property "Sheetfile" "ASR33.kicad_sch")
@@ -1148,7 +1148,7 @@
 
   (footprint "RevK:Hidden" (layer "F.Cu")
     (tedit 61D164EC) (tstamp 00000000-0000-0000-0000-000061273c5c)
-    (at 125.57 118.02 90)
+    (at 124.96 117.52 90)
     (property "Manufacturer" "Bourns")
     (property "Note" "")
     (property "Part No" "CD1206-B2100")
@@ -1180,7 +1180,7 @@
 
   (footprint "RevK:Hidden" (layer "F.Cu")
     (tedit 61D164EC) (tstamp 00000000-0000-0000-0000-000061273d18)
-    (at 122.4 116.4 90)
+    (at 121.8 115.9 90)
     (property "Manufacturer" "Laird")
     (property "Note" "")
     (property "Part No" "TYA4020")
@@ -1212,7 +1212,7 @@
 
   (footprint "RevK:Hidden" (layer "F.Cu")
     (tedit 61D164EC) (tstamp 00000000-0000-0000-0000-000061274b21)
-    (at 122.65 122.41)
+    (at 122.05 121.9)
     (property "Note" "X7R or X5R 0603")
     (property "Part No" "")
     (property "Sheetfile" "ASR33.kicad_sch")
