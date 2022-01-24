@@ -30,9 +30,9 @@
   u1(noecho)	\
   u1(nobig)	\
   u1(nover)	\
-  t(sonoff)	\
+  t(tpower)	\
+  t(tmotor)	\
   t(wru)	\
-  u32(wake,1)	\
   u32(idle,1)	\
   u32(keyidle,600)	\
   u8(ack,6)	\
@@ -202,36 +202,43 @@ void power_off(void)
    havepower = 0;
    reportstate();
    uart_wait_tx_done(uart, portMAX_DELAY);      // Should be clear, but just in case...
-   if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
+   if (GPIO_IS_VALID_OUTPUT_GPIO(motor)||*tmotor)
    {                            // Motor direct control, off
       usleep(100000);           // If final character being printed...
-      gpio_set_level(motor, imotor);    // Off
+      if (*tmotor)
+         revk_mqtt_send_raw(tmotor, 0, "0", 0);
+      if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
+         gpio_set_level(motor, imotor);    // Off
       sleep(1);                 // Takes time for motor to spin down - ensure this is done before power goes off
    } else
       pos = -1;                 // No direct motor control, assume gash character(s) so pos unknown
-   if (GPIO_IS_VALID_OUTPUT_GPIO(power))
-      gpio_set_level(power, ipower);    // Off
-   if (*sonoff)
-      revk_mqtt_send_raw(sonoff, 0, "0", 0);
+   if (GPIO_IS_VALID_OUTPUT_GPIO(power)||*tpower)
+   {
+      if (*tpower)
+         revk_mqtt_send_raw(tpower, 0, "0", 0);
+      if (GPIO_IS_VALID_OUTPUT_GPIO(power)
+         gpio_set_level(power, ipower);    // Off
+   }
 }
 
 void power_on(void)
 {
    if (havepower == 1)
       return;
-   if (*sonoff)
-   {                            // Power, sonoff/mqtt, on
-      revk_mqtt_send_raw(sonoff, 0, "1", 0);
-      sleep(1);                 // Allow time for MQTT, etc
-   }
-   if (GPIO_IS_VALID_OUTPUT_GPIO(power))
+   if (GPIO_IS_VALID_OUTPUT_GPIO(power)||*tpower)
    {                            // Power, direct control, on
-      gpio_set_level(power, 1 - ipower);        // On
+      if (*tpower)
+         revk_mqtt_send_raw(tpower, 0, "1", 0);
+      if (GPIO_IS_VALID_OUTPUT_GPIO(power))
+         gpio_set_level(power, 1 - ipower);        // On
       usleep(100000);           // Min is 20ms for zero crossing, and 9ms for one bit for solenoid, but can be longer for safety
    }
-   if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
+   if (GPIO_IS_VALID_OUTPUT_GPIO(motor)||*tmotor)
    {                            // Motor, direct control, on
-      gpio_set_level(motor, 1 - imotor);        // On
+      if (*tmotor)
+         revk_mqtt_send_raw(tmotor, 0, "1", 0);
+      if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
+         gpio_set_level(motor, 1 - imotor);        // On
       usleep(250000);           // Min 100ms for a null character from power off, and some for motor to start and get to speed
    }
    havepower = 1;
@@ -257,8 +264,10 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       reportstate();
    if (!strcmp(suffix, "connect"))
    {
-      if (*sonoff)
-         revk_mqtt_send_raw(sonoff, 0, havepower ? "1" : "0", 0);
+      if (*tpower)
+         revk_mqtt_send_raw(tpower, 0, havepower ? "1" : "0", 0);
+      if (*tmotor)
+         revk_mqtt_send_raw(tmotor, 0, havepower ? "1" : "0", 0);
       reportstate();
    }
    if (!strcmp(suffix, "restart"))
@@ -529,7 +538,7 @@ void asr33_main(void *param)
          else if (wantpower == 1)
             power_on();
       }
-      if ((GPIO_IS_VALID_OUTPUT_GPIO(power) || *sonoff) && havepower != 1)
+      if ((GPIO_IS_VALID_OUTPUT_GPIO(power) || *tpower) && havepower != 1)
          continue;              // Not running
       int64_t now = esp_timer_get_time();
       // Check rx
@@ -606,7 +615,7 @@ void asr33_main(void *param)
                   }
                   queuebyte(pe('\r'));  // CR
                   queuebyte(pe('\n'));  // LF
-                  queuebyte(pe(ack));   // ACK
+                  if(ack)queuebyte(pe(ack));   // ACK
                } else if (!xoff)
                   queuebyte(b);
             }
