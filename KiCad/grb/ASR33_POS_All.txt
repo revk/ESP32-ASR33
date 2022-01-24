@@ -1,15 +1,11 @@
-### Module positions - created on 2022-01-24 08:29
+### Module positions - created on 2022-01-24 11:56
 ### Printed by pcb_positions plugin
 ## Unit = mm, Angle = deg.
 ## Pcb Height 35.100mm, Pcb Width 42.100mm [based on Edge bounding box]
 ## Side : ALL
 ## Board Aux Origin: 0.000mm ,0.000mm
 # Ref         Val                 Package                       PosX       PosY       Pin1_PosX  Pin1_PosY    Rot     Side      Type
-U6            QR                  QR-ASR33                      123.0000   -113.0000  0.0000     0.0000        0.0    bottom    VIRTUAL
-J3            Teletype            Molex_MiniSPOX_H6RA           141.2500   -136.4000  135.0000   -136.4000     0.0    top       THD
-C5            NF                  C_0603                        145.0000   -132.0000  145.0000   -132.7750    90.0    top       VIRTUAL
-J2            Control             Molex_MiniSPOX_H3RA           155.0000   -136.4000  152.5000   -136.4000     0.0    top       THD
-Q1            NX7002AK            SOT-23                        140.5000   -132.0000  139.5625   -131.0500     0.0    top       SMD
+SW1           SW_Push             SW_PUSH_6mm_PTH               130.5000   -117.3000  128.2500   -120.5500    90.0    top       THD
 J1            USB-C               USC16-TR-Round                123.5000   -143.0000  0.0000     0.0000        0.0    top       SMD
 U2            FT231XQ             QFN-20-1EP_4x4mm_P0.5mm_EP2.. 127.2000   -126.3000  125.3000   -125.3000     0.0    top       SMD
 U1            ESP32-WROOM-32      ESP32-WROOM-32                144.6350   -117.5000  152.8900   -109.0000   -90.0    top       SMD
@@ -33,17 +29,22 @@ C6            0.1uF               Hidden                        122.6500   -122.
 U4            NCR402U             SOT-457                       131.0000   -132.0000  129.8000   -131.0500     0.0    top       SMD
 U3            NCR402U             SOT-457                       135.0000   -132.0000  133.8000   -131.0500     0.0    top       SMD
 D2            BAV99S              SOT-363_SC-70-6               152.0000   -132.0000  151.0500   -131.3500     0.0    top       SMD
-R10           3M 1% or NF         R_0603                        118.9000   -122.1000  118.9000   -122.9250    90.0    top       SMD
-R9            R150                R_0603                        143.4000   -132.0000  143.4000   -132.8250    90.0    top       SMD
+Q1            NX7002AK            SOT-23                        140.5000   -132.0000  139.5625   -131.0500     0.0    top       SMD
+C5            NF                  C_0603                        145.2000   -132.0000  145.2000   -132.7750    90.0    top       VIRTUAL
+R10           3M 1% or NF         R_0603                        119.0000   -125.1000  119.0000   -125.9250    90.0    top       SMD
+R9            R150                R_0603                        143.7000   -132.0000  143.7000   -132.8250    90.0    top       SMD
 D3            BAV99S              SOT-363_SC-70-6               148.0000   -132.0000  147.0500   -131.3500     0.0    top       SMD
-R8            10M 1% or 0R        R_0603                        118.9000   -119.0000  118.9000   -118.1750   -90.0    top       SMD
-U5            LMR16006+FB         RegulatorBlockFB              122.4000   -120.3000  123.7500   -121.2500    90.0    top       SMD
+J2            Control             Molex_MiniSPOX_H3RA           155.0000   -136.4000  152.5000   -136.4000     0.0    top       THD
+J3            Teletype            Molex_MiniSPOX_H6RA           141.2500   -136.4000  135.0000   -136.4000     0.0    top       THD
+R8            10M 1% or 0R        R_0603                        119.0000   -122.0000  119.0000   -121.1750   -90.0    top       SMD
+U5            LMR16006+FB         RegulatorBlockFB              121.8000   -119.8000  123.1500   -120.7500    90.0    top       SMD
 Logo1         AJK                 AJK                           150.0000   -111.0000  0.0000     0.0000      180.0    bottom    VIRTUAL
+U6            QR                  QR-ASR33                      123.0000   -113.0000  0.0000     0.0000        0.0    bottom    VIRTUAL
 ## End
 ## 201 SMD pads
-## 13 TH pads
+## 17 TH pads
 ## 77 Virtual pads
-## 3 Top TH modules
+## 4 Top TH modules
 ## 0 Bot TH modules
 ## 28 Top SMD modules
 ## 0 Bot SMD modules
