@@ -288,7 +288,6 @@ const char *app_callback(int client, const char *prefix, const char *target, con
    if (!strcmp(suffix, "noecho"))
       doecho = 0;
 
-
    if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw") || !strcmp(suffix, "text") || !strcmp(suffix, "line") || !strcmp(suffix, "bell"))
    {                            // Plain text functions - simple JSON string
       int len = jo_strlen(j);
@@ -384,10 +383,10 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       }
       return "";
    }
+   if(jo_here(j)!=JO_STRING)return NULL;
+
    // Functions that expect hex data
    int len = jo_strncpy(j, NULL, 0);
-   if (len < 0)
-      return "JSON string expected";
    char *buf = malloc(len),
        *value = buf;
    if (!buf)
