@@ -383,7 +383,8 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       }
       return "";
    }
-   if(jo_here(j)!=JO_STRING)return "";
+   if (jo_here(j) != JO_STRING)
+      return "";
 
    // Functions that expect hex data
    int len = jo_strncpy(j, NULL, 0);
@@ -614,7 +615,7 @@ void asr33_main(void *param)
                            queuebyte(pe(' '));
                            for (const char *p = (char *)ap.ssid; *p; p++)
                               queuebyte(pe(*p));
-			   // TODO nice to show IP address maybe
+                           // TODO nice to show IP address maybe
                         }
 #endif
                      }
