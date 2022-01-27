@@ -39,6 +39,7 @@
   u1(nodc4)	\
   u8(tapelead,15) \
   u8(tapetail,15) \
+  u16(port,33)	\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
@@ -383,56 +384,57 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       }
       return "";
    }
-   if(!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw") || !strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
+   if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw") || !strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
    {
 
-   // Functions that expect hex data
-   int len = jo_strncpy(j, NULL, 0);
-   if(len<0)return "Expecting JSON string";
+      // Functions that expect hex data
+      int len = jo_strncpy(j, NULL, 0);
+      if (len < 0)
+         return "Expecting JSON string";
 
-   char *buf = malloc(len),
-       *value = buf;
-   if (!buf)
-      return "Malloc";
-   jo_strncpy(j, buf, len);
-   if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw"))
-   {                            // raw send
-      power_needed();
-      while (len--)
-         queuebyte(*value++);
-   }
-   if (!strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
-   {                            // Raw punched data (with DC2/DC4)
-      power_needed();
-      if (!suffix[5])
-      {
-         if (!nodc4)
-            queuebyte(DC2);     // Tape on
-         for (int i = 0; i < tapelead; i++)
-            queuebyte(0);
+      char *buf = malloc(len),
+          *value = buf;
+      if (!buf)
+         return "Malloc";
+      jo_strncpy(j, buf, len);
+      if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw"))
+      {                         // raw send
+         power_needed();
+         while (len--)
+            queuebyte(*value++);
       }
-      while (len--)
-      {
-         uint8_t c = *value++;
-         queuebyte(c);
-         c &= 0x7f;
-         if (!nodc4 && c == DC4)
-            queuebyte(DC2);     // Turn tape back on
-         if (c == WRU)
+      if (!strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
+      {                         // Raw punched data (with DC2/DC4)
+         power_needed();
+         if (!suffix[5])
          {
-            suppress = 1;       // Suppress WRU response
-            lastrx = 0;
+            if (!nodc4)
+               queuebyte(DC2);  // Tape on
+            for (int i = 0; i < tapelead; i++)
+               queuebyte(0);
+         }
+         while (len--)
+         {
+            uint8_t c = *value++;
+            queuebyte(c);
+            c &= 0x7f;
+            if (!nodc4 && c == DC4)
+               queuebyte(DC2);  // Turn tape back on
+            if (c == WRU)
+            {
+               suppress = 1;    // Suppress WRU response
+               lastrx = 0;
+            }
+         }
+         if (!suffix[5])
+         {
+            for (int i = 0; i < tapetail; i++)
+               queuebyte(0);
+            if (!nodc4)
+               queuebyte(DC4);  // Tape off
          }
       }
-      if (!suffix[5])
-      {
-         for (int i = 0; i < tapetail; i++)
-            queuebyte(0);
-         if (!nodc4)
-            queuebyte(DC4);     // Tape off
-      }
-   }
-   free(buf);
+      free(buf);
    }
    return "";
 }
@@ -491,7 +493,28 @@ void asr33_main(void *param)
       gpio_set_level(port_mask(mtr), port_inv(mtr));    // Off
       gpio_set_direction(port_mask(mtr), GPIO_MODE_OUTPUT);
    }
-
+   int lsock = -1,
+       csock = -1;
+   if (port)
+      lsock = socket(AF_INET6, SOCK_STREAM, IPPROTO_IPV6);
+   if (lsock >= 0)
+   {
+      struct sockaddr_storage dest_addr;
+      struct sockaddr_in6 *dest_addr_ip6 = (struct sockaddr_in6 *) &dest_addr;
+      bzero(&dest_addr_ip6->sin6_addr.un, sizeof(dest_addr_ip6->sin6_addr.un));
+      dest_addr_ip6->sin6_family = AF_INET6;
+      dest_addr_ip6->sin6_port = htons(port);
+      if (bind(lsock, (struct sockaddr *) &dest_addr, sizeof(dest_addr)))
+      {
+         close(lsock);
+         lsock = -1;
+      }
+   }
+   if (lsock >= 0 && listen(lsock, 1))
+   {
+      close(lsock);
+      lsock = -1;
+   }
    while (1)
    {
       usleep(50000);
@@ -526,8 +549,33 @@ void asr33_main(void *param)
          busy = 0;
          reportstate();
       }
-      if (txi != txo)
+      if (txi != txo || csock >= 0)
          wantpower = 1;
+      if (lsock >= 0 && csock < 0)
+      {                         // Allow for connection
+         fd_set s;
+         FD_ZERO(&s);
+         FD_SET(lsock, &s);
+         struct timeval timeout = { };
+         if (select(lsock + 1, &s, NULL, NULL, &timeout) > 0)
+         {
+            struct sockaddr_storage source_addr;        // Large enough for both IPv4 or IPv6
+            socklen_t addr_len = sizeof(source_addr);
+            csock = accept(lsock, (struct sockaddr *) &source_addr, &addr_len);
+            char addr_str[40] = "";
+            if (source_addr.ss_family == PF_INET)
+            {
+               inet_ntoa_r(((struct sockaddr_in *) &source_addr)->sin_addr, addr_str, sizeof(addr_str) - 1);
+            } else if (source_addr.ss_family == PF_INET6)
+            {
+               inet6_ntoa_r(((struct sockaddr_in6 *) &source_addr)->sin6_addr, addr_str, sizeof(addr_str) - 1);
+            }
+            jo_t j = jo_object_alloc();
+            jo_string(j, "ip", addr_str);
+            revk_event("connect", &j);
+            power_needed();
+         }
+      }
       if (wantpower != havepower)
       {                         // Change power state (does any necessary timing sequence)
          if (wantpower == 0)
@@ -538,96 +586,112 @@ void asr33_main(void *param)
       if ((pwr || *pwrtopic) && havepower != 1)
          continue;              // Not running
       int64_t now = esp_timer_get_time();
+      // Check tcp
+      if (csock >= 0)
+      {
+         fd_set s;
+         FD_ZERO(&s);
+         FD_SET(csock, &s);
+         struct timeval timeout = { };
+         if (select(csock + 1, &s, NULL, NULL, &timeout) > 0)
+         {
+            uint8_t b = 0;
+            int len = recv(csock, &b, 1, 0);
+            if (len <= 0)
+            {                   // Closed
+               close(csock);
+               csock = -1;
+               jo_t j = jo_object_alloc();
+               revk_event("closed", &j);
+            } else
+               queuebyte(b);
+         }
+      }
       // Check rx
       size_t len;
       uart_get_buffered_data_len(uart, &len);
       if (len > 0)
       {
-         uint8_t b;
+         uint8_t b = 0;
          if (uart_read_bytes(uart, &b, 1, 0) > 0)
          {
-            if (lastrx + 250000 < now)
-               suppress = 0;    // Suppressed WRU response timeout
-            if (!suppress)
-            {
-               if (b && b != 0xFF && b == pe(b))
+            if (csock >= 0)
+               send(csock, &b, 1, 0);   // Connected via TCP
+            else
+            {                   // Not connected via TCP
+               if (lastrx + 250000 < now)
+                  suppress = 0; // Suppressed WRU response timeout
+               if (!suppress)
                {
-                  if (b == pe(EOT))
-                     manual = 0;        // EOT, short timeout
-                  else
-                     manual = 1;        // Typing
-               }
-               jo_t j = jo_object_alloc();
-               jo_int(j, "byte", b);
-               revk_event("rx", &j);
-               if ((b & 0x7F) == '\n')
-               {
-                  jo_t j = jo_create_alloc();
-                  jo_stringn(j, NULL, (void *) line, rxp);
-                  revk_event("line", &j);
-                  rxp = 0;
-               } else if ((b & 0x7F) != '\r' && rxp < MAXRX)
-                  line[rxp++] = (b & 0x7F);
-               if (doecho)
-               {                // Handling local characters and echoing (maybe, depends on xoff too)
-                  if (dobig)
-                  {             // Doing large lettering
-                     if (b == pe(DC4))
-                     {          // End
-                        for (int i = 0; i < 9; i++)
+                  if (b && b != 0xFF && b == pe(b))
+                  {
+                     if (b == pe(EOT))
+                        manual = 0;     // EOT, short timeout
+                     else
+                        manual = 1;     // Typing
+                  }
+                  jo_t j = jo_object_alloc();
+                  jo_int(j, "byte", b);
+                  revk_event("rx", &j);
+                  if ((b & 0x7F) == '\n')
+                  {
+                     jo_t j = jo_create_alloc();
+                     jo_stringn(j, NULL, (void *) line, rxp);
+                     revk_event("line", &j);
+                     rxp = 0;
+                  } else if ((b & 0x7F) != '\r' && rxp < MAXRX)
+                     line[rxp++] = (b & 0x7F);
+                  if (doecho)
+                  {             // Handling local characters and echoing (maybe, depends on xoff too)
+                     if (dobig)
+                     {          // Doing large lettering
+                        if (b == pe(DC4))
+                        {       // End
+                           for (int i = 0; i < 9; i++)
+                              queuebyte(0);
+                           queuebyte(pe(DC4));
+                           dobig = 0;
+                        } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
                            queuebyte(0);
-                        queuebyte(pe(DC4));
-                        dobig = 0;
-                     } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
-                        queuebyte(0);
-                  } else if (b == pe(DC2) && doecho && !nobig)
-                  {             // Start big lettering
-                     queuebyte(pe(DC2));
-                     for (int i = 0; i < 10; i++)
-                        queuebyte(0);
-                     dobig = 1;
-                  } else if (b == pe(RU) && !nocave)
-                     docave = 1;
-                  else if (b == pe(DC1))
-                     xoff = 0;
-                  else if (b == pe(DC3))
-                     xoff = 1;
-                  else if (b == pe(WRU) && (!nover || *wru))
-                  {             // WRU
-                     // See 3.27 of ISS 8, SECTION 574-122-700TC
-                     queuebyte(pe('\r'));       // CR
-                     queuebyte(pe('\n'));       // LF
-                     queuebyte(pe(0x7f));       // RO
-                     if (*wru)
-                        for (const char *p = wru; *p; p++)
-                           queuebyte(pe(*p));
-                     if (!nover)
-                     {
+                     } else if (b == pe(DC2) && doecho && !nobig)
+                     {          // Start big lettering
+                        queuebyte(pe(DC2));
+                        for (int i = 0; i < 10; i++)
+                           queuebyte(0);
+                        dobig = 1;
+                     } else if (b == pe(RU) && !nocave)
+                        docave = 1;
+                     else if (b == pe(DC1))
+                        xoff = 0;
+                     else if (b == pe(DC3))
+                        xoff = 1;
+                     else if (b == pe(WRU) && (!nover || *wru))
+                     {          // WRU
+                        // See 3.27 of ISS 8, SECTION 574-122-700TC
+                        queuebyte(pe('\r'));    // CR
+                        queuebyte(pe('\n'));    // LF
+                        queuebyte(pe(0x7f));    // RO
                         if (*wru)
-                           queuebyte(pe(' '));
-                        for (const char *p = revk_app; *p; p++)
-                           queuebyte(pe(*p));
-                        for (const char *p = " BUILD "; *p; p++)
-                           queuebyte(pe(*p));
-                        for (const char *p = revk_version; *p; p++)
-                           queuebyte(pe(*p));
-#if 0
-                        wifi_ap_record_t ap = { };
-                        if (!esp_wifi_sta_get_ap_info(&ap))
-                        {
-                           queuebyte(pe(' '));
-                           for (const char *p = (char *)ap.ssid; *p; p++)
+                           for (const char *p = wru; *p; p++)
                               queuebyte(pe(*p));
-                           // TODO nice to show IP address maybe
+                        if (!nover)
+                        {
+                           if (*wru)
+                              queuebyte(pe(' '));
+                           for (const char *p = revk_app; *p; p++)
+                              queuebyte(pe(*p));
+                           for (const char *p = " BUILD "; *p; p++)
+                              queuebyte(pe(*p));
+                           for (const char *p = revk_version; *p; p++)
+                              queuebyte(pe(*p));
                         }
-#endif
-                     }
-                     queuebyte(pe('\r'));       // CR
-                     queuebyte(pe('\n'));       // LF
-                     if (ack)
-                        queuebyte(pe(ack));     // ACK
-                  } else if (!xoff)
-                     queuebyte(b);
+                        queuebyte(pe('\r'));    // CR
+                        queuebyte(pe('\n'));    // LF
+                        if (ack)
+                           queuebyte(pe(ack));  // ACK
+                     } else if (!xoff)
+                        queuebyte(b);
+                  }
                }
             }
             lastrx = now;
