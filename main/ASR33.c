@@ -383,11 +383,13 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       }
       return "";
    }
-   if (jo_here(j) != JO_STRING)
-      return "";
+   if(!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw") || !strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
+   {
 
    // Functions that expect hex data
    int len = jo_strncpy(j, NULL, 0);
+   if(len<0)return "Expecting JSON string";
+
    char *buf = malloc(len),
        *value = buf;
    if (!buf)
@@ -431,6 +433,7 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       }
    }
    free(buf);
+   }
    return "";
 }
 
