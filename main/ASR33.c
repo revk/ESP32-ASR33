@@ -69,6 +69,8 @@ uint8_t doecho = 0;             // Do echo (set each start up)
 uint8_t dobig = 0;              // Do big lettering on tape
 uint8_t docave = 0;             // Fun advent()
 uint8_t suppress = 0;           // Suppress WRU
+int lsock = -1;                 // Listen socket
+int csock = -1;                 // Connected sockets
 volatile uint8_t havepower = 0; // Power state
 volatile uint8_t wantpower = 0; // Power state wanted
 uint8_t buf[MAXTX];             // Tx pending buffer
@@ -184,6 +186,8 @@ void reportstate(void)
    jo_litf(j, "up", "%d.%06d", (uint32_t) (t / 1000000LL), (uint32_t) (t % 1000000LL));
    jo_bool(j, "power", havepower);
    jo_bool(j, "busy", busy);
+   if (port)
+      jo_bool(j, "connected", csock >= 0);
    //jo_bool(j, "wantpower", wantpower);
    revk_state(NULL, &j);
 }
@@ -386,7 +390,6 @@ const char *app_callback(int client, const char *prefix, const char *target, con
    }
    if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw") || !strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
    {
-
       // Functions that expect hex data
       int len = jo_strncpy(j, NULL, 0);
       if (len < 0)
@@ -493,8 +496,6 @@ void asr33_main(void *param)
       gpio_set_level(port_mask(mtr), port_inv(mtr));    // Off
       gpio_set_direction(port_mask(mtr), GPIO_MODE_OUTPUT);
    }
-   int lsock = -1,
-       csock = -1;
    if (port)
       lsock = socket(AF_INET6, SOCK_STREAM, IPPROTO_IPV6);
    if (lsock >= 0)
