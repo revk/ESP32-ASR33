@@ -383,7 +383,7 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       }
       return "";
    }
-   if(jo_here(j)!=JO_STRING)return NULL;
+   if(jo_here(j)!=JO_STRING)return "";
 
    // Functions that expect hex data
    int len = jo_strncpy(j, NULL, 0);
