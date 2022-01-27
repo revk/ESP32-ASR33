@@ -383,56 +383,57 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       }
       return "";
    }
-   if(!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw") || !strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
+   if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw") || !strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
    {
 
-   // Functions that expect hex data
-   int len = jo_strncpy(j, NULL, 0);
-   if(len<0)return "Expecting JSON string";
+      // Functions that expect hex data
+      int len = jo_strncpy(j, NULL, 0);
+      if (len < 0)
+         return "Expecting JSON string";
 
-   char *buf = malloc(len),
-       *value = buf;
-   if (!buf)
-      return "Malloc";
-   jo_strncpy(j, buf, len);
-   if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw"))
-   {                            // raw send
-      power_needed();
-      while (len--)
-         queuebyte(*value++);
-   }
-   if (!strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
-   {                            // Raw punched data (with DC2/DC4)
-      power_needed();
-      if (!suffix[5])
-      {
-         if (!nodc4)
-            queuebyte(DC2);     // Tape on
-         for (int i = 0; i < tapelead; i++)
-            queuebyte(0);
+      char *buf = malloc(len),
+          *value = buf;
+      if (!buf)
+         return "Malloc";
+      jo_strncpy(j, buf, len);
+      if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw"))
+      {                         // raw send
+         power_needed();
+         while (len--)
+            queuebyte(*value++);
       }
-      while (len--)
-      {
-         uint8_t c = *value++;
-         queuebyte(c);
-         c &= 0x7f;
-         if (!nodc4 && c == DC4)
-            queuebyte(DC2);     // Turn tape back on
-         if (c == WRU)
+      if (!strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
+      {                         // Raw punched data (with DC2/DC4)
+         power_needed();
+         if (!suffix[5])
          {
-            suppress = 1;       // Suppress WRU response
-            lastrx = 0;
+            if (!nodc4)
+               queuebyte(DC2);  // Tape on
+            for (int i = 0; i < tapelead; i++)
+               queuebyte(0);
+         }
+         while (len--)
+         {
+            uint8_t c = *value++;
+            queuebyte(c);
+            c &= 0x7f;
+            if (!nodc4 && c == DC4)
+               queuebyte(DC2);  // Turn tape back on
+            if (c == WRU)
+            {
+               suppress = 1;    // Suppress WRU response
+               lastrx = 0;
+            }
+         }
+         if (!suffix[5])
+         {
+            for (int i = 0; i < tapetail; i++)
+               queuebyte(0);
+            if (!nodc4)
+               queuebyte(DC4);  // Tape off
          }
       }
-      if (!suffix[5])
-      {
-         for (int i = 0; i < tapetail; i++)
-            queuebyte(0);
-         if (!nodc4)
-            queuebyte(DC4);     // Tape off
-      }
-   }
-   free(buf);
+      free(buf);
    }
    return "";
 }
