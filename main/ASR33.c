@@ -14,24 +14,21 @@
 #define	DC3	0x13
 #define	DC4	0x14
 
+#define port_mask(p) ((p)&0x3F) // Get GPIO from io()
+#define port_inv(p) (((p)&0x40)?1:0)    // Get if inverted
+
 #define settings  \
+  io(tx,4)      \
+  io(rx,13)     \
+  io(run,15)  \
+  io(pwr,2)      \
+  io(mtr,27)  \
+  t(pwrtopic)	\
+  t(mtrtopic)	\
   u8(uart,1)	\
-  u8(rx,13)     \
-  u8(on,15)  \
-  u8(power,2)      \
-  u8(motor,27)  \
-  u8(tx,4)      \
-  u1(ipower)	\
-  u1(imotor)	\
-  u1(itx)	\
-  u1(odtx)	\
-  u1t(irx)	\
-  u1(ion)	\
   u1(noecho)	\
   u1(nobig)	\
   u1(nover)	\
-  t(tpower)	\
-  t(tmotor)	\
   t(wru)	\
   u32(idle,1)	\
   u32(keyidle,600)	\
@@ -46,6 +43,7 @@
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
 #define u8(n,d) uint8_t n;
+#define io(n,d) uint8_t n;
 #define u1(n) uint8_t n;
 #define u1t(n) uint8_t n;
 #define t(n) const char*n=NULL;
@@ -54,6 +52,7 @@ settings;
 #undef u32
 #undef u16
 #undef u8
+#undef io
 #undef u1
 #undef u1t
 #define	MAXTX	65536           // Tx buffer max
@@ -202,22 +201,22 @@ void power_off(void)
    havepower = 0;
    reportstate();
    uart_wait_tx_done(uart, portMAX_DELAY);      // Should be clear, but just in case...
-   if (GPIO_IS_VALID_OUTPUT_GPIO(motor)||*tmotor)
+   if (mtr || *mtrtopic)
    {                            // Motor direct control, off
       usleep(100000);           // If final character being printed...
-      if (*tmotor)
-         revk_mqtt_send_raw(tmotor, 0, "0", 0);
-      if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
-         gpio_set_level(motor, imotor);    // Off
+      if (*mtrtopic)
+         revk_mqtt_send_raw(mtrtopic, 0, "0", 0);
+      if (mtr)
+         gpio_set_level(port_mask(mtr), port_inv(mtr)); // Off
       sleep(1);                 // Takes time for motor to spin down - ensure this is done before power goes off
    } else
       pos = -1;                 // No direct motor control, assume gash character(s) so pos unknown
-   if (GPIO_IS_VALID_OUTPUT_GPIO(power)||*tpower)
+   if (pwr || *pwrtopic)
    {
-      if (*tpower)
-         revk_mqtt_send_raw(tpower, 0, "0", 0);
-      if (GPIO_IS_VALID_OUTPUT_GPIO(power)
-         gpio_set_level(power, ipower);    // Off
+      if (*pwrtopic)
+         revk_mqtt_send_raw(pwrtopic, 0, "0", 0);
+      if (pwr)
+         gpio_set_level(port_mask(pwr), port_inv(pwr)); // Off
    }
 }
 
@@ -225,20 +224,20 @@ void power_on(void)
 {
    if (havepower == 1)
       return;
-   if (GPIO_IS_VALID_OUTPUT_GPIO(power)||*tpower)
+   if (pwr || *pwrtopic)
    {                            // Power, direct control, on
-      if (*tpower)
-         revk_mqtt_send_raw(tpower, 0, "1", 0);
-      if (GPIO_IS_VALID_OUTPUT_GPIO(power))
-         gpio_set_level(power, 1 - ipower);        // On
+      if (*pwrtopic)
+         revk_mqtt_send_raw(pwrtopic, 0, "1", 0);
+      if (pwr)
+         gpio_set_level(port_mask(pwr), 1 - port_inv(pwr));     // On
       usleep(100000);           // Min is 20ms for zero crossing, and 9ms for one bit for solenoid, but can be longer for safety
    }
-   if (GPIO_IS_VALID_OUTPUT_GPIO(motor)||*tmotor)
+   if (mtr || *mtrtopic)
    {                            // Motor, direct control, on
-      if (*tmotor)
-         revk_mqtt_send_raw(tmotor, 0, "1", 0);
-      if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
-         gpio_set_level(motor, 1 - imotor);        // On
+      if (*mtrtopic)
+         revk_mqtt_send_raw(mtrtopic, 0, "1", 0);
+      if (mtr)
+         gpio_set_level(port_mask(mtr), 1 - port_inv(mtr));     // On
       usleep(250000);           // Min 100ms for a null character from power off, and some for motor to start and get to speed
    }
    havepower = 1;
@@ -264,10 +263,10 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       reportstate();
    if (!strcmp(suffix, "connect"))
    {
-      if (*tpower)
-         revk_mqtt_send_raw(tpower, 0, havepower ? "1" : "0", 0);
-      if (*tmotor)
-         revk_mqtt_send_raw(tmotor, 0, havepower ? "1" : "0", 0);
+      if (*pwrtopic)
+         revk_mqtt_send_raw(pwrtopic, 0, havepower ? "1" : "0", 0);
+      if (*mtrtopic)
+         revk_mqtt_send_raw(mtrtopic, 0, havepower ? "1" : "0", 0);
       reportstate();
    }
    if (!strcmp(suffix, "restart"))
@@ -442,6 +441,7 @@ void asr33_main(void *param)
 #define u32(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u16(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u8(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
+#define io(n,d) revk_register(#n,0,sizeof(n),&n,"- "#d,SETTING_SET|SETTING_BITFIELD);
 #define u1(n) revk_register(#n,0,sizeof(n),&n,NULL,SETTING_BOOLEAN);
 #define u1t(n) revk_register(#n,0,sizeof(n),&n,"1",SETTING_BOOLEAN);
 #define t(n) revk_register(#n,0,0,&n,NULL,0);
@@ -450,6 +450,7 @@ void asr33_main(void *param)
 #undef u32
 #undef u16
 #undef u8
+#undef io
 #undef u1
 #undef u1t
    revk_start();
@@ -464,41 +465,34 @@ void asr33_main(void *param)
    };
    // Configure UART parameters
    uart_param_config(uart, &uart_config);
-   if (GPIO_IS_VALID_OUTPUT_GPIO(tx) && odtx)
-      gpio_set_direction(tx, GPIO_MODE_DEF_OD); // Assume external pull up, do before mapping UART!
-   uart_set_pin(uart, tx, rx, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-   uart_set_line_inverse(uart, (irx ? UART_SIGNAL_RXD_INV : 0) + (itx ? UART_SIGNAL_TXD_INV : 0));
+   uart_set_pin(uart, tx ? port_mask(tx) : UART_PIN_NO_CHANGE, rx ? port_mask(rx) : UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+   uart_set_line_inverse(uart, (port_inv(rx) ? UART_SIGNAL_RXD_INV : 0) + (port_inv(tx) ? UART_SIGNAL_TXD_INV : 0));
    uart_set_rx_full_threshold(uart, 1);
-   if (GPIO_IS_VALID_GPIO(rx))
-   {
-      gpio_pullup_dis(rx);      // Assume external pull up / cap
+   if (rx)
+      gpio_pullup_dis(port_mask(rx));
+   if (tx)
+      gpio_pullup_dis(port_mask(tx));
+   if (run)
+   {                            // RUN input
+      gpio_set_direction(port_mask(run), GPIO_MODE_INPUT);
+      gpio_set_pull_mode(port_mask(run), GPIO_PULLUP_ONLY);
+      gpio_pullup_en(port_mask(run));
    }
-   if (GPIO_IS_VALID_OUTPUT_GPIO(tx))
+   if (pwr)
    {
-      gpio_pullup_dis(tx);      // Assume external pull up
-      gpio_set_drive_capability(tx, GPIO_DRIVE_CAP_3);
+      gpio_set_level(port_mask(pwr), port_inv(pwr));    // Off
+      gpio_set_direction(port_mask(pwr), GPIO_MODE_OUTPUT);
    }
-   if (GPIO_IS_VALID_GPIO(on))
-   {                            // On input
-      gpio_set_direction(on, GPIO_MODE_INPUT);
-      gpio_set_pull_mode(on, GPIO_PULLUP_ONLY);
-      gpio_pullup_en(on);
-   }
-   if (GPIO_IS_VALID_OUTPUT_GPIO(power))
+   if (mtr)
    {
-      gpio_set_level(power, ipower);    // Off
-      gpio_set_direction(power, GPIO_MODE_OUTPUT);
-   }
-   if (GPIO_IS_VALID_OUTPUT_GPIO(motor))
-   {
-      gpio_set_level(motor, imotor);    // Off
-      gpio_set_direction(motor, GPIO_MODE_OUTPUT);
+      gpio_set_level(port_mask(mtr), port_inv(mtr));    // Off
+      gpio_set_direction(port_mask(mtr), GPIO_MODE_OUTPUT);
    }
 
    while (1)
    {
       usleep(50000);
-      if (GPIO_IS_VALID_GPIO(on) && gpio_get_level(on) != ion)
+      if (run && gpio_get_level(port_mask(run)) != port_inv(run))
       {                         // Key press to start/stop
          if (!pressed)
          {                      // Button pressed
@@ -538,7 +532,7 @@ void asr33_main(void *param)
          else if (wantpower == 1)
             power_on();
       }
-      if ((GPIO_IS_VALID_OUTPUT_GPIO(power) || *tpower) && havepower != 1)
+      if ((pwr || *pwrtopic) && havepower != 1)
          continue;              // Not running
       int64_t now = esp_timer_get_time();
       // Check rx
@@ -615,7 +609,8 @@ void asr33_main(void *param)
                   }
                   queuebyte(pe('\r'));  // CR
                   queuebyte(pe('\n'));  // LF
-                  if(ack)queuebyte(pe(ack));   // ACK
+                  if (ack)
+                     queuebyte(pe(ack));        // ACK
                } else if (!xoff)
                   queuebyte(b);
             }
