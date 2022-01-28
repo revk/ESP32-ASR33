@@ -23,6 +23,9 @@
   io(run,15)  \
   io(pwr,2)      \
   io(mtr,27)  \
+  u1(txod)	\
+  u1(txpu)	\
+  u1(rxpu)	\
   t(pwrtopic)	\
   t(mtrtopic)	\
   u8(uart,1)	\
@@ -477,9 +480,21 @@ void asr33_main(void *param)
    uart_set_line_inverse(uart, (port_inv(rx) ? UART_SIGNAL_RXD_INV : 0) + (port_inv(tx) ? UART_SIGNAL_TXD_INV : 0));
    uart_set_rx_full_threshold(uart, 1);
    if (rx)
-      gpio_pullup_dis(port_mask(rx));
+   {
+      if (rxpu)
+         gpio_pullup_en(port_mask(rx));
+      else
+         gpio_pullup_dis(port_mask(rx));
+   }
    if (tx)
-      gpio_pullup_dis(port_mask(tx));
+   {
+      if (txod)
+         gpio_set_direction(tx, GPIO_MODE_DEF_OD);
+      if (txpu)
+         gpio_pullup_en(port_mask(tx));
+      else
+         gpio_pullup_dis(port_mask(tx));
+   }
    if (run)
    {                            // RUN input
       gpio_set_direction(port_mask(run), GPIO_MODE_INPUT);
