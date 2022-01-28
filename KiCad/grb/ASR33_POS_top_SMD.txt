@@ -1,12 +1,10 @@
-### Module positions - created on 2022-01-28 12:20
+### Module positions - created on 2022-01-28 13:52
 ### Printed by pcb_positions plugin
 ## Unit = mm, Angle = deg.
 ## Pcb Height 35.100mm, Pcb Width 42.100mm [based on Edge bounding box]
 ## Side : top
 ## Board Aux Origin: 0.000mm ,0.000mm
 # Ref         Val                 Package                       PosX       PosY       Pin1_PosX  Pin1_PosY    Rot     Side      Type
-D3            BAV99S              SOT-363_SC-70-6               150.5500   -132.5000  149.6000   -131.8500     0.0    top       SMD
-U6            LTV-355T            SO-4_4.4x3.6mm_P2.54mm        139.0000   -132.5000  135.8500   -131.2300     0.0    top       SMD
 J1            USB-C               USC16-TR-Round                123.5000   -143.0000  0.0000     0.0000        0.0    top       SMD
 U2            FT231XQ             QFN-20-1EP_4x4mm_P0.5mm_EP2.. 127.2000   -126.3000  125.3000   -125.3000     0.0    top       SMD
 U1            ESP32-WROOM-32      ESP32-WROOM-32                144.6350   -117.5000  152.8900   -109.0000   -90.0    top       SMD
@@ -31,6 +29,8 @@ U3            NCR402U             SOT-457                       132.2500   -128.
 D2            BAV99S              SOT-363_SC-70-6               150.5500   -129.0000  149.6000   -128.3500     0.0    top       SMD
 Q1            NX7002AK            SOT-23                        145.7500   -132.5000  144.8125   -131.5500     0.0    top       SMD
 R9            3M 1% or NF         R_0603                        119.0000   -125.1000  119.0000   -125.9250    90.0    top       SMD
+D3            BAV99S              SOT-363_SC-70-6               150.5500   -132.5000  149.6000   -131.8500     0.0    top       SMD
+U6            LTV-355T            SO-4_4.4x3.6mm_P2.54mm        139.0000   -132.5000  135.8500   -131.2300     0.0    top       SMD
 R8            10M 1% or 0R        R_0603                        119.0000   -122.0000  119.0000   -121.1750   -90.0    top       SMD
 U5            LMR16006+FB         RegulatorBlockFB              121.8000   -119.8000  123.1500   -120.7500    90.0    top       SMD
 ## End

@@ -2,7 +2,7 @@
 <export version="E">
   <design>
     <source>/Users/adrian/git/ESP32-ASR33/KiCad/ASR33.kicad_sch</source>
-    <date>Friday, 28 January 2022 at 12:20:47</date>
+    <date>Friday, 28 January 2022 at 13:51:48</date>
     <tool>Eeschema (6.0.1-0)</tool>
     <textvar name="DATE">2022-01-28</textvar>
     <sheet number="1" name="/" tstamps="/">
@@ -193,7 +193,7 @@
     </comp>
     <comp ref="JP1">
       <value>Rx-RTN</value>
-      <footprint>Jumper:SolderJumper-2_P1.3mm_Bridged2Bar_RoundedPad1.0x1.5mm</footprint>
+      <footprint>RevK:SolderJumper-2_P1.3mm_Bridged2Bar_RoundedPad1.0x1.5mm</footprint>
       <libsource lib="Jumper" part="Jumper_2_Bridged" description="Jumper, 2-pole, closed/bridged"/>
       <property name="Sheetname" value=""/>
       <property name="Sheetfile" value="ASR33.kicad_sch"/>
@@ -880,7 +880,7 @@
       <node ref="U1" pin="34" pinfunction="RXD0/IO3" pintype="bidirectional"/>
       <node ref="U2" pin="17" pinfunction="TXD" pintype="output"/>
     </net>
-    <net code="12" name="MOTOR">
+    <net code="12" name="MTR">
       <node ref="D2" pin="3" pinfunction="K1A2" pintype="passive"/>
       <node ref="J2" pin="3" pinfunction="Pin_3" pintype="passive"/>
       <node ref="U1" pin="36" pinfunction="IO22" pintype="bidirectional"/>
@@ -961,7 +961,7 @@
       <node ref="U1" pin="35" pinfunction="TXD0/IO1" pintype="bidirectional"/>
       <node ref="U2" pin="1" pinfunction="RXD" pintype="input"/>
     </net>
-    <net code="29" name="POWER">
+    <net code="29" name="PWR">
       <node ref="D2" pin="6" pinfunction="K3A4" pintype="passive"/>
       <node ref="J2" pin="4" pinfunction="Pin_4" pintype="passive"/>
       <node ref="U1" pin="37" pinfunction="IO23" pintype="bidirectional"/>
@@ -970,14 +970,14 @@
       <node ref="R1" pin="2" pintype="passive"/>
       <node ref="U1" pin="8" pinfunction="IO32" pintype="bidirectional"/>
     </net>
-    <net code="31" name="RX20MA">
-      <node ref="U1" pin="30" pinfunction="IO18" pintype="bidirectional"/>
-      <node ref="U6" pin="4" pintype="passive"/>
-    </net>
-    <net code="32" name="START">
+    <net code="31" name="RUN">
       <node ref="D3" pin="6" pinfunction="K3A4" pintype="passive"/>
       <node ref="J2" pin="2" pinfunction="Pin_2" pintype="passive"/>
       <node ref="U1" pin="33" pinfunction="IO21" pintype="bidirectional"/>
+    </net>
+    <net code="32" name="RX20MA">
+      <node ref="U1" pin="30" pinfunction="IO18" pintype="bidirectional"/>
+      <node ref="U6" pin="4" pintype="passive"/>
     </net>
     <net code="33" name="TX20MA">
       <node ref="Q1" pin="1" pinfunction="G" pintype="input"/>
