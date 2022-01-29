@@ -2,7 +2,7 @@
 <export version="E">
   <design>
     <source>/Users/adrian/git/ESP32-ASR33/KiCad/ASR33.kicad_sch</source>
-    <date>Saturday, 29 January 2022 at 08:35:09</date>
+    <date>Saturday, 29 January 2022 at 11:14:50</date>
     <tool>Eeschema (6.0.1-0)</tool>
     <textvar name="DATE">2022-01-29</textvar>
     <sheet number="1" name="/" tstamps="/">
@@ -139,7 +139,7 @@
       <tstamps>67356c07-832e-4f3f-9990-96557bfa3a7b 39c94133-9eb2-4cec-a4c6-9be13e2c7f2a</tstamps>
     </comp>
     <comp ref="D4">
-      <value>D</value>
+      <value>Schottky</value>
       <footprint>Diode_SMD:D_1206_3216Metric</footprint>
       <libsource lib="Device" part="D" description="Diode"/>
       <property name="Sheetname" value=""/>
@@ -945,7 +945,7 @@
     <net code="13" name="MTR">
       <node ref="D2" pin="3" pinfunction="K1A2" pintype="passive"/>
       <node ref="J3" pin="3" pinfunction="Pin_3" pintype="passive"/>
-      <node ref="U1" pin="37" pinfunction="IO23" pintype="bidirectional"/>
+      <node ref="U1" pin="36" pinfunction="IO22" pintype="bidirectional"/>
     </net>
     <net code="14" name="Net-(C1-Pad1)">
       <node ref="C1" pin="1" pintype="passive"/>
@@ -1022,7 +1022,7 @@
     <net code="30" name="PWR">
       <node ref="D2" pin="6" pinfunction="K3A4" pintype="passive"/>
       <node ref="J3" pin="2" pinfunction="Pin_2" pintype="passive"/>
-      <node ref="U1" pin="36" pinfunction="IO22" pintype="bidirectional"/>
+      <node ref="U1" pin="37" pinfunction="IO23" pintype="bidirectional"/>
     </net>
     <net code="31" name="R">
       <node ref="R1" pin="2" pintype="passive"/>
