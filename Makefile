@@ -40,3 +40,14 @@ AJL/ajl.o: AJL/ajl.c AJL/ajlparse.c
 asrtweet: asrtweet.c Makefile AJL/ajl.o
 	cc -g -O -o $@ $< -I AJL AJL/ajl.o -lpopt -lmosquitto -pthread -lssl -lcrypto
 
+scad: KiCad/ASR33.scad
+stl: KiCad/ASR33.stl
+
+%.stl: %.scad
+	echo "Making $@"
+	/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD $< -o $@
+	echo "Made $@"
+
+KiCad/ASR33.scad: KiCad/ASR33.kicad_pcb PCBCase/case Makefile
+	PCBCase/case -o $@ $< --edge=2 --base=4.9
+
