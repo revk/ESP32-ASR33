@@ -1,7 +1,7 @@
-### Module positions - created on 2022-01-28 16:09
+### Module positions - created on 2022-01-29 08:34
 ### Printed by pcb_positions plugin
 ## Unit = mm, Angle = deg.
-## Pcb Height 35.100mm, Pcb Width 42.100mm [based on Edge bounding box]
+## Pcb Height 38.100mm, Pcb Width 45.100mm [based on Edge bounding box]
 ## Side : bottom
 ## Board Aux Origin: 0.000mm ,0.000mm
 # Ref         Val                 Package                       PosX       PosY       Pin1_PosX  Pin1_PosY    Rot     Side      Type

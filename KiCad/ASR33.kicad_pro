@@ -33,9 +33,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.0,
-          "height": 1.75,
-          "width": 1.425
+          "drill": 0.85,
+          "height": 1.85,
+          "width": 1.7
         },
         "silk_line_width": 0.15,
         "silk_text_italic": false,
@@ -44,7 +44,7 @@
         "silk_text_thickness": 0.15,
         "silk_text_upright": false,
         "zones": {
-          "45_degree_only": false,
+          "45_degree_only": true,
           "min_clearance": 0.254
         }
       },
@@ -432,6 +432,6 @@
     ]
   ],
   "text_variables": {
-    "DATE": "2022-01-28"
+    "DATE": "2022-01-29"
   }
 }
