@@ -1,21 +1,21 @@
-### Module positions - created on 2022-01-29 11:15
+### Module positions - created on 2022-01-29 16:53
 ### Printed by pcb_positions plugin
 ## Unit = mm, Angle = deg.
 ## Pcb Height 38.100mm, Pcb Width 45.100mm [based on Edge bounding box]
 ## Side : ALL
 ## Board Aux Origin: 0.000mm ,0.000mm
 # Ref         Val                 Package                       PosX       PosY       Pin1_PosX  Pin1_PosY    Rot     Side      Type
-D1            RGB                 LED-RGB-1.6x1.6               122.1000   -84.1500   122.6000   -83.2750     90.0    top       SMD
 J1            USB-C               USC16-TR-Round                120.0000   -104.4000  0.0000     0.0000      -90.0    top       SMD
 U2            FT231XQ             QFN-20-1EP_4x4mm_P0.5mm_EP2.. 133.7500   -94.6500   131.8500   -93.6500      0.0    top       SMD
 U1            ESP32-WROOM-32      ESP32-WROOM-32                149.2500   -91.7500   157.5050   -83.2500    -90.0    top       SMD
-R3            470R                R_0603                        124.8000   -84.1500   124.8000   -84.9750     90.0    top       SMD
+R3            220R                R_0603                        124.8000   -84.1500   124.8000   -84.9750     90.0    top       SMD
 C1            100nF               C_0603                        131.3000   -90.8000   132.0750   -90.8000    180.0    top       SMD
 R5            5K1                 R_0603                        129.1000   -106.8000  129.1000   -107.6250    90.0    top       SMD
 R4            5K1                 R_0603                        129.1000   -102.0000  129.1000   -102.8250    90.0    top       SMD
 R6            27R                 R_0603                        134.3000   -99.2000   134.3000   -100.0250    90.0    top       SMD
 R7            27R                 R_0603                        132.9000   -99.2000   132.9000   -98.3750    -90.0    top       SMD
-R1            1K                  R_0603                        123.6000   -84.1500   123.6000   -84.9750     90.0    top       SMD
+D1            RGB                 LED-RGB-1.6x1.6               122.1000   -84.1500   122.6000   -83.2750     90.0    top       SMD
+R1            680R                R_0603                        123.6000   -84.1500   123.6000   -84.9750     90.0    top       SMD
 R2            2K                  R_0603                        126.0000   -84.1500   126.0000   -84.9750     90.0    top       SMD
 C4            10nF                C_0603                        127.5250   -110.8000  128.3000   -110.8000   180.0    top       SMD
 C2            47pF                C_0603                        135.7000   -99.2000   135.7000   -99.9750     90.0    top       SMD
@@ -33,7 +33,7 @@ C6            10nF NF             C_0603                        139.0000   -109.
 R10           470R NF             R_0603                        131.2000   -106.0000  132.0250   -106.0000   180.0    top       VIRTUAL
 J5            Tx                  Molex_MiniSPOX_H3RA           132.5000   -113.4000  130.0000   -113.4000     0.0    top       THD
 R9            3M 1% or NF         R_0603                        124.5000   -97.2500   125.3250   -97.2500    180.0    top       SMD
-SW1           SW_Push             SW_PUSH_6mm_PTH               133.5000   -85.9000   130.2500   -83.6500      0.0    top       THD
+SW1           SW_Push             SW_PUSH_6mm_PTH               133.5000   -85.9000   136.7500   -83.6500      0.0    top       THD
 D3            BAV99S              SOT-363_SC-70-6               151.2500   -109.4000  150.3000   -108.7500     0.0    top       SMD
 D4            Schottky            D_1206_3216Metric             123.6000   -110.9000  122.2000   -110.9000     0.0    top       SMD
 C5            110nF NF            C_1206_3216Metric             135.0250   -106.1500  136.5000   -106.1500   180.0    top       VIRTUAL

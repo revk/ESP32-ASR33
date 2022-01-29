@@ -2,7 +2,7 @@
 <export version="E">
   <design>
     <source>/Users/adrian/git/ESP32-ASR33/KiCad/ASR33.kicad_sch</source>
-    <date>Saturday, 29 January 2022 at 11:14:50</date>
+    <date>Saturday, 29 January 2022 at 16:52:40</date>
     <tool>Eeschema (6.0.1-0)</tool>
     <textvar name="DATE">2022-01-29</textvar>
     <sheet number="1" name="/" tstamps="/">
@@ -263,7 +263,7 @@
       <tstamps>4cc86802-faed-4733-be8a-933e3e6a3516</tstamps>
     </comp>
     <comp ref="R1">
-      <value>1K</value>
+      <value>680R</value>
       <footprint>RevK:R_0603</footprint>
       <libsource lib="Device" part="R" description="Resistor"/>
       <property name="Sheetname" value=""/>
@@ -281,7 +281,7 @@
       <tstamps>00000000-0000-0000-0000-000060cfbfaf</tstamps>
     </comp>
     <comp ref="R3">
-      <value>470R</value>
+      <value>220R</value>
       <footprint>RevK:R_0603</footprint>
       <libsource lib="Device" part="R" description="Resistor"/>
       <property name="Sheetname" value=""/>

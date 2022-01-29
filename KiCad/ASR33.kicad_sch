@@ -3205,7 +3205,7 @@
     (in_bom yes) (on_board yes)
     (uuid 00000000-0000-0000-0000-000060a436c8)
     (property "Reference" "R3" (id 0) (at 117.475 42.545 90))
-    (property "Value" "470R" (id 1) (at 117.475 40.64 90))
+    (property "Value" "220R" (id 1) (at 117.475 40.64 90))
     (property "Footprint" "RevK:R_0603" (id 2) (at 117.475 38.862 90)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -3261,7 +3261,7 @@
     (in_bom yes) (on_board yes)
     (uuid 00000000-0000-0000-0000-000060cf9e4d)
     (property "Reference" "R1" (id 0) (at 117.475 32.385 90))
-    (property "Value" "1K" (id 1) (at 117.475 30.48 90))
+    (property "Value" "680R" (id 1) (at 117.475 30.48 90))
     (property "Footprint" "RevK:R_0603" (id 2) (at 117.475 28.702 90)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -4501,13 +4501,13 @@
       (reference "Q1") (unit 1) (value "NX7002AK") (footprint "Package_TO_SOT_SMD:SOT-23")
     )
     (path "/00000000-0000-0000-0000-000060cf9e4d"
-      (reference "R1") (unit 1) (value "1K") (footprint "RevK:R_0603")
+      (reference "R1") (unit 1) (value "680R") (footprint "RevK:R_0603")
     )
     (path "/00000000-0000-0000-0000-000060cfbfaf"
       (reference "R2") (unit 1) (value "2K") (footprint "RevK:R_0603")
     )
     (path "/00000000-0000-0000-0000-000060a436c8"
-      (reference "R3") (unit 1) (value "470R") (footprint "RevK:R_0603")
+      (reference "R3") (unit 1) (value "220R") (footprint "RevK:R_0603")
     )
     (path "/00000000-0000-0000-0000-00006043a8ad"
       (reference "R4") (unit 1) (value "5K1") (footprint "RevK:R_0603")
