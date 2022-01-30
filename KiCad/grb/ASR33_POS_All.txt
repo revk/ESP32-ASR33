@@ -1,4 +1,4 @@
-### Module positions - created on 2022-01-30 09:33
+### Module positions - created on 2022-01-30 13:00
 ### Printed by pcb_positions plugin
 ## Unit = mm, Angle = deg.
 ## Pcb Height 38.100mm, Pcb Width 45.100mm [based on Edge bounding box]
@@ -20,37 +20,37 @@ R2            2K                  R_0603                        126.0000   -84.1
 C4            10nF                C_0603                        127.5250   -110.8000  128.3000   -110.8000   180.0    top       SMD
 C2            47pF                C_0603                        135.7000   -99.2000   135.7000   -99.9750     90.0    top       SMD
 C3            47pF                C_0603                        131.5000   -99.2000   131.5000   -99.9750     90.0    top       SMD
-C8            2.2uF               Hidden                        126.9000   -94.0000   0.0000     0.0000      180.0    top       SMD
-C9            10uF                Hidden                        126.9000   -87.7500   0.0000     0.0000      180.0    top       SMD
+C6            2.2uF               Hidden                        126.9000   -94.0000   0.0000     0.0000      180.0    top       SMD
+C7            10uF                Hidden                        126.9000   -87.7500   0.0000     0.0000      180.0    top       SMD
 D5            Schottky            Hidden                        126.5100   -90.8700   0.0000     0.0000       90.0    top       SMD
 L1            6.8uH               Hidden                        123.3500   -89.2500   0.0000     0.0000       90.0    top       SMD
-C7            0.1uF               Hidden                        123.6000   -95.2500   0.0000     0.0000        0.0    top       SMD
-U4            NCR402U             SOT-457                       142.5000   -109.4000  143.7000   -110.3500   180.0    top       SMD
-U3            NCR402U             SOT-457                       131.5000   -109.4000  132.7000   -110.3500   180.0    top       SMD
+C5            0.1uF               Hidden                        123.6000   -95.2500   0.0000     0.0000        0.0    top       SMD
+U4            NCR402U             SOT-457                       144.7500   -109.4000  145.9500   -110.3500   180.0    top       SMD
+U3            NCR402U             SOT-457                       134.0000   -109.4000  135.2000   -110.3500   180.0    top       SMD
+U5            LTV-356T            SO-4_4.4x3.6mm_P2.54mm        144.9000   -104.6000  141.7500   -103.3300     0.0    top       SMD
 D2            BAV99S              SOT-363_SC-70-6               160.0000   -109.4000  160.9500   -110.0500   180.0    top       SMD
-Q1            NX7002AK            SOT-23                        135.7500   -109.4000  136.7000   -108.4625   -90.0    top       SMD
-C6            10nF NF             C_0603                        139.0000   -109.4000  139.0000   -108.6250   -90.0    top       VIRTUAL
-R10           470R NF             R_0603                        131.2000   -106.0000  132.0250   -106.0000   180.0    top       VIRTUAL
+Q1            NX7002AK            SOT-23                        136.8000   -103.6000  137.7500   -102.6625   -90.0    top       SMD
 J5            Tx                  Molex_MiniSPOX_H3RA           132.5000   -113.4000  130.0000   -113.4000     0.0    top       THD
+JP1           20R NF              Pad_1206_0805_Open            131.0000   -109.0000  131.0000   -110.4625    90.0    top       VIRTUAL
+JP4           20R NF              Pad_1206_0805_Open            139.6000   -104.6000  139.6000   -105.5125    90.0    top       VIRTUAL
 R9            3M 1% or NF         R_0603                        124.5000   -97.2500   125.3250   -97.2500    180.0    top       SMD
 SW1           SW_Push             SW_PUSH_6mm_PTH               133.5000   -85.9000   136.7500   -83.6500      0.0    top       THD
 D3            BAV99S              SOT-363_SC-70-6               151.2500   -109.4000  150.3000   -108.7500     0.0    top       SMD
 D4            Schottky            D_1206_3216Metric             123.6000   -110.9000  122.2000   -110.9000     0.0    top       SMD
-C5            110nF NF            C_1206_3216Metric             135.0250   -106.1500  136.5000   -106.1500   180.0    top       VIRTUAL
-U5            LTV-355T            SO-4_4.4x3.6mm_P2.54mm        142.5000   -104.9000  139.3500   -103.6300     0.0    top       SMD
 J6            Rx                  Molex_MiniSPOX_H3RA           142.5000   -113.4000  140.0000   -113.4000     0.0    top       THD
 J2            DC                  Molex_MiniSPOX_H2RA           123.7500   -113.4000  122.5000   -113.4000     0.0    top       THD
+JP2           20R NF              Pad_1206_0805_Open            141.7500   -109.0000  141.7500   -109.9125    90.0    top       VIRTUAL
 R8            10M 1% or 0R        R_0603                        121.6750   -97.2500   120.8500   -97.2500      0.0    top       SMD
 J3            Power               Molex_MiniSPOX_H3RA           160.0000   -113.4000  157.5000   -113.4000     0.0    top       THD
 J4            RUN                 Molex_MiniSPOX_H2RA           151.2500   -113.4000  150.0000   -113.4000     0.0    top       THD
 U6            LMR16006+FB         RegulatorBlockFB              123.3500   -93.1500   124.7000   -94.1000     90.0    top       SMD
 Logo1         AJK                 AJK                           123.3500   -86.0500   0.0000     0.0000      180.0    bottom    VIRTUAL
-JP1           Rx-RTN              SolderJumper-2_P1.3mm_Bridg.. 137.5000   -109.7500  136.8500   -109.7500     0.0    bottom    VIRTUAL
+JP3           GND-Linked          Pad_1206_0805_Bridged         137.3000   -109.8000  135.8375   -109.8000     0.0    bottom    VIRTUAL
 U7            QR                  QR-ASR33                      155.0000   -86.3500   0.0000     0.0000        0.0    bottom    VIRTUAL
 ## End
 ## 209 SMD pads
 ## 17 TH pads
-## 83 Virtual pads
+## 91 Virtual pads
 ## 6 Top TH modules
 ## 0 Bot TH modules
 ## 30 Top SMD modules
