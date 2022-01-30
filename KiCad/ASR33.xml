@@ -2,15 +2,15 @@
 <export version="E">
   <design>
     <source>/Users/adrian/git/ESP32-ASR33/KiCad/ASR33.kicad_sch</source>
-    <date>Saturday, 29 January 2022 at 16:52:40</date>
+    <date>Sunday, 30 January 2022 at 09:33:05</date>
     <tool>Eeschema (6.0.1-0)</tool>
-    <textvar name="DATE">2022-01-29</textvar>
+    <textvar name="DATE">2022-01-30</textvar>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
         <title>ASR33 controller</title>
         <company/>
         <rev>1</rev>
-        <date>2022-01-29</date>
+        <date>2022-01-30</date>
         <source>ASR33.kicad_sch</source>
         <comment number="1" value="@TheRealRevK"/>
         <comment number="2" value="www.me.uk"/>
