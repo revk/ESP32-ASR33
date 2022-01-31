@@ -1,6 +1,6 @@
 // Generated case design for KiCad/ASR33.kicad_pcb
 // By https://github.com/revk/PCBCase
-// Generated 2022-01-31 07:49:30
+// Generated 2022-01-31 08:15:04
 // title:	ASR33 driver
 // date:	${DATE}
 // rev:	1
@@ -43,14 +43,14 @@ translate([6.000000,35.850000,0.800000])rotate([0,0,90.000000])m3(pushed); // Re
 translate([7.525000,9.200000,0.800000])rotate([0,0,180.000000])m4(pushed); // RevK:C_0603 C_0603_1608Metric
 translate([15.700000,20.800000,0.800000])rotate([0,0,90.000000])m4(pushed); // RevK:C_0603 C_0603_1608Metric
 translate([11.500000,20.800000,0.800000])rotate([0,0,90.000000])m4(pushed); // RevK:C_0603 C_0603_1608Metric
-// Missing RevK:SOT-457 SOT457
-// Missing RevK:SOT-457 SOT457
+translate([24.750000,10.600000,0.800000])rotate([0,0,180.000000])translate([2.100000,1.400000,-1.300000])rotate([-90.000000,0.000000,90.000000])m6(pushed); // RevK:SOT-457 SOT457
+translate([14.000000,10.600000,0.800000])rotate([0,0,180.000000])translate([2.100000,1.400000,-1.300000])rotate([-90.000000,0.000000,90.000000])m6(pushed); // RevK:SOT-457 SOT457
 translate([24.900000,15.400000,0.800000])m7(pushed); // Package_SO:SO-4_4.4x3.6mm_P2.54mm SO-4_4.4x3.6mm_P2.54mm
 translate([40.000000,10.600000,0.800000])rotate([0,0,180.000000])m8(pushed); // Package_TO_SOT_SMD:SOT-363_SC-70-6 SOT-363_SC-70-6
 translate([16.800000,16.400000,0.800000])rotate([0,0,-90.000000])m9(pushed); // Package_TO_SOT_SMD:SOT-23 SOT-23
 translate([12.500000,6.600000,0.800000])translate([0.000000,-3.600000,2.500000])rotate([0.000000,0.000000,180.000000])m10(pushed); // RevK:Molex_MiniSPOX_H3RA 22057035
 translate([4.500000,22.750000,0.800000])rotate([0,0,180.000000])m3(pushed); // RevK:R_0603 R_0603_1608Metric
-// Missing RevK:SW_PUSH_6mm_PTH SW_PUSH_6mm
+translate([13.500000,34.100000,0.800000])translate([-3.250000,2.250000,0.000000])m11(pushed); // RevK:SW_PUSH_6mm_PTH SW_PUSH_6mm
 translate([31.250000,10.600000,0.800000])m8(pushed); // Package_TO_SOT_SMD:SOT-363_SC-70-6 SOT-363_SC-70-6
 translate([3.600000,9.100000,0.800000])m12(pushed); // Diode_SMD:D_1206_3216Metric D_1206_3216Metric
 translate([22.500000,6.600000,0.800000])translate([0.000000,-3.600000,2.500000])rotate([0.000000,0.000000,180.000000])m10(pushed); // RevK:Molex_MiniSPOX_H3RA 22057035
@@ -137,6 +137,12 @@ b(0,0,0,0.8,0.8,0.95);
 b(0,0,0,1,1,20);
 }
 
+module m6(pushed=false)
+{ // RevK:SOT-457 SOT457
+b(0,0,0,1.15,2.0,1.1);
+b(0,0,0,2.1,2.0,0.6);
+}
+
 module m7(pushed=false)
 { // Package_SO:SO-4_4.4x3.6mm_P2.54mm SO-4_4.4x3.6mm_P2.54mm
 b(0,0,0,4.55+0.25,3.7+0.25,2.1+0.2);
@@ -175,6 +181,11 @@ translate([-A/2,-2.94,-2.5])
 	translate([0,-23,0])cube([A,20,4.9]);
 }
 
+}
+
+module m11(pushed=false)
+{ // RevK:SW_PUSH_6mm_PTH SW_PUSH_6mm
+b(0,0,0,6,6,4);
 }
 
 module m12(pushed=false)
