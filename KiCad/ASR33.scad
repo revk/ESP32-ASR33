@@ -1,6 +1,6 @@
 // Generated case design for KiCad/ASR33.kicad_pcb
 // By https://github.com/revk/PCBCase
-// Generated 2022-01-31 07:47:00
+// Generated 2022-01-31 07:57:12
 // title:	ASR33 driver
 // date:	${DATE}
 // rev:	1
@@ -455,4 +455,4 @@ module parts()
 	base();
 	translate([spacing,0,0])top();
 }
-test();
+base(); translate([spacing,0,0])top();
