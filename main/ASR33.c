@@ -472,9 +472,9 @@ void asr33_main(void *param)
    ESP_ERROR_CHECK(uart_driver_install(uart, 1024, 1024, 0, NULL, 0));
    uart_config_t uart_config = {
       .baud_rate = baud,
-      .data_bits = UART_DATA_5_BITS+(databits-5),
+      .data_bits = UART_DATA_5_BITS + (databits - 5),
       .parity = UART_PARITY_DISABLE,
-      .stop_bits = UART_STOP_BITS_1+(halfstops-2),
+      .stop_bits = UART_STOP_BITS_1 + (halfstops - 2),
       .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
    };
    // Configure UART parameters
