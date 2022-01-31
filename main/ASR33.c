@@ -43,6 +43,9 @@
   u8(tapelead,15) \
   u8(tapetail,15) \
   u16(port,33)	\
+  u32(baud,110)	\
+  u8(databits,8)	\
+  u8(halfstops,4)	\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
@@ -468,10 +471,10 @@ void asr33_main(void *param)
    doecho = !noecho;
    ESP_ERROR_CHECK(uart_driver_install(uart, 1024, 1024, 0, NULL, 0));
    uart_config_t uart_config = {
-      .baud_rate = 110,
-      .data_bits = UART_DATA_8_BITS,
+      .baud_rate = baud,
+      .data_bits = UART_DATA_5_BITS+(databits-5),
       .parity = UART_PARITY_DISABLE,
-      .stop_bits = UART_STOP_BITS_2,
+      .stop_bits = UART_STOP_BITS_1+(halfstops-2),
       .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
    };
    // Configure UART parameters
