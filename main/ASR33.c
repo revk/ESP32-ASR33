@@ -475,22 +475,6 @@ void asr33_main(void *param)
 
    tty_setup();
 
-   if (rx)
-   {
-      if (rxpu)
-         gpio_pullup_en(port_mask(rx));
-      else
-         gpio_pullup_dis(port_mask(rx));
-   }
-   if (tx)
-   {
-      if (txod)
-         gpio_set_direction(tx, GPIO_MODE_DEF_OD);
-      if (txpu)
-         gpio_pullup_en(port_mask(tx));
-      else
-         gpio_pullup_dis(port_mask(tx));
-   }
    if (run)
    {                            // RUN input
       gpio_set_direction(port_mask(run), GPIO_MODE_INPUT);

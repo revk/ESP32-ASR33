@@ -5,8 +5,6 @@
 // Start bit accepted after 2 bits low
 // Receive sample by middle 3 bits majority
 
-// TODO not finished
-
 #include "softuart.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
@@ -23,17 +21,24 @@ struct softuart_s {
 
    int8_t tx;                   // Tx GPIO
    uint8_t txdata[32];          // The tx message
+   volatile uint8_t txi;        // Next byte to which new tx byte to be written (set by non int)
+   volatile uint8_t txo;        // Next byte from which a tx byte will be read (set by int)
    uint8_t txbit;               // Tx bit count, 0 means idle
-   uint8_t txsubbit;            // Tx sub bit count
+   volatile uint8_t txsubbit;   // Tx sub bit count
    uint8_t txbyte;              // Tx byte being clocked in
 
    int8_t rx;                   // Rx pin (can be same as tx)
    uint8_t rxdata[32];          // The Rx data
+   volatile uint8_t rxi;        // Next byte to which new rx byte to be written (set by int)
+   volatile uint8_t rxo;        // Next byte from which a rx byte will be read (set by non int)
    uint8_t rxbit;               // Rx bit count, 0 means idle
    uint8_t rxsubbit;            // Rx sub bit count
-   uint8_t rxbyte;              // Tx byte being clocked in
+   uint8_t rxbyte;              // Rx byte being clocked in
+   volatile uint8_t rxbreak;    // Rx break (bit count up to max)
 
     uint8_t:0;                  //      Bits set/used from int
+   uint8_t txinv;               // Invert tx
+   uint8_t rxinv;               // Invert rx
    uint8_t rxlast:1;            // Last rx bit
    uint8_t txnext:1;            // Next tx bit
 
@@ -53,21 +58,47 @@ bool IRAM_ATTR timer_isr(void *up)
 {
    softuart_t *u = up;
    // Timing based, sample Rx and set Tx
-   uint8_t r = gpio_get(u->rx);
-   if (u->txnext)
+   uint8_t r = (gpio_get(u->rx) ^ u->rxinv);
+   if (u->txnext ^ u->txinv)
       gpio_set(u->tx);
    else
       gpio_clr(u->tx);
-   // Work out next tx
-   if (!u->txbit)
-   {                            // Do we have a next byte to start
-
+   // Tx
+   if (u->txsubbit)
+      u->txsubbit--;            // Working through sub bits
+   if (!u->txsubbit)
+   {                            // Work out next tx
+      if (u->txbit)
+      {                         // Sending a byte
+         u->txbit--;
+         if (!u->txbit)
+         {                      // Stop bits at end of byte
+            u->txsubbit = u->stops;
+            u->txnext = 1;
+         } else
+         {
+            u->txsubbit = STEPS;        // Send next bit
+            u->txnext = (u->txbyte & 1);
+            u->txbyte >>= 1;
+         }
+      } else if (!u->txbit)
+      {                         // Do we have a next byte to start
+         uint8_t txi = u->txi;
+         uint8_t txo = u->txo;
+         if (txi != txo)
+         {                      // We have a byte
+            u->txbyte = u->txdata[txo];
+            txo++;
+            if (txo == sizeof(u->txdata))
+               txo = 0;
+            u->txo = txo;
+            u->txbit = u->bits + 1;
+            u->txsubbit = STEPS;        // Start bit
+            u->txnext = 0;
+         }
+      }
    }
-   if (u->txbit)
-   {                            // Sending next bit
-
-   }
-   // Process rx
+   // Rx
    if (!u->rxbit)
    {                            // Looking for start
       if (!r && !u->rxlast)
@@ -85,7 +116,7 @@ bool IRAM_ATTR timer_isr(void *up)
 }
 
 // Set up
-softuart_t *softuart_init(int8_t timer, int8_t tx, int8_t rx, uint16_t baudx100, uint8_t bits, uint8_t stopx2)
+softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uint8_t rxinv, uint16_t baudx100, uint8_t bits, uint8_t stopx2)
 {
    if (timer < 0 || tx < 0 || rx < 0 || tx == rx ||     //
        !GPIO_IS_VALID_OUTPUT_GPIO(tx)   //
@@ -100,7 +131,11 @@ softuart_t *softuart_init(int8_t timer, int8_t tx, int8_t rx, uint16_t baudx100,
    u->bits = (bits ? : 8);
    u->stops = ((stopx2 ? : 4) * STEPS + 1) / 2;
    u->tx = tx;
+   u->txinv = txinv;
+   u->txnext = 1;
    u->rx = rx;
+   u->rxinv = rxinv;
+   u->rxlast = 1;
    u->timer = timer;
    gpio_reset_pin(u->tx);
    gpio_set(u->tx);
@@ -144,38 +179,61 @@ void *softuart_end(softuart_t * u)
 }
 
 // Low level messaging
-int softuart_tx(softuart_t * u, int len, uint8_t * data)
+void softuart_tx(softuart_t * u, uint8_t b)
 {
-
-   return -1;
+   while (!softuart_tx_space(u))
+      usleep(10000);
+   uint8_t txi = u->txi;
+   u->txdata[txi] = b;
+   txi++;
+   if (txi == sizeof(u->txdata))
+      txi = 0;
+   u->txi = txi;
 }
 
-int softuart_rx(softuart_t * u, int max, uint8_t * data)
+uint8_t softuart_rx(softuart_t * u)
 {
-
-   return -1;
+   while (softuart_rx_ready(u) <= 0)
+      usleep(1000);
+   uint8_t rxo = u->rxo;
+   uint8_t b = u->rxdata[rxo];
+   rxo++;
+   if (rxo == sizeof(u->rxdata))
+      rxo = 0;
+   u->rxo = rxo;
+   return b;
 }
 
 int softuart_tx_space(softuart_t * u)
 {                               // Report how much space for sending
-
-   return -1;
+   int s = (int) u->txi - (int) u->txo;
+   if (s < 0)
+      s += sizeof(u->txdata);
+   return sizeof(u->txdata) - 1 - s;    // -1 as never completely fills
 }
 
 int softuart_tx_waiting(softuart_t * u)
 {                               // Report how many bytes still being transmitted including one in process of transmission
-   // -1 means non ready and receiving BREAK condition
-
-   return -1;
+   int s = (int) u->txi - (int) u->txo;
+   if (s < 0)
+      s += sizeof(u->txdata);
+   if (u->txsubbit)
+      s++;                      // Sending a byte
+   return s;
 }
 
 void softuart_tx_flush(softuart_t * u)
 {                               // Wait for all tx to complete
-
+   while (softuart_tx_waiting(u))
+      usleep(1000);
 }
 
 int softuart_rx_ready(softuart_t * u)
-{                               // Report how many bytes are available to read (-1 means BREAK)
-
-   return -1;
+{                               // Report how many bytes are available to read (negative means BREAK)
+   int s = (int) u->rxi - (int) u->rxo;
+   if (s < 0)
+      s += sizeof(u->rxdata);
+   if (!s)
+      s = -(int) u->rxbreak;
+   return s;
 }

@@ -14,15 +14,15 @@
 typedef struct softuart_s softuart_t;
 
 // Set up
-softuart_t *softuart_init(int8_t timer, int8_t tx, int8_t rx, uint16_t baudx100, uint8_t bits, uint8_t stopx2);
+softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uint8_t rxinv, uint16_t baudx100, uint8_t bits, uint8_t stopx2);
 void softuart_start(softuart_t *);
 void *softuart_end(softuart_t *);
 
 int softuart_tx_space(softuart_t *);    // Report how much space for sending
 int softuart_tx_waiting(softuart_t *);  // Report how many bytes still being transmitted including one in process of transmission
 void softuart_tx_flush(softuart_t *);   // Wait for all tx to complete
-int softuart_tx(softuart_t *, int len, uint8_t * buf);  // Send bytes (return len sent, or -ve for error)
+void softuart_tx(softuart_t *, uint8_t b);      // Send byte, blocking
 int softuart_rx_ready(softuart_t *);    // Report how many bytes are available to read (-1 means BREAK)
-int softuart_rx(softuart_t *, int max, uint8_t * buf);  // Receive bytes (return len received, or -ve for error)
+uint8_t softuart_rx(softuart_t *);      // Receive byte, blocking
 
 #endif
