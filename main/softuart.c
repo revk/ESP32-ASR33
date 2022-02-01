@@ -49,9 +49,6 @@ struct softuart_s {
    uint8_t started:1;           // Int handler started
 };
 
-#define TIMER_DIVIDER         4 //  Hardware timer clock divider
-#define TIMER_SCALE           (TIMER_BASE_CLK / TIMER_DIVIDER)  // convert counter value to seconds
-
 // Low level direct GPIO controls - inlines were not playing with some optimisation modes
 #define gpio_set(r) do{if ((r) >= 32)GPIO_REG_WRITE(GPIO_OUT1_W1TS_REG, 1 << ((r) - 32)); else if ((r) >= 0)GPIO_REG_WRITE(GPIO_OUT_W1TS_REG, 1 << (r));}while(0)
 #define gpio_clr(r) do{if ((r) >= 32)GPIO_REG_WRITE(GPIO_OUT1_W1TC_REG, 1 << ((r) - 32));else if ((r) >= 0)GPIO_REG_WRITE(GPIO_OUT_W1TC_REG, 1 << (r));}while(0)
@@ -200,10 +197,14 @@ void softuart_start(softuart_t * u)
    if (u->started)
       return;
    u->started = 1;
+   uint32_t divider = 2;        // min 2
+   uint32_t ticks = (uint64_t) TIMER_BASE_CLK * 100 / STEPS / divider / u->baudx100;
+   //ESP_LOGE("UART", "Baudx100=%u Base=%u divider=%d ticks=%u", u->baudx100, TIMER_BASE_CLK, divider, ticks);
+
    // Set up timer
    timer_config_t config;
    memset(&config, 0, sizeof(config));
-   config.divider = TIMER_DIVIDER;
+   config.divider = divider;
    config.counter_dir = TIMER_COUNT_UP;
    config.counter_en = TIMER_PAUSE;
    config.alarm_en = TIMER_ALARM_EN;
@@ -211,7 +212,7 @@ void softuart_start(softuart_t * u)
    config.auto_reload = 1;
    timer_init(0, u->timer, &config);
    timer_set_counter_value(0, u->timer, 0x00000000ULL);
-   timer_set_alarm_value(0, u->timer, (uint64_t) TIMER_SCALE * (100 / STEPS) / (uint64_t) (u->baudx100));
+   timer_set_alarm_value(0, u->timer, ticks);
    timer_isr_callback_add(0, u->timer, timer_isr, u, ESP_INTR_FLAG_LOWMED | ESP_INTR_FLAG_IRAM);
    timer_enable_intr(0, u->timer);
    timer_start(0, u->timer);

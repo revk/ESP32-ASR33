@@ -12,9 +12,9 @@ extern uint8_t rxpu;
 extern uint8_t tx;
 extern uint8_t txpu;
 extern uint8_t txod;
-extern uint16_t baud;
+extern uint16_t baudx100;
 extern uint8_t databits;
-extern uint8_t halfstops;
+extern uint8_t stopx2;
 
 static softuart_t *u = NULL;
 
@@ -22,7 +22,7 @@ void tty_setup(void)
 {                               // Does UART setup, expects uart to be set globally, UART number for hard, or negative for soft
    if (uart < 0)
    {                            // Soft UART
-      u = softuart_init(0, port_mask(tx), port_inv(tx), port_mask(rx), port_inv(rx), baud * 100, databits, halfstops);
+      u = softuart_init(0, port_mask(tx), port_inv(tx), port_mask(rx), port_inv(rx), baudx100, databits, stopx2);
       if (!u)
          ESP_LOGE("TTY", "Failed to init soft uart");
       else
@@ -31,10 +31,10 @@ void tty_setup(void)
    {                            // Hard UART
       uart_driver_install(uart, 1024, 1024, 0, NULL, 0);
       uart_config_t uart_config = {
-         .baud_rate = baud,
+         .baud_rate = baudx100 / 100,
          .data_bits = UART_DATA_5_BITS + (databits - 5),
          .parity = UART_PARITY_DISABLE,
-         .stop_bits = UART_STOP_BITS_1 + (halfstops - 2),
+         .stop_bits = UART_STOP_BITS_1 + (stopx2 - 2),
          .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
       };
       // Configure UART parameters

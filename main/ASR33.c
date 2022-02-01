@@ -42,9 +42,9 @@
   u8(tapelead,15) \
   u8(tapetail,15) \
   u16(port,33)	\
-  u32(baud,110)	\
+  u16(baudx100,11000)	\
   u8(databits,8)	\
-  u8(halfstops,4)	\
+  u8(stopx2,4)	\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
