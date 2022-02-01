@@ -5,6 +5,8 @@
 // Start bit accepted after 2 bits low
 // Receive sample by middle 3 bits majority
 
+// TODO not finished
+
 #include "softuart.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
