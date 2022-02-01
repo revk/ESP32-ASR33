@@ -104,8 +104,16 @@ uint8_t tty_rx(void)
 {                               // Receive a byte, blocking
    uint8_t b = 0;
    if (uart < 0)
-      return softuart_rx(u);    // SOft UART
+      return softuart_rx(u);    // Soft UART
    // Hard UART
    uart_read_bytes(uart, &b, 1, 0);
    return b;
+}
+
+int tty_tx_space(void)
+{
+   if (uart < 0)
+      return softuart_tx_space(u);      // Soft UART
+   // Hard UART
+   return 1;                    // Not sure we have a function for this...
 }

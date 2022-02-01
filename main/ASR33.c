@@ -727,6 +727,9 @@ void asr33_main(void *param)
       }
       if (eot > now + 2000000)
          continue;              // Let's wait for these to send...
+      // TODO we don't need EOT when we have the soft UART stuff in place with tx_space()
+      if (!tty_tx_space())
+         continue;              // No space
       // Get next character
       uint32_t n = txo + 1;
       if (n >= MAXTX)
@@ -734,7 +737,7 @@ void asr33_main(void *param)
       uint8_t b = buf[txo];
       txo = n;
       tty_tx(b);
-      timeout(100000);
+      timeout(50000000 * (2 + databits * 2 + stopx2) / baudx100);
    }
 }
 
