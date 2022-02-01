@@ -606,7 +606,25 @@ void asr33_main(void *param)
          }
       }
       // Check rx
-      if (tty_rx_ready() > 0)
+      static uint8_t brk = 0;
+      int len = tty_rx_ready();
+      if (!len)
+      {
+         if (brk)
+         {
+            brk = 0;
+            jo_t j = jo_object_alloc();
+            revk_event("idle", &j);
+         }
+      } else if (len < 0)
+      {
+         if (!brk)
+         {
+            brk = 1;
+            jo_t j = jo_object_alloc();
+            revk_event("break", &j);
+         }
+      } else if (len > 0)
       {
          uint8_t b = tty_rx();
          if (csock >= 0)
@@ -633,7 +651,7 @@ void asr33_main(void *param)
                   jo_stringn(j, NULL, (void *) line, rxp);
                   revk_event("line", &j);
                   rxp = 0;
-               } else if ((b & 0x7F) != '\r' && rxp < MAXRX)
+               } else if ((b & 0x7f) && (b & 0x7F) != '\r' && rxp < MAXRX)
                   line[rxp++] = (b & 0x7F);
                if (doecho)
                {                // Handling local characters and echoing (maybe, depends on xoff too)

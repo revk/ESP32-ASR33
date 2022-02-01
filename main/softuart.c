@@ -2,8 +2,9 @@
 // Copyright © 2022 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
 //
 // This works on a timer interrupt at 5 x bit rate
-// Start bit accepted after 2 bits low
-// Receive sample by middle 3 bits majority
+// Start bit accepted after 2 samples low
+// Receive sample by middle 3 samples majority in each bit
+// Would be nice some time to have some stats for bad start bits, and bad quality bits (e.g. 1 or 2 counts not 0 or 3)
 
 #include "softuart.h"
 #include "esp_log.h"
@@ -34,6 +35,7 @@ struct softuart_s {
    volatile uint8_t rxo;        // Next byte from which a rx byte will be read (set by non int)
    uint8_t rxbit;               // Rx bit count, 0 means idle
    uint8_t rxsubbit;            // Rx sub bit count
+   uint8_t rxcount;             // Rx sub bit 1 count for majority check in mid bit
    uint8_t rxbyte;              // Rx byte being clocked in
    volatile uint8_t rxbreak;    // Rx break (bit count up to max)
 
@@ -109,23 +111,61 @@ bool IRAM_ATTR timer_isr(void *up)
       }
    }
    // Rx
-   if (!u->rxbit)
-   {                            // Looking for start
+   if (!u->rxsubbit)
+   {                            // Idle, waiting for start bit
       if (!r && !u->rxlast)
-      {                         // Start bit (i.e. two samples in a row)
-
-      }
+      {                         // Start bit
+         u->rxsubbit = STEPS - 1;
+         u->rxbit = u->bits + 1;        // Data and start
+         u->rxbyte = 0;
+      } else
+         u->rxbreak = 0;        // Idle
    }
-   if (u->rxbit)
-   {                            // Clock in data
-
+   if (u->rxsubbit)
+   {
+      u->rxsubbit--;
+      if (!u->rxsubbit)
+      {                         // Bit received
+         if (u->rxbit)
+         {                      // Clocking in a byte
+            if (u->rxbit == u->bits + 1 && u->rxcount >= 2)
+               u->rxbit = 0;    // Bad start bit
+            else
+            {
+               u->rxbyte >>= 1;
+               if (u->rxcount >= 2)
+                  u->rxbyte |= (1 << (u->bits - 1));
+               u->rxbit--;
+               if (!u->rxbit)
+               {                // End of byte
+                  uint8_t rxi = u->rxi;
+                  u->rxdata[rxi] = u->rxbyte;
+                  rxi++;
+                  if (rxi == sizeof(u->rxdata))
+                     rxi = 0;
+                  if (rxi != u->rxo)
+                     u->rxi = rxi;      // Has space
+               }
+               u->rxsubbit = STEPS;     // Next bit
+            }
+         } else
+         {                      // Stop bit
+            if (u->rxcount < 2)
+            {                   // Bad stop bit, looks like break
+               if (u->rxbreak < 255)
+                  u->rxbreak++;
+               u->rxsubbit = STEPS;     // Keep checking break indefinitely
+            }                   // else stop was clean so subbits stays 0 waiting for next byte
+         }
+         u->rxcount = 0;
+      } else if (r && u->rxsubbit <= 3)
+         u->rxcount++;
    }
    u->rxlast = r;
-
    return false;
 }
 
-// Set up
+   // Set up
 softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uint8_t rxinv, uint16_t baudx100, uint8_t bits, uint8_t stopx2)
 {
    if (timer < 0 || tx < 0 || rx < 0 || tx == rx ||     //
