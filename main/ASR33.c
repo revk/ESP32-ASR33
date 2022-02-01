@@ -5,6 +5,7 @@
 #include <esp_spi_flash.h>
 #include <driver/uart.h>
 #include <driver/gpio.h>
+#include "softuart.h"
 
 #define	EOT	4
 #define	WRU	5
