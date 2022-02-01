@@ -7,4 +7,5 @@ void tty_setup(void);
 void tty_flush(void);
 int tty_rx_ready(void);
 void tty_tx(uint8_t b);
+void tty_break(void);
 uint8_t tty_rx(void);

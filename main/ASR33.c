@@ -299,6 +299,8 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       doecho = 1;
    if (!strcmp(suffix, "noecho"))
       doecho = 0;
+   if (!strcmp(suffix, "break"))
+      tty_break();
 
    if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw") || !strcmp(suffix, "text") || !strcmp(suffix, "line") || !strcmp(suffix, "bell"))
    {                            // Plain text functions - simple JSON string

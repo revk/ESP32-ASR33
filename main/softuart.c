@@ -26,6 +26,7 @@ struct softuart_s {
    uint8_t txbit;               // Tx bit count, 0 means idle
    volatile uint8_t txsubbit;   // Tx sub bit count
    uint8_t txbyte;              // Tx byte being clocked in
+   volatile uint8_t txbreak;    // Tx break (bit count up to max)
 
    int8_t rx;                   // Rx pin (can be same as tx)
    uint8_t rxdata[32];          // The Rx data
@@ -85,7 +86,11 @@ bool IRAM_ATTR timer_isr(void *up)
       {                         // Do we have a next byte to start
          uint8_t txi = u->txi;
          uint8_t txo = u->txo;
-         if (txi != txo)
+         if (!u->txnext)
+         {
+            u->txsubbit = u->stops;
+            u->txnext = 1;      // End of a break.
+         } else if (txi != txo)
          {                      // We have a byte
             u->txbyte = u->txdata[txo];
             txo++;
@@ -94,6 +99,11 @@ bool IRAM_ATTR timer_isr(void *up)
             u->txo = txo;
             u->txbit = u->bits + 1;
             u->txsubbit = STEPS;        // Start bit
+            u->txnext = 0;
+         } else if (u->txbreak)
+         {
+            u->txsubbit = u->txbreak;
+            u->txbreak = 0;
             u->txnext = 0;
          }
       }
@@ -226,6 +236,11 @@ void softuart_tx_flush(softuart_t * u)
 {                               // Wait for all tx to complete
    while (softuart_tx_waiting(u))
       usleep(1000);
+}
+
+void softuart_tx_break(softuart_t * u)
+{                               // Send a break (once tx done)
+   u->txbreak = 255;
 }
 
 int softuart_rx_ready(softuart_t * u)

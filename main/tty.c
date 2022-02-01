@@ -23,26 +23,28 @@ void tty_setup(void)
    if (uart < 0)
    {                            // Soft UART
       u = softuart_init(0, port_mask(tx), port_inv(tx), port_mask(rx), port_inv(rx), baud * 100, databits, halfstops);
-      if(!u)ESP_LOGE("TTY","Failed to init soft uart");
-      else  softuart_start(u);
-   }else
-   { // Hard UART
-   uart_driver_install(uart, 1024, 1024, 0, NULL, 0);
-   uart_config_t uart_config = {
-      .baud_rate = baud,
-      .data_bits = UART_DATA_5_BITS + (databits - 5),
-      .parity = UART_PARITY_DISABLE,
-      .stop_bits = UART_STOP_BITS_1 + (halfstops - 2),
-      .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-   };
-   // Configure UART parameters
-   uart_param_config(uart, &uart_config);
-   uart_set_pin(uart, tx ? port_mask(tx) : UART_PIN_NO_CHANGE, rx ? port_mask(rx) : UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-   uart_set_line_inverse(uart, (port_inv(rx) ? UART_SIGNAL_RXD_INV : 0) + (port_inv(tx) ? UART_SIGNAL_TXD_INV : 0));
-   uart_set_rx_full_threshold(uart, 1);
+      if (!u)
+         ESP_LOGE("TTY", "Failed to init soft uart");
+      else
+         softuart_start(u);
+   } else
+   {                            // Hard UART
+      uart_driver_install(uart, 1024, 1024, 0, NULL, 0);
+      uart_config_t uart_config = {
+         .baud_rate = baud,
+         .data_bits = UART_DATA_5_BITS + (databits - 5),
+         .parity = UART_PARITY_DISABLE,
+         .stop_bits = UART_STOP_BITS_1 + (halfstops - 2),
+         .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+      };
+      // Configure UART parameters
+      uart_param_config(uart, &uart_config);
+      uart_set_pin(uart, tx ? port_mask(tx) : UART_PIN_NO_CHANGE, rx ? port_mask(rx) : UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+      uart_set_line_inverse(uart, (port_inv(rx) ? UART_SIGNAL_RXD_INV : 0) + (port_inv(tx) ? UART_SIGNAL_TXD_INV : 0));
+      uart_set_rx_full_threshold(uart, 1);
    }
 
-     if (rx)
+   if (rx)
    {
       if (rxpu)
          gpio_pullup_en(port_mask(rx));
@@ -79,6 +81,12 @@ int tty_rx_ready(void)
    size_t len;
    uart_get_buffered_data_len(uart, &len);
    return len;
+}
+
+void tty_break(void)
+{                               // Send a break (softuart)
+   if (uart < 0)
+      softuart_tx_break(u);
 }
 
 void tty_tx(uint8_t b)
