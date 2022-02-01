@@ -13,28 +13,28 @@
 #define LCG_M 1048576L
 
 #define LINESIZE       1024
-#define TOKLEN         5          // # sigificant characters in a token */
-#define NDWARVES       6          // number of dwarves
-#define PIRATE         NDWARVES   // must be NDWARVES-1 when zero-origin
-#define DALTLC         LOC_NUGGET // alternate dwarf location
-#define INVLIMIT       7          // inventory limit (# of objects)
-#define INTRANSITIVE   -1         // illegal object number
-#define GAMELIMIT      330        // base limit of turns
-#define NOVICELIMIT    1000       // limit of turns for novice
-#define WARNTIME       30         // late game starts at game.limit-this
-#define FLASHTIME      50         // turns from first warning till blinding flash
-#define PANICTIME      15         // time left after closing
-#define BATTERYLIFE    2500       // turn limit increment from batteries
-#define WORD_NOT_FOUND -1         // "Word not found" flag value for the vocab hash functions.
-#define WORD_EMPTY     0          // "Word empty" flag value for the vocab hash functions
-#define CARRIED        -1         // Player is toting it
-#define READ_MODE      "rb"       // b is not needed for POSIX but harmless
-#define WRITE_MODE     "wb"       // b is not needed for POSIX but harmless
+#define TOKLEN         5        // # sigificant characters in a token */
+#define NDWARVES       6        // number of dwarves
+#define PIRATE         NDWARVES // must be NDWARVES-1 when zero-origin
+#define DALTLC         LOC_NUGGET       // alternate dwarf location
+#define INVLIMIT       7        // inventory limit (# of objects)
+#define INTRANSITIVE   -1       // illegal object number
+#define GAMELIMIT      330      // base limit of turns
+#define NOVICELIMIT    1000     // limit of turns for novice
+#define WARNTIME       30       // late game starts at game.limit-this
+#define FLASHTIME      50       // turns from first warning till blinding flash
+#define PANICTIME      15       // time left after closing
+#define BATTERYLIFE    2500     // turn limit increment from batteries
+#define WORD_NOT_FOUND -1       // "Word not found" flag value for the vocab hash functions.
+#define WORD_EMPTY     0        // "Word empty" flag value for the vocab hash functions
+#define CARRIED        -1       // Player is toting it
+#define READ_MODE      "rb"     // b is not needed for POSIX but harmless
+#define WRITE_MODE     "wb"     // b is not needed for POSIX but harmless
 
 /* Special object-state values - integers > 0 are object-specific */
-#define STATE_NOTFOUND  -1	  // 'Not found" state of treasures */
-#define STATE_FOUND	0	  // After discovered, before messed with
-#define STATE_IN_CAVITY	1	  // State value common to all gemstones
+#define STATE_NOTFOUND  -1      // 'Not found" state of treasures */
+#define STATE_FOUND	0       // After discovered, before messed with
+#define STATE_IN_CAVITY	1       // State value common to all gemstones
 
 /* Special fixed object-state values - integers > 0 are location */
 #define IS_FIXED -1
@@ -83,107 +83,107 @@
 #define BUG(x)       bug(x, #x)
 
 enum bugtype {
-    SPECIAL_TRAVEL_500_GT_L_GT_300_EXCEEDS_GOTO_LIST,
-    VOCABULARY_TYPE_N_OVER_1000_NOT_BETWEEN_0_AND_3,
-    INTRANSITIVE_ACTION_VERB_EXCEEDS_GOTO_LIST,
-    TRANSITIVE_ACTION_VERB_EXCEEDS_GOTO_LIST,
-    CONDITIONAL_TRAVEL_ENTRY_WITH_NO_ALTERATION,
-    LOCATION_HAS_NO_TRAVEL_ENTRIES,
-    HINT_NUMBER_EXCEEDS_GOTO_LIST,
-    SPEECHPART_NOT_TRANSITIVE_OR_INTRANSITIVE_OR_UNKNOWN,
-    ACTION_RETURNED_PHASE_CODE_BEYOND_END_OF_SWITCH,
+   SPECIAL_TRAVEL_500_GT_L_GT_300_EXCEEDS_GOTO_LIST,
+   VOCABULARY_TYPE_N_OVER_1000_NOT_BETWEEN_0_AND_3,
+   INTRANSITIVE_ACTION_VERB_EXCEEDS_GOTO_LIST,
+   TRANSITIVE_ACTION_VERB_EXCEEDS_GOTO_LIST,
+   CONDITIONAL_TRAVEL_ENTRY_WITH_NO_ALTERATION,
+   LOCATION_HAS_NO_TRAVEL_ENTRIES,
+   HINT_NUMBER_EXCEEDS_GOTO_LIST,
+   SPEECHPART_NOT_TRANSITIVE_OR_INTRANSITIVE_OR_UNKNOWN,
+   ACTION_RETURNED_PHASE_CODE_BEYOND_END_OF_SWITCH,
 };
 
-enum speaktype {touch, look, hear, study, change};
+enum speaktype { touch, look, hear, study, change };
 
-enum termination {endgame, quitgame, scoregame};
+enum termination { endgame, quitgame, scoregame };
 
-enum speechpart {unknown, intransitive, transitive};
+enum speechpart { unknown, intransitive, transitive };
 
-typedef enum {NO_WORD_TYPE, MOTION, OBJECT, ACTION, NUMERIC} word_type_t;
+typedef enum { NO_WORD_TYPE, MOTION, OBJECT, ACTION, NUMERIC } word_type_t;
 
-typedef enum scorebonus {none, splatter, defeat, victory} score_t;
+typedef enum scorebonus { none, splatter, defeat, victory } score_t;
 
 /* Phase codes for action returns.
  * These were at one time FORTRAN line numbers.
  * The values don't matter, but perturb their order at your peril.
  */
 typedef enum {
-    GO_TERMINATE,
-    GO_MOVE,
-    GO_TOP,
-    GO_CLEAROBJ,
-    GO_CHECKHINT,
-    GO_WORD2,
-    GO_UNKNOWN,
-    GO_DWARFWAKE,
+   GO_TERMINATE,
+   GO_MOVE,
+   GO_TOP,
+   GO_CLEAROBJ,
+   GO_CHECKHINT,
+   GO_WORD2,
+   GO_UNKNOWN,
+   GO_DWARFWAKE,
 } phase_codes_t;
 
-typedef int vocab_t;  // index into a vocabulary array */
-typedef int verb_t;   // index into an actions array */
-typedef int obj_t;    // index into the object array */
-typedef int loc_t;    // index into the locations array */
-typedef int turn_t;   // turn counter or threshold */
+typedef int vocab_t;            // index into a vocabulary array */
+typedef int verb_t;             // index into an actions array */
+typedef int obj_t;              // index into the object array */
+typedef int loc_t;              // index into the locations array */
+typedef int turn_t;             // turn counter or threshold */
 
 struct game_t {
-    int32_t lcg_x;
-    int abbnum;                  // How often to print int descriptions
-    score_t bonus;               // What kind of finishing bonus we are getting
-    loc_t chloc;                 // pirate chest location
-    loc_t chloc2;                // pirate chest alternate location
-    turn_t clock1;               // # turns from finding last treasure to close
-    turn_t clock2;               // # turns from warning till blinding flash
-    bool clshnt;                 // has player read the clue in the endgame?
-    bool closed;                 // whether we're all the way closed
-    bool closng;                 // whether it's closing time yet
-    bool lmwarn;                 // has player been warned about lamp going dim?
-    bool novice;                 // asked for instructions at start-up?
-    bool panic;                  // has player found out he's trapped?
-    bool wzdark;                 // whether the loc he's leaving was dark
-    bool blooded;                // has player drunk of dragon's blood?
-    int conds;                   // min value for cond[loc] if loc has any hints
-    int detail;                  // level of detail in descriptions
+   int32_t lcg_x;
+   int abbnum;                  // How often to print int descriptions
+   score_t bonus;               // What kind of finishing bonus we are getting
+   loc_t chloc;                 // pirate chest location
+   loc_t chloc2;                // pirate chest alternate location
+   turn_t clock1;               // # turns from finding last treasure to close
+   turn_t clock2;               // # turns from warning till blinding flash
+   bool clshnt;                 // has player read the clue in the endgame?
+   bool closed;                 // whether we're all the way closed
+   bool closng;                 // whether it's closing time yet
+   bool lmwarn;                 // has player been warned about lamp going dim?
+   bool novice;                 // asked for instructions at start-up?
+   bool panic;                  // has player found out he's trapped?
+   bool wzdark;                 // whether the loc he's leaving was dark
+   bool blooded;                // has player drunk of dragon's blood?
+   int conds;                   // min value for cond[loc] if loc has any hints
+   int detail;                  // level of detail in descriptions
 
-    /*  dflag controls the level of activation of dwarves:
-     *	0	No dwarf stuff yet (wait until reaches Hall Of Mists)
-     *	1	Reached Hall Of Mists, but hasn't met first dwarf
-     *	2	Met first dwarf, others start moving, no knives thrown yet
-     *	3	A knife has been thrown (first set always misses)
-     *	3+	Dwarves are mad (increases their accuracy) */
-    int dflag;
+   /*  dflag controls the level of activation of dwarves:
+    *  0       No dwarf stuff yet (wait until reaches Hall Of Mists)
+    *  1       Reached Hall Of Mists, but hasn't met first dwarf
+    *  2       Met first dwarf, others start moving, no knives thrown yet
+    *  3       A knife has been thrown (first set always misses)
+    *  3+      Dwarves are mad (increases their accuracy) */
+   int dflag;
 
-    int dkill;                   // dwarves killed
-    int dtotal;                  // total dwarves (including pirate) in loc
-    int foobar;                  // progress in saying "FEE FIE FOE FOO".
-    int holdng;                  // number of objects being carried
-    int igo;                     // # uses of "go" instead of a direction
-    int iwest;                   // # times he's said "west" instead of "w"
-    int knfloc;                  // knife location; 0 if none, -1 after caveat
-    turn_t limit;                // lifetime of lamp
-    loc_t loc;                   // where player is now
-    loc_t newloc;                // where player is going
-    turn_t numdie;               // number of times killed so far
-    loc_t oldloc;                // where player was
-    loc_t oldlc2;                // where player was two moves ago
-    obj_t oldobj;                // last object player handled
-    int saved;                   // point penalty for saves
-    int tally;                   // count of treasures gained
-    int thresh;                  // current threshold for endgame scoring tier
-    turn_t trndex;               // FIXME: not used, remove on next format bump
-    turn_t trnluz;               // # points lost so far due to turns used
-    turn_t turns;                // counts commands given (ignores yes/no)
-    char zzword[TOKLEN + 1];     // randomly generated magic word from bird
-    int abbrev[NLOCATIONS + 1];  // has location been seen?
-    int atloc[NLOCATIONS + 1];   // head of object linked list per location
-    int dseen[NDWARVES + 1];     // true if dwarf has seen him
-    loc_t dloc[NDWARVES + 1];    // location of dwarves, initially hard-wired in
-    loc_t odloc[NDWARVES + 1];   // prior loc of each dwarf, initially garbage
-    loc_t fixed[NOBJECTS + 1];   // fixed location of object (if  not IS_FREE)
-    obj_t link[NOBJECTS * 2 + 1];// object-list links
-    loc_t place[NOBJECTS + 1];   // location of object
-    int hinted[NHINTS];          // hinted[i] = true iff hint i has been used.
-    int hintlc[NHINTS];          // hintlc[i] = how int at LOC with cond bit i
-    int prop[NOBJECTS + 1];      // object state array */
+   int dkill;                   // dwarves killed
+   int dtotal;                  // total dwarves (including pirate) in loc
+   int foobar;                  // progress in saying "FEE FIE FOE FOO".
+   int holdng;                  // number of objects being carried
+   int igo;                     // # uses of "go" instead of a direction
+   int iwest;                   // # times he's said "west" instead of "w"
+   int knfloc;                  // knife location; 0 if none, -1 after caveat
+   turn_t limit;                // lifetime of lamp
+   loc_t loc;                   // where player is now
+   loc_t newloc;                // where player is going
+   turn_t numdie;               // number of times killed so far
+   loc_t oldloc;                // where player was
+   loc_t oldlc2;                // where player was two moves ago
+   obj_t oldobj;                // last object player handled
+   int saved;                   // point penalty for saves
+   int tally;                   // count of treasures gained
+   int thresh;                  // current threshold for endgame scoring tier
+   turn_t trndex;               // FIXME: not used, remove on next format bump
+   turn_t trnluz;               // # points lost so far due to turns used
+   turn_t turns;                // counts commands given (ignores yes/no)
+   char zzword[TOKLEN + 1];     // randomly generated magic word from bird
+   int abbrev[NLOCATIONS + 1];  // has location been seen?
+   int atloc[NLOCATIONS + 1];   // head of object linked list per location
+   int dseen[NDWARVES + 1];     // true if dwarf has seen him
+   loc_t dloc[NDWARVES + 1];    // location of dwarves, initially hard-wired in
+   loc_t odloc[NDWARVES + 1];   // prior loc of each dwarf, initially garbage
+   loc_t fixed[NOBJECTS + 1];   // fixed location of object (if  not IS_FREE)
+   obj_t link[NOBJECTS * 2 + 1];        // object-list links
+   loc_t place[NOBJECTS + 1];   // location of object
+   int hinted[NHINTS];          // hinted[i] = true iff hint i has been used.
+   int hintlc[NHINTS];          // hintlc[i] = how int at LOC with cond bit i
+   int prop[NOBJECTS + 1];      // object state array */
 };
 
 /*
@@ -191,25 +191,25 @@ struct game_t {
  * This data is not saved in a saved game.
  */
 struct settings_t {
-    FILE *logfp;
-    bool oldstyle;
-    bool prompt;
+   FILE *logfp;
+   bool oldstyle;
+   bool prompt;
 };
 
 typedef struct {
-    char raw[LINESIZE];
-    vocab_t id;
-    word_type_t type;
+   char raw[LINESIZE];
+   vocab_t id;
+   word_type_t type;
 } command_word_t;
 
-typedef enum {EMPTY, RAW, TOKENIZED, GIVEN, PREPROCESSED, PROCESSING, EXECUTED} command_state_t;
+typedef enum { EMPTY, RAW, TOKENIZED, GIVEN, PREPROCESSED, PROCESSING, EXECUTED } command_state_t;
 
 typedef struct {
-    enum speechpart part;
-    command_word_t word[2];
-    verb_t verb;
-    obj_t obj;
-    command_state_t state;
+   enum speechpart part;
+   command_word_t word[2];
+   verb_t verb;
+   obj_t obj;
+   command_state_t state;
 } command_t;
 
 extern struct game_t game;
@@ -217,13 +217,13 @@ extern struct settings_t settings;
 
 extern bool get_command_input(command_t *);
 extern void clear_command(command_t *);
-extern void speak(const char*, ...);
+extern void speak(const char *, ...);
 extern void sspeak(int msg, ...);
 extern void pspeak(vocab_t, enum speaktype, bool, int, ...);
 extern void rspeak(vocab_t, ...);
-extern void echo_input(FILE*, const char*, const char*);
+extern void echo_input(FILE *, const char *, const char *);
 extern bool silent_yes(void);
-extern bool yes(const char*, const char*, const char*);
+extern bool yes(const char *, const char *, const char *);
 extern void juggle(obj_t);
 extern void move(obj_t, loc_t);
 extern loc_t put(obj_t, int, int);
@@ -249,9 +249,9 @@ void bug(enum bugtype, const char *) __attribute__((__noreturn__));
 
 /* represent an empty command word */
 static const command_word_t empty_command_word = {
-    .raw = "",
-    .id = WORD_EMPTY,
-    .type = NO_WORD_TYPE,
+   .raw = "",
+   .id = WORD_EMPTY,
+   .type = NO_WORD_TYPE,
 };
 
 /* end */

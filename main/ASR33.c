@@ -1,11 +1,12 @@
 // ASR33 direct control over MQTT
 // Copyright © 2019 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
 
+#define	SOFTUART
+
 #include "revk.h"
 #include <esp_spi_flash.h>
-#include <driver/uart.h>
 #include <driver/gpio.h>
-#include "softuart.h"
+#include "tty.h"
 
 #define	EOT	4
 #define	WRU	5
@@ -14,9 +15,6 @@
 #define	DC2	0x12
 #define	DC3	0x13
 #define	DC4	0x14
-
-#define port_mask(p) ((p)&0x3F) // Get GPIO from io()
-#define port_inv(p) (((p)&0x40)?1:0)    // Get if inverted
 
 #define settings  \
   io(tx,4)      \
@@ -29,7 +27,7 @@
   u1(rxpu)	\
   t(pwrtopic)	\
   t(mtrtopic)	\
-  u8(uart,1)	\
+  s8(uart,1)	\
   u1(noecho)	\
   u1(nobig)	\
   u1(nover)	\
@@ -51,6 +49,7 @@
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
 #define u8(n,d) uint8_t n;
+#define s8(n,d) int8_t n;
 #define io(n,d) uint8_t n;
 #define u1(n) uint8_t n;
 #define u1t(n) uint8_t n;
@@ -60,6 +59,7 @@ settings;
 #undef u32
 #undef u16
 #undef u8
+#undef s8
 #undef io
 #undef u1
 #undef u1t
@@ -212,7 +212,7 @@ void power_off(void)
    xoff = 0;
    havepower = 0;
    reportstate();
-   uart_wait_tx_done(uart, portMAX_DELAY);      // Should be clear, but just in case...
+   tty_flush();
    if (mtr || *mtrtopic)
    {                            // Motor direct control, off
       usleep(100000);           // If final character being printed...
@@ -254,7 +254,7 @@ void power_on(void)
    }
    havepower = 1;
    reportstate();
-   uart_flush(uart);
+   tty_flush();
    timeout(0);
 }
 
@@ -456,6 +456,7 @@ void asr33_main(void *param)
 #define u32(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u16(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u8(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
+#define s8(n,d) revk_register(#n,0,sizeof(n),&n,#d,SETTING_SIGNED);
 #define io(n,d) revk_register(#n,0,sizeof(n),&n,"- "#d,SETTING_SET|SETTING_BITFIELD);
 #define u1(n) revk_register(#n,0,sizeof(n),&n,NULL,SETTING_BOOLEAN);
 #define u1t(n) revk_register(#n,0,sizeof(n),&n,"1",SETTING_BOOLEAN);
@@ -465,24 +466,15 @@ void asr33_main(void *param)
 #undef u32
 #undef u16
 #undef u8
+#undef s8
 #undef io
 #undef u1
 #undef u1t
    revk_start();
    doecho = !noecho;
-   ESP_ERROR_CHECK(uart_driver_install(uart, 1024, 1024, 0, NULL, 0));
-   uart_config_t uart_config = {
-      .baud_rate = baud,
-      .data_bits = UART_DATA_5_BITS + (databits - 5),
-      .parity = UART_PARITY_DISABLE,
-      .stop_bits = UART_STOP_BITS_1 + (halfstops - 2),
-      .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-   };
-   // Configure UART parameters
-   uart_param_config(uart, &uart_config);
-   uart_set_pin(uart, tx ? port_mask(tx) : UART_PIN_NO_CHANGE, rx ? port_mask(rx) : UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-   uart_set_line_inverse(uart, (port_inv(rx) ? UART_SIGNAL_RXD_INV : 0) + (port_inv(tx) ? UART_SIGNAL_TXD_INV : 0));
-   uart_set_rx_full_threshold(uart, 1);
+
+   tty_setup();
+
    if (rx)
    {
       if (rxpu)
@@ -628,94 +620,89 @@ void asr33_main(void *param)
          }
       }
       // Check rx
-      size_t len;
-      uart_get_buffered_data_len(uart, &len);
-      if (len > 0)
+      if (tty_rx_ready() > 0)
       {
-         uint8_t b = 0;
-         if (uart_read_bytes(uart, &b, 1, 0) > 0)
-         {
-            if (csock >= 0)
-               send(csock, &b, 1, 0);   // Connected via TCP
-            else
-            {                   // Not connected via TCP
-               if (lastrx + 250000 < now)
-                  suppress = 0; // Suppressed WRU response timeout
-               if (!suppress)
+         uint8_t b = tty_rx();
+         if (csock >= 0)
+            send(csock, &b, 1, 0);      // Connected via TCP
+         else
+         {                      // Not connected via TCP
+            if (lastrx + 250000 < now)
+               suppress = 0;    // Suppressed WRU response timeout
+            if (!suppress)
+            {
+               if (b && b != 0xFF && b == pe(b))
                {
-                  if (b && b != 0xFF && b == pe(b))
-                  {
-                     if (b == pe(EOT))
-                        manual = 0;     // EOT, short timeout
-                     else
-                        manual = 1;     // Typing
-                  }
-                  jo_t j = jo_object_alloc();
-                  jo_int(j, "byte", b);
-                  revk_event("rx", &j);
-                  if ((b & 0x7F) == '\n')
-                  {
-                     jo_t j = jo_create_alloc();
-                     jo_stringn(j, NULL, (void *) line, rxp);
-                     revk_event("line", &j);
-                     rxp = 0;
-                  } else if ((b & 0x7F) != '\r' && rxp < MAXRX)
-                     line[rxp++] = (b & 0x7F);
-                  if (doecho)
-                  {             // Handling local characters and echoing (maybe, depends on xoff too)
-                     if (dobig)
-                     {          // Doing large lettering
-                        if (b == pe(DC4))
-                        {       // End
-                           for (int i = 0; i < 9; i++)
-                              queuebyte(0);
-                           queuebyte(pe(DC4));
-                           dobig = 0;
-                        } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
+                  if (b == pe(EOT))
+                     manual = 0;        // EOT, short timeout
+                  else
+                     manual = 1;        // Typing
+               }
+               jo_t j = jo_object_alloc();
+               jo_int(j, "byte", b);
+               revk_event("rx", &j);
+               if ((b & 0x7F) == '\n')
+               {
+                  jo_t j = jo_create_alloc();
+                  jo_stringn(j, NULL, (void *) line, rxp);
+                  revk_event("line", &j);
+                  rxp = 0;
+               } else if ((b & 0x7F) != '\r' && rxp < MAXRX)
+                  line[rxp++] = (b & 0x7F);
+               if (doecho)
+               {                // Handling local characters and echoing (maybe, depends on xoff too)
+                  if (dobig)
+                  {             // Doing large lettering
+                     if (b == pe(DC4))
+                     {          // End
+                        for (int i = 0; i < 9; i++)
                            queuebyte(0);
-                     } else if (b == pe(DC2) && doecho && !nobig)
-                     {          // Start big lettering
-                        queuebyte(pe(DC2));
-                        for (int i = 0; i < 10; i++)
-                           queuebyte(0);
-                        dobig = 1;
-                     } else if (b == pe(RU) && !nocave)
-                        docave = 1;
-                     else if (b == pe(DC1))
-                        xoff = 0;
-                     else if (b == pe(DC3))
-                        xoff = 1;
-                     else if (b == pe(WRU) && (!nover || *wru))
-                     {          // WRU
-                        // See 3.27 of ISS 8, SECTION 574-122-700TC
-                        queuebyte(pe('\r'));    // CR
-                        queuebyte(pe('\n'));    // LF
-                        queuebyte(pe(0x7f));    // RO
+                        queuebyte(pe(DC4));
+                        dobig = 0;
+                     } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
+                        queuebyte(0);
+                  } else if (b == pe(DC2) && doecho && !nobig)
+                  {             // Start big lettering
+                     queuebyte(pe(DC2));
+                     for (int i = 0; i < 10; i++)
+                        queuebyte(0);
+                     dobig = 1;
+                  } else if (b == pe(RU) && !nocave)
+                     docave = 1;
+                  else if (b == pe(DC1))
+                     xoff = 0;
+                  else if (b == pe(DC3))
+                     xoff = 1;
+                  else if (b == pe(WRU) && (!nover || *wru))
+                  {             // WRU
+                     // See 3.27 of ISS 8, SECTION 574-122-700TC
+                     queuebyte(pe('\r'));       // CR
+                     queuebyte(pe('\n'));       // LF
+                     queuebyte(pe(0x7f));       // RO
+                     if (*wru)
+                        for (const char *p = wru; *p; p++)
+                           queuebyte(pe(*p));
+                     if (!nover)
+                     {
                         if (*wru)
-                           for (const char *p = wru; *p; p++)
-                              queuebyte(pe(*p));
-                        if (!nover)
-                        {
-                           if (*wru)
-                              queuebyte(pe(' '));
-                           for (const char *p = revk_app; *p; p++)
-                              queuebyte(pe(*p));
-                           for (const char *p = " BUILD "; *p; p++)
-                              queuebyte(pe(*p));
-                           for (const char *p = revk_version; *p; p++)
-                              queuebyte(pe(*p));
-                        }
-                        queuebyte(pe('\r'));    // CR
-                        queuebyte(pe('\n'));    // LF
-                        if (ack)
-                           queuebyte(pe(ack));  // ACK
-                     } else if (!xoff)
-                        queuebyte(b);
-                  }
+                           queuebyte(pe(' '));
+                        for (const char *p = revk_app; *p; p++)
+                           queuebyte(pe(*p));
+                        for (const char *p = " BUILD "; *p; p++)
+                           queuebyte(pe(*p));
+                        for (const char *p = revk_version; *p; p++)
+                           queuebyte(pe(*p));
+                     }
+                     queuebyte(pe('\r'));       // CR
+                     queuebyte(pe('\n'));       // LF
+                     if (ack)
+                        queuebyte(pe(ack));     // ACK
+                  } else if (!xoff)
+                     queuebyte(b);
                }
             }
-            lastrx = now;
          }
+         lastrx = now;
       }
       // Check tx
       if (txi == txo)
@@ -744,7 +731,7 @@ void asr33_main(void *param)
          n = 0;
       uint8_t b = buf[txo];
       txo = n;
-      uart_write_bytes(uart, &b, 1);
+      tty_tx(b);
       timeout(100000);
    }
 }

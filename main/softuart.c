@@ -25,14 +25,17 @@ struct softuart_s {
    uint8_t txdata[32];          // The tx message
    uint8_t txbit;               // Tx bit count, 0 means idle
    uint8_t txsubbit;            // Tx sub bit count
+   uint8_t txbyte;              // Tx byte being clocked in
 
    int8_t rx;                   // Rx pin (can be same as tx)
    uint8_t rxdata[32];          // The Rx data
    uint8_t rxbit;               // Rx bit count, 0 means idle
    uint8_t rxsubbit;            // Rx sub bit count
+   uint8_t rxbyte;              // Tx byte being clocked in
 
     uint8_t:0;                  //      Bits set/used from int
-   uint8_t rlast:1;             // Last rx bit
+   uint8_t rxlast:1;            // Last rx bit
+   uint8_t txnext:1;            // Next tx bit
 
     uint8_t:0;                  //      Bits set from non int
    uint8_t started:1;           // Int handler started
@@ -46,39 +49,37 @@ struct softuart_s {
 #define gpio_clr(r) do{if ((r) >= 32)GPIO_REG_WRITE(GPIO_OUT1_W1TC_REG, 1 << ((r) - 32));else if ((r) >= 0)GPIO_REG_WRITE(GPIO_OUT_W1TC_REG, 1 << (r));}while(0)
 #define gpio_get(r) (((r) >= 32)?((GPIO_REG_READ(GPIO_IN1_REG) >> ((r) - 32)) & 1):((r) >= 0)?((GPIO_REG_READ(GPIO_IN_REG) >> (r)) & 1):0)
 
-bool IRAM_ATTR timer_isr(void *gp)
+bool IRAM_ATTR timer_isr(void *up)
 {
-   softuart_t *g = gp;
-   // Sample rx
-   uint8_t r = gpio_get(g->rx);
+   softuart_t *u = up;
+   // Timing based, sample Rx and set Tx
+   uint8_t r = gpio_get(u->rx);
+   if (u->txnext)
+      gpio_set(u->tx);
+   else
+      gpio_clr(u->tx);
    // Work out next tx
-   if (!g->txbit)
+   if (!u->txbit)
    {                            // Do we have a next byte to start
 
    }
-   if (g->txbit)
+   if (u->txbit)
    {                            // Sending next bit
 
    }
-   uint8_t t = 1;
-   // Set tx
-   if (t)
-      gpio_set(g->tx);
-   else
-      gpio_clr(g->tx);
    // Process rx
-   if (!g->rxbit)
+   if (!u->rxbit)
    {                            // Looking for start
-      if (!r && !g->rlast)
+      if (!r && !u->rxlast)
       {                         // Start bit (i.e. two samples in a row)
 
       }
    }
-   if (g->rxbit)
+   if (u->rxbit)
    {                            // Clock in data
 
    }
-   g->rlast = r;
+   u->rxlast = r;
 
    return false;
 }
@@ -91,29 +92,29 @@ softuart_t *softuart_init(int8_t timer, int8_t tx, int8_t rx, uint16_t baudx100,
        || !GPIO_IS_VALID_GPIO(rx)       //
        )
       return NULL;
-   softuart_t *g = malloc(sizeof(*g));
-   if (!g)
-      return g;
-   memset(g, 0, sizeof(*g));
-   g->baudx100 = (baudx100 ? : 11000);
-   g->bits = (bits ? : 8);
-   g->stops = ((stopx2 ? : 4) * STEPS + 1) / 2;
-   g->tx = tx;
-   g->rx = rx;
-   g->timer = timer;
-   gpio_reset_pin(g->tx);
-   gpio_set(g->tx);
-   gpio_set_direction(g->tx, GPIO_MODE_OUTPUT);
-   gpio_reset_pin(g->rx);
-   gpio_set_direction(g->rx, GPIO_MODE_INPUT);
-   return g;
+   softuart_t *u = malloc(sizeof(*u));
+   if (!u)
+      return u;
+   memset(u, 0, sizeof(*u));
+   u->baudx100 = (baudx100 ? : 11000);
+   u->bits = (bits ? : 8);
+   u->stops = ((stopx2 ? : 4) * STEPS + 1) / 2;
+   u->tx = tx;
+   u->rx = rx;
+   u->timer = timer;
+   gpio_reset_pin(u->tx);
+   gpio_set(u->tx);
+   gpio_set_direction(u->tx, GPIO_MODE_OUTPUT);
+   gpio_reset_pin(u->rx);
+   gpio_set_direction(u->rx, GPIO_MODE_INPUT);
+   return u;
 }
 
-void softuart_start(softuart_t * g)
+void softuart_start(softuart_t * u)
 {
-   if (g->started)
+   if (u->started)
       return;
-   g->started = 1;
+   u->started = 1;
    // Set up timer
    timer_config_t config;
    memset(&config, 0, sizeof(config));
@@ -123,34 +124,58 @@ void softuart_start(softuart_t * g)
    config.alarm_en = TIMER_ALARM_EN;
    config.intr_type = TIMER_INTR_LEVEL;
    config.auto_reload = 1;
-   timer_init(0, g->timer, &config);
-   timer_set_counter_value(0, g->timer, 0x00000000ULL);
-   timer_set_alarm_value(0, g->timer, (uint64_t) TIMER_SCALE * (100 / STEPS) / (uint64_t) (g->baudx100));
-   timer_isr_callback_add(0, g->timer, timer_isr, g, ESP_INTR_FLAG_LOWMED | ESP_INTR_FLAG_IRAM);
-   timer_enable_intr(0, g->timer);
-   timer_start(0, g->timer);
+   timer_init(0, u->timer, &config);
+   timer_set_counter_value(0, u->timer, 0x00000000ULL);
+   timer_set_alarm_value(0, u->timer, (uint64_t) TIMER_SCALE * (100 / STEPS) / (uint64_t) (u->baudx100));
+   timer_isr_callback_add(0, u->timer, timer_isr, u, ESP_INTR_FLAG_LOWMED | ESP_INTR_FLAG_IRAM);
+   timer_enable_intr(0, u->timer);
+   timer_start(0, u->timer);
 }
 
-void *softuart_end(softuart_t * g)
+void *softuart_end(softuart_t * u)
 {
-   if (g)
+   if (u)
    {
-      if (g->started)
-         timer_disable_intr(0, g->timer);
-      free(g);
+      if (u->started)
+         timer_disable_intr(0, u->timer);
+      free(u);
    }
    return NULL;
 }
 
 // Low level messaging
-int softuart_tx(softuart_t * g, int len, uint8_t * data)
+int softuart_tx(softuart_t * u, int len, uint8_t * data)
 {
 
-   return 0;
+   return -1;
 }
 
-int softuart_rx(softuart_t * g, int max, uint8_t * data)
+int softuart_rx(softuart_t * u, int max, uint8_t * data)
 {
 
-   return 0;
+   return -1;
+}
+
+int softuart_tx_space(softuart_t * u)
+{                               // Report how much space for sending
+
+   return -1;
+}
+
+int softuart_tx_waiting(softuart_t * u)
+{                               // Report how many bytes still being transmitted including one in process of transmission
+   // -1 means non ready and receiving BREAK condition
+
+   return -1;
+}
+
+void softuart_tx_flush(softuart_t * u)
+{                               // Wait for all tx to complete
+
+}
+
+int softuart_rx_ready(softuart_t * u)
+{                               // Report how many bytes are available to read (-1 means BREAK)
+
+   return -1;
 }

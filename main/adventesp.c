@@ -4,9 +4,9 @@
 
 #include "revk.h"
 #include <string.h>
-#include <driver/uart.h>
+#include "tty.h"
 #include "adventesp.h"
-extern uint8_t uart;
+extern int8_t uart;
 extern void nl(void);
 
 static inline uint8_t pe(uint8_t b)
@@ -21,10 +21,7 @@ static inline uint8_t pe(uint8_t b)
 void pesend(const char *line, int len)
 {
    while (len-- > 0)
-   {
-      uint8_t b = pe(*line++);
-      uart_write_bytes(uart, &b, 1);
-   }
+      tty_tx(*line++);
 }
 
 void sendline(const char *line, int len)
@@ -42,28 +39,25 @@ char *readline(const char *prompt)
    while (1)
    {
       usleep(10000);
-      char b;
-      if (uart_read_bytes(uart, &b, 1, 0) > 0)
+      char b = tty_rx();
+      b &= 0x7F;
+      if (b == 4)
+         return NULL;           // EOF
+      if (b == 0x7F)
       {
-         b &= 0x7F;
-         if (b == 4)
-            return NULL;        // EOF
-         if (b == 0x7F)
-         {
-            pesend("\r", 2);    // \r and NULL
-            pesend(prompt, strlen(prompt));
-            p = 0;
-            continue;
-         }
-         if (b == '\r' || b == '\n')
+         pesend("\r", 2);       // \r and NULL
+         pesend(prompt, strlen(prompt));
+         p = 0;
+         continue;
+      }
+      if (b == '\r' || b == '\n')
+         break;
+      if (b >= ' ' && b <= 0x7F)
+      {
+         pesend(&b, 1);         // Echo
+         line[p++] = b;
+         if (p >= 72)
             break;
-         if (b >= ' ' && b <= 0x7F)
-         {
-            pesend(&b, 1);      // Echo
-            line[p++] = b;
-            if (p >= 72)
-               break;
-         }
       }
    }
    nl();
