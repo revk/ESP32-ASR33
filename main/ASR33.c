@@ -27,7 +27,7 @@
   u1(rxpu)	\
   t(pwrtopic)	\
   t(mtrtopic)	\
-  s8(uart,1)	\
+  s8(uart,-1)	\
   u1(noecho)	\
   u1(nobig)	\
   u1(nover)	\
@@ -70,6 +70,7 @@ settings;
 
 volatile int8_t manual = 0;     // Manual power override (eg key pressed, etc)
 int8_t busy = 0;                // Busy state
+uint8_t brk = 0;                // Break
 uint8_t pressed = 0;            // Button pressed
 uint8_t xoff = 0;               // Manual no echo
 uint8_t doecho = 0;             // Do echo (set each start up)
@@ -192,10 +193,10 @@ void reportstate(void)
    jo_object(j, NULL);
    jo_litf(j, "up", "%d.%06d", (uint32_t) (t / 1000000LL), (uint32_t) (t % 1000000LL));
    jo_bool(j, "power", havepower);
+   jo_bool(j, "break", brk);
    jo_bool(j, "busy", busy);
    if (port)
       jo_bool(j, "connected", csock >= 0);
-   //jo_bool(j, "wantpower", wantpower);
    revk_state(NULL, &j);
 }
 
@@ -606,23 +607,20 @@ void asr33_main(void *param)
          }
       }
       // Check rx
-      static uint8_t brk = 0;
       int len = tty_rx_ready();
       if (!len)
       {
          if (brk)
          {
             brk = 0;
-            jo_t j = jo_object_alloc();
-            revk_event("idle", &j);
+            reportstate();
          }
       } else if (len < 0)
       {
          if (!brk)
          {
             brk = 1;
-            jo_t j = jo_object_alloc();
-            revk_event("break", &j);
+            reportstate();
          }
       } else if (len > 0)
       {
