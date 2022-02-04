@@ -1,7 +1,12 @@
 // ASR33 direct control over MQTT
 // Copyright © 2019 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
 
-#define	SOFTUART
+
+// TODO
+// Switch to soft uart only, assuming all works well with actual ASR33
+// Change soft uart to large tx buffer and drop the tx buffer in main code
+// Add Hayes style pause,+++,pause escape to prompt for domain/IP to make outgoing TCP connect
+// Make cave start from same prompt - maybe "GAME" or something.
 
 #include "revk.h"
 #include <esp_spi_flash.h>
