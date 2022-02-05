@@ -30,7 +30,7 @@
   io(mtr,22)  \
   u1(txod)	\
   u1(txpu)	\
-  u1(rxpu)	\
+  u1t(rxpu)	\
   t(pwrtopic)	\
   t(mtrtopic)	\
   s8(uart,-1)	\
