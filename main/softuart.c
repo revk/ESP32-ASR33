@@ -115,11 +115,10 @@ bool IRAM_ATTR timer_isr(void *up)
          u->rxsubbit = STEPS - 1;
          u->rxbit = u->bits + 1;        // Data and start
          u->rxbyte = 0;
-      } else
-         u->rxbreak = 0;        // Idle
+      }
    }
    if (u->rxsubbit)
-   {
+   {                            // Clocking in bits, or break
       u->rxsubbit--;
       if (!u->rxsubbit)
       {                         // Bit received
@@ -133,8 +132,22 @@ bool IRAM_ATTR timer_isr(void *up)
                if (u->rxcount >= 2)
                   u->rxbyte |= (1 << (u->bits - 1));
                u->rxbit--;
-               if (!u->rxbit)
-               {                // End of byte
+               u->rxsubbit = STEPS;     // Next bit
+            }
+         } else
+         {                      // Stop bit
+            if (!u->rxbreak)
+            {                   // Normal (stop bit now clocked in)
+               if (u->rxcount < 2)
+               {                // Bad stop bit, don't clock in byte
+                  if (!r)
+                  {             // Looks like break
+                     u->rxbreak++;      // Start break condition
+                     u->rxsubbit = 1;   // Wait end of break
+                  }
+                  // else leave rxsubbit unset so we wait for next start bit
+               } else
+               {                // Normal end of byte - record received byte (clean start and stop bit)
                   uint8_t rxi = u->rxi;
                   u->rxdata[rxi] = u->rxbyte;
                   rxi++;
@@ -142,17 +155,18 @@ bool IRAM_ATTR timer_isr(void *up)
                      rxi = 0;
                   if (rxi != u->rxo)
                      u->rxi = rxi;      // Has space
+                  // leave rxsubbit unset so we wait for next start bit
                }
-               u->rxsubbit = STEPS;     // Next bit
+            } else
+            {                   // Check still in break condition.
+               if (!r)
+               {                // Still in break
+                  if (u->rxbreak < 255)
+                     u->rxbreak++;
+                  u->rxsubbit = 1;      // Wait end of break
+               } else
+                  u->rxbreak = 0;       // End of break - leave rxsubbit unset so we wait for next start bit
             }
-         } else
-         {                      // Stop bit
-            if (u->rxcount < 2)
-            {                   // Bad stop bit, looks like break
-               if (u->rxbreak < 255)
-                  u->rxbreak++;
-               u->rxsubbit = STEPS;     // Keep checking break indefinitely
-            }                   // else stop was clean so subbits stays 0 waiting for next byte
          }
          u->rxcount = 0;
       } else if (r && u->rxsubbit <= 3)
