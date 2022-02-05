@@ -618,17 +618,38 @@ void asr33_main(void *param)
       {                         // End of Hayes +++ escape sequence
          hayes++;               // Command prompt
          rxp = 0;
-         queuebytes("\r\nASR33 CONTROLLER BY REVK\r\n");
-	 if(revk_link_down())
-	 {
-		 queuebytes("OFFLINE (SSID ");
-		 queuebytes(revk_wifi());
-		 queuebytes(")\r\n");
-	 } else
-	 { // Online
-
-	 }
-         if(!nocave)queuebytes("WOULD YOU LIKE TO PLAY A GAME?\r\n>");
+         queuebytes("\r\nASR33 CONTROLLER BY REVK (BUILD ");
+         queuebytes(revk_version);
+         queuebytes(")\r\n");
+         if (revk_link_down())
+         {
+            queuebytes("OFFLINE (SSID ");
+            queuebytes(revk_wifi());
+            queuebytes(")\r\n");
+         } else if (port)
+         {                      // Online
+            queuebytes("LISTENING ON ");
+            char temp[50];
+            ip6_addr_t ip6;
+            if (!tcpip_adapter_get_ip6_global(TCPIP_ADAPTER_IF_STA, &ip6))
+            {
+               sprintf(temp, IPV6STR, IPV62STR(ip6));
+               queuebytes(temp);
+               queuebytes(" AND ");
+            }
+            tcpip_adapter_ip_info_t ip4;
+            if (!tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip4))
+            {
+               sprintf(temp, IPSTR, IP2STR(&ip4.ip));
+               queuebytes(temp);
+            }
+            queuebytes("\r\nENTER IP/DOMAIN TO MAKE CONNECTION");
+            sprintf(temp, " (USING TCP PORT %d)", port);
+            queuebytes(temp);
+            queuebytes("\r\nOR ");
+         }
+         if (!nocave)
+            queuebytes("WOULD YOU LIKE TO PLAY A GAME?\r\n>");
       }
       // Check tcp
       if (csock >= 0)
@@ -734,7 +755,7 @@ void asr33_main(void *param)
                   jo_t j = jo_object_alloc();
                   jo_int(j, "byte", b);
                   revk_event("rx", &j);
-                  if ((b & 0x7F) == '\n')
+                  if ((b & 0x7F) == '\n' || (b & 0x7F) == '\r')
                   {
                      jo_t j = jo_create_alloc();
                      jo_stringn(j, NULL, (void *) line, rxp);
@@ -761,7 +782,7 @@ void asr33_main(void *param)
                            queuebyte(0);
                         dobig = 1;
                      }
-		     // else if (b == pe(RU) && !nocave) docave = 1;
+                     // else if (b == pe(RU) && !nocave) docave = 1;
                      else if (b == pe(DC1))
                         xoff = 0;
                      else if (b == pe(DC3))
