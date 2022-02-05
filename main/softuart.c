@@ -37,7 +37,7 @@ struct softuart_s {
    uint8_t rxsubbit;            // Rx sub bit count
    uint8_t rxcount;             // Rx sub bit 1 count for majority check in mid bit
    uint8_t rxbyte;              // Rx byte being clocked in
-   volatile uint8_t rxbreak;    // Rx break (bit count up to max)
+   volatile uint16_t rxbreak;   // Rx break (bit count up to max)
 
     uint8_t:0;                  //      Bits set/used from int
    uint8_t txinv;               // Invert tx
@@ -142,7 +142,7 @@ bool IRAM_ATTR timer_isr(void *up)
                {                // Bad stop bit, don't clock in byte
                   if (!r)
                   {             // Looks like break
-                     u->rxbreak++;      // Start break condition
+                     u->rxbreak = (u->bits + 2) * STEPS;        // Start break condition (we have had this many sub bits)
                      u->rxsubbit = 1;   // Wait end of break
                   }
                   // else leave rxsubbit unset so we wait for next start bit
@@ -304,6 +304,6 @@ int softuart_rx_ready(softuart_t * u)
    if (s < 0)
       s += sizeof(u->rxdata);
    if (!s)
-      s = -(int) u->rxbreak;
+      s = -(u->rxbreak / STEPS);        // How many bits of break
    return s;
 }
