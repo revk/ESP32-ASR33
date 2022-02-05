@@ -328,6 +328,10 @@ const char *app_callback(int client, const char *prefix, const char *target, con
             for (int i = 0; i < tapelead; i++)
                queuebyte(0);
          }
+	 if(!strcmp(suffix, "taperaw"))
+         while (len--)
+		 queuebyte(*value++); // Raw
+	 else // Large text
          while (len--)
          {
             if (!queuebig(*value++))
@@ -425,10 +429,10 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       if (!strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
       {                         // Raw punched data (with DC2/DC4)
          power_needed();
-         if (!suffix[5])
-         {
             if (!nodc4)
                queuebyte(DC2);  // Tape on
+         if (!suffix[5])
+         {
             for (int i = 0; i < tapelead; i++)
                queuebyte(0);
          }
@@ -449,9 +453,9 @@ const char *app_callback(int client, const char *prefix, const char *target, con
          {
             for (int i = 0; i < tapetail; i++)
                queuebyte(0);
+         }
             if (!nodc4)
                queuebyte(DC4);  // Tape off
-         }
       }
       free(buf);
    }
