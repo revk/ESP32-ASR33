@@ -590,9 +590,9 @@ void asr33_main(void *param)
       {                         // End of Hayes +++ escape sequence
          hayes++;               // Command prompt
          rxp = 0;
-         sendstring("\nASR33 CONTROLLER BY REVK (BUILD ");
+         sendstring("\nASR33 CONTROLLER (BUILD ");
          sendstring(revk_version);
-         sendstring(")\n");
+         sendstring(") ASR33.REVK.UK\n");
          if (revk_link_down())
          {
             sendstring("OFFLINE (SSID ");
