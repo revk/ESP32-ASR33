@@ -540,6 +540,14 @@ void asr33_main(void *param)
                jo_string(j, NULL, wantpower ? "on" : "off");
                revk_event(NULL, &j);
             }
+            if (!wantpower && csock >= 0)
+            {
+               close(csock);
+               csock = -1;
+               jo_t j = jo_object_alloc();
+               jo_string(j, "reason", "run/stop");
+               revk_event("closed", &j);
+            }
          }
       } else
          pressed = 0;
@@ -606,6 +614,7 @@ void asr33_main(void *param)
                close(csock);
                csock = -1;
                jo_t j = jo_object_alloc();
+               jo_string(j, "reason", "close");
                revk_event("closed", &j);
             } else
                queuebyte(b);
@@ -626,6 +635,14 @@ void asr33_main(void *param)
          {
             brk = 1;
             reportstate();
+            if (csock >= 0)
+            {
+               close(csock);
+               csock = -1;
+               jo_t j = jo_object_alloc();
+               jo_string(j, "reason", "break");
+               revk_event("closed", &j);
+            }
          }
       } else if (len > 0)
       {
