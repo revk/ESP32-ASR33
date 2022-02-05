@@ -91,11 +91,12 @@ uint8_t buf[MAXTX];             // Tx pending buffer
 volatile uint32_t txi = 0;      // Tx buffer in pointer
 volatile uint32_t txo = 0;      // Tx buffer out pointer
 uint8_t line[MAXRX];            // Rx line buffer
-uint32_t rxp = 0;               // Rx line buffer pointer
 int64_t eot = 0;                // When tx expected to end
 volatile int64_t done = 0;      // When to next turn off
 int64_t lastrx = 0;             // Last rx
 int8_t pos = -1;                // Position (-1 is unknown)
+uint32_t rxp = 0;               // Rx line buffer pointer
+uint8_t hayes = 0;              // Hayes +++ counter
 SemaphoreHandle_t queue_mutex = NULL;
 
 const unsigned char small_f[256][5] = {
@@ -140,6 +141,12 @@ void queuebyte(uint8_t b)
    }
    xSemaphoreGive(queue_mutex);
    wantpower = 1;
+}
+
+void queuebytes(const char *c)
+{
+   while (*c)
+      queuebyte(pe(*c++));
 }
 
 int queuebig(int c)
@@ -215,6 +222,7 @@ void power_off(void)
    txi = 0;
    txo = 0;
    rxp = 0;
+   hayes = 0;
    doecho = !noecho;
    xoff = 0;
    havepower = 0;
@@ -526,7 +534,7 @@ void asr33_main(void *param)
    }
    while (1)
    {
-      usleep(50000);
+      usleep(10000);
       if (run && gpio_get_level(port_mask(run)) != port_inv(run))
       {                         // RUN button
          if (!pressed)
@@ -603,6 +611,16 @@ void asr33_main(void *param)
       if ((pwr || *pwrtopic) && havepower != 1)
          continue;              // Not running
       int64_t now = esp_timer_get_time();
+      int64_t gap = now - lastrx;
+      if (!lastrx)
+         gap = 0;
+      if (hayes == 3 && gap > 1000000)
+      {                         // End of Hayes +++ escape sequence
+         hayes++;               // Command prompt
+         rxp = 0;
+         queuebytes("\r\nASR33 CONTROLLER BY REVK\r\n>");
+         // TODO IPs? HELP?
+      }
       // Check tcp
       if (csock >= 0)
       {
@@ -625,7 +643,7 @@ void asr33_main(void *param)
                queuebyte(b);
          }
       }
-      // Check rx
+      // Check rx - TODO check rx even when power off? Or check BREAK at least
       int len = tty_rx_ready();
       if (!len)
       {
@@ -635,10 +653,12 @@ void asr33_main(void *param)
             reportstate();
          }
       } else if (len < 0)
-      {
+      {                         // Break
          if (!brk)
          {
             brk = 1;
+            hayes = 0;
+            rxp = 0;
             reportstate();
             if (csock >= 0)
             {
@@ -648,6 +668,7 @@ void asr33_main(void *param)
                jo_string(j, "reason", "break");
                revk_event("closed", &j);
             }
+            // TODO should we power up on break, as an option, if no RUN GPIO?
          }
       } else if (len > 0)
       {
@@ -656,8 +677,24 @@ void asr33_main(void *param)
             send(csock, &b, 1, 0);      // Connected via TCP
          else
          {                      // Not connected via TCP
-            if (lastrx + 250000 < now)
-               suppress = 0;    // Suppressed WRU response timeout
+            if (gap > 250000)
+               suppress = 0;    // Suppressed WRU response timeout can end
+            if (hayes > 3)
+            {                   // Hayes command prompt
+               // TODO
+               if (b == pe('\r') || b == pe('\n'))
+                  hayes = 0;
+            } else if (!hayes)
+            {
+               if (b == pe('+') && !rxp && gap > 1000000)
+                  hayes++;
+            } else
+            {
+               if (b != pe('+') || hayes >= 3 || gap > 1000000)
+                  hayes = 0;
+               else
+                  hayes++;
+            }
             if (!suppress)
             {
                if (b && b != 0xFF && b == pe(b))
@@ -705,25 +742,17 @@ void asr33_main(void *param)
                   else if (b == pe(WRU) && (!nover || *wru))
                   {             // WRU
                      // See 3.27 of ISS 8, SECTION 574-122-700TC
-                     queuebyte(pe('\r'));       // CR
-                     queuebyte(pe('\n'));       // LF
-                     queuebyte(pe(0x7f));       // RO
-                     if (*wru)
-                        for (const char *p = wru; *p; p++)
-                           queuebyte(pe(*p));
+                     queuebytes("\r\n\x7f");    // CR LF RO
+                     queuebytes(wru);
                      if (!nover)
                      {
                         if (*wru)
                            queuebyte(pe(' '));
-                        for (const char *p = revk_app; *p; p++)
-                           queuebyte(pe(*p));
-                        for (const char *p = " BUILD "; *p; p++)
-                           queuebyte(pe(*p));
-                        for (const char *p = revk_version; *p; p++)
-                           queuebyte(pe(*p));
+                        queuebytes(revk_app);
+                        queuebytes(" BUILD ");
+                        queuebytes(revk_version);
                      }
-                     queuebyte(pe('\r'));       // CR
-                     queuebyte(pe('\n'));       // LF
+                     queuebytes("\r\n");        // CR LF
                      if (ack)
                         queuebyte(pe(ack));     // ACK
                   } else if (!xoff)
