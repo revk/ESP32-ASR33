@@ -145,7 +145,7 @@ bool IRAM_ATTR timer_isr(void *up)
                      u->rxbreak = (u->bits + 2) * STEPS;        // Start break condition (we have had this many sub bits)
                      u->rxsubbit = 1;   // Wait end of break
                   }
-                  // else leave rxsubbit unset so we wait for next start bit
+                  // else leave rxsubbit unset so we wait for next start bit - don't clock in duff byte
                } else
                {                // Normal end of byte - record received byte (clean start and stop bit)
                   uint8_t rxi = u->rxi;

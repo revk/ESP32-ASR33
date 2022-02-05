@@ -90,7 +90,7 @@ volatile uint8_t wantpower = 0; // Power state wanted
 uint8_t buf[MAXTX];             // Tx pending buffer
 volatile uint32_t txi = 0;      // Tx buffer in pointer
 volatile uint32_t txo = 0;      // Tx buffer out pointer
-uint8_t line[MAXRX];            // Rx line buffer
+char line[MAXRX + 1];           // Rx line buffer
 int64_t eot = 0;                // When tx expected to end
 volatile int64_t done = 0;      // When to next turn off
 int64_t lastrx = 0;             // Last rx
@@ -618,8 +618,17 @@ void asr33_main(void *param)
       {                         // End of Hayes +++ escape sequence
          hayes++;               // Command prompt
          rxp = 0;
-         queuebytes("\r\nASR33 CONTROLLER BY REVK\r\n>");
-         // TODO IPs? HELP?
+         queuebytes("\r\nASR33 CONTROLLER BY REVK\r\n");
+	 if(revk_link_down())
+	 {
+		 queuebytes("OFFLINE (SSID ");
+		 queuebytes(revk_wifi());
+		 queuebytes(")\r\n");
+	 } else
+	 { // Online
+
+	 }
+         if(!nocave)queuebytes("WOULD YOU LIKE TO PLAY A GAME?\r\n>");
       }
       // Check tcp
       if (csock >= 0)
@@ -680,92 +689,102 @@ void asr33_main(void *param)
             if (gap > 250000)
                suppress = 0;    // Suppressed WRU response timeout can end
             if (hayes > 3)
-            {                   // Hayes command prompt
+            {                   // Hayes command prompt only
                if (b == pe('\r') || b == pe('\n'))
                {                // Command
                   queuebytes("\r\n");
                   line[rxp] = 0;
-                  // TODO handle command
                   hayes = 0;
                   rxp = 0;
+                  if (!strcmp(line, "Y") || !strcmp(line, "YES"))
+                     docave = 1;
+                  else if (!strcmp(line, "N") || !strcmp(line, "NO"))
+                     queuebytes("SHAME, BYE\r\n");
+                  else if (*line)
+                  {             // DNS/IP?
+
+                  }
                } else if ((b & 0x7f) > ' ' && rxp < MAXRX)
                {
                   queuebyte(b); // echo
                   line[rxp++] = (b & 0x7F);
                }
-            } else if (!hayes)
-            {
-               if (b == pe('+') && !rxp && gap > 1000000)
-                  hayes++;
             } else
             {
-               if (b != pe('+') || hayes >= 3 || gap > 1000000)
-                  hayes = 0;
-               else
-                  hayes++;
-            }
-            if (!suppress)
-            {
-               if (b && b != 0xFF && b == pe(b))
+               if (!hayes)
                {
-                  if (b == pe(EOT))
-                     manual = 0;        // EOT, short timeout
+                  if (b == pe('+') && !rxp && gap > 1000000)
+                     hayes++;
+               } else
+               {
+                  if (b != pe('+') || hayes >= 3 || gap > 1000000)
+                     hayes = 0;
                   else
-                     manual = 1;        // Typing
+                     hayes++;
                }
-               jo_t j = jo_object_alloc();
-               jo_int(j, "byte", b);
-               revk_event("rx", &j);
-               if ((b & 0x7F) == '\n')
+               if (!suppress)
                {
-                  jo_t j = jo_create_alloc();
-                  jo_stringn(j, NULL, (void *) line, rxp);
-                  revk_event("line", &j);
-                  rxp = 0;
-               } else if ((b & 0x7f) > ' ' && rxp < MAXRX)
-                  line[rxp++] = (b & 0x7F);
-               if (doecho)
-               {                // Handling local characters and echoing (maybe, depends on xoff too)
-                  if (dobig)
-                  {             // Doing large lettering
-                     if (b == pe(DC4))
-                     {          // End
-                        for (int i = 0; i < 9; i++)
+                  if (b && b != 0xFF && b == pe(b))
+                  {
+                     if (b == pe(EOT))
+                        manual = 0;     // EOT, short timeout
+                     else
+                        manual = 1;     // Typing
+                  }
+                  jo_t j = jo_object_alloc();
+                  jo_int(j, "byte", b);
+                  revk_event("rx", &j);
+                  if ((b & 0x7F) == '\n')
+                  {
+                     jo_t j = jo_create_alloc();
+                     jo_stringn(j, NULL, (void *) line, rxp);
+                     revk_event("line", &j);
+                     rxp = 0;
+                  } else if ((b & 0x7f) > ' ' && rxp < MAXRX)
+                     line[rxp++] = (b & 0x7F);
+                  if (doecho)
+                  {             // Handling local characters and echoing (maybe, depends on xoff too)
+                     if (dobig)
+                     {          // Doing large lettering
+                        if (b == pe(DC4))
+                        {       // End
+                           for (int i = 0; i < 9; i++)
+                              queuebyte(0);
+                           queuebyte(pe(DC4));
+                           dobig = 0;
+                        } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
                            queuebyte(0);
-                        queuebyte(pe(DC4));
-                        dobig = 0;
-                     } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
-                        queuebyte(0);
-                  } else if (b == pe(DC2) && doecho && !nobig)
-                  {             // Start big lettering
-                     queuebyte(pe(DC2));
-                     for (int i = 0; i < 10; i++)
-                        queuebyte(0);
-                     dobig = 1;
-                  } else if (b == pe(RU) && !nocave)
-                     docave = 1;
-                  else if (b == pe(DC1))
-                     xoff = 0;
-                  else if (b == pe(DC3))
-                     xoff = 1;
-                  else if (b == pe(WRU) && (!nover || *wru))
-                  {             // WRU
-                     // See 3.27 of ISS 8, SECTION 574-122-700TC
-                     queuebytes("\r\n\x7f");    // CR LF RO
-                     queuebytes(wru);
-                     if (!nover)
-                     {
-                        if (*wru)
-                           queuebyte(pe(' '));
-                        queuebytes(revk_app);
-                        queuebytes(" BUILD ");
-                        queuebytes(revk_version);
+                     } else if (b == pe(DC2) && doecho && !nobig)
+                     {          // Start big lettering
+                        queuebyte(pe(DC2));
+                        for (int i = 0; i < 10; i++)
+                           queuebyte(0);
+                        dobig = 1;
                      }
-                     queuebytes("\r\n");        // CR LF
-                     if (ack)
-                        queuebyte(pe(ack));     // ACK
-                  } else if (!xoff)
-                     queuebyte(b);
+		     // else if (b == pe(RU) && !nocave) docave = 1;
+                     else if (b == pe(DC1))
+                        xoff = 0;
+                     else if (b == pe(DC3))
+                        xoff = 1;
+                     else if (b == pe(WRU) && (!nover || *wru))
+                     {          // WRU
+                        // See 3.27 of ISS 8, SECTION 574-122-700TC
+                        queuebytes("\r\n\x7f"); // CR LF RO
+                        queuebytes(wru);
+                        if (!nover)
+                        {
+                           if (*wru)
+                              queuebyte(pe(' '));
+                           queuebytes(revk_app);
+                           queuebytes(" BUILD ");
+                           queuebytes(revk_version);
+                        }
+                        queuebytes("\r\n");     // CR LF
+                        if (ack)
+                           queuebyte(pe(ack));  // ACK
+                     } else if (!xoff)
+                        queuebyte(b);
+                  }
                }
             }
          }
