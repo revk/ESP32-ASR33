@@ -97,11 +97,50 @@ static inline uint8_t pe(uint8_t b)
    return b;
 }
 
-void sendstring(const char *c)
+void sendbyte(uint8_t b)
 {
+   tty_tx(b);
+   b &= 0x7F;
+   if (b == '\r')
+      pos = 0;
+   else if (b >= ' ' && b < 0x7F && pos < LINELEN)
+      pos++;
+}
+
+void cr(void)
+{                               // Do a carriage return
+   int8_t p = pos;
+   if (p)
+   {
+      sendbyte(pe('\r'));       // CR
+      if (p < 0 || p > 40)
+         sendbyte(0);           // allow extra time for CR
+      if (p < 0)
+         sendbyte(0);           // allow extra time for CR
+   }
+}
+
+void nl(void)
+{                               // Do new line
+   if (pos)
+      cr();                     // CR
+   sendbyte(pe('\n'));          // LF (allows time for CR as well)
+}
+
+
+void sendstring(const char *c)
+{                               // Simple text string
    if (c)
       while (*c)
-         tty_tx(pe(*c++));
+      {
+         if (*c == '\r')
+            cr();
+         else if (*c == '\n')
+            nl();
+         else
+            sendbyte(pe(*c));
+         c++;
+      }
 }
 
 int queuebig(int c)
@@ -121,10 +160,10 @@ int queuebig(int c)
    while (l--)
    {
       uint8_t c = *d++;
-      tty_tx(c);
+      sendbyte(c);
       c &= 0x7f;
       if (!nodc4 && c == DC4)
-         tty_tx(DC2);
+         sendbyte(DC2);
       if (c == WRU)
       {
          suppress = 1;
@@ -132,26 +171,6 @@ int queuebig(int c)
       }
    }
    return 1;
-}
-
-void cr(void)
-{                               // Do a carriage return
-   int8_t p = pos;
-   if (p)
-   {
-      tty_tx(pe('\r'));         // CR
-      if (p < 0 || p > 40)
-         tty_tx(0);             // allow extra time for CR
-      if (p < 0)
-         tty_tx(0);             // allow extra time for CR
-   }
-}
-
-void nl(void)
-{                               // Do new line
-   if (pos)
-      cr();                     // CR
-   tty_tx(pe('\n'));            // LF (allows time for CR as well)
 }
 
 void reportstate(void)
@@ -285,27 +304,27 @@ const char *app_callback(int client, const char *prefix, const char *target, con
          if (!suffix[4])
          {
             if (!nodc4)
-               tty_tx(DC2);     // Tape on
+               sendbyte(DC2);   // Tape on
             for (int i = 0; i < tapelead; i++)
-               tty_tx(0);
+               sendbyte(0);
          }
          if (!strcmp(suffix, "taperaw"))
             while (len--)
-               tty_tx(*value++);        // Raw
+               sendbyte(*value++);      // Raw
          else                   // Large text
             while (len--)
             {
                if (!queuebig(*value++))
                   continue;
                if (len)
-                  tty_tx(0);
+                  sendbyte(0);
             }
          if (!suffix[4])
          {
             for (int i = 0; i < tapetail; i++)
-               tty_tx(0);
+               sendbyte(0);
             if (!nodc4)
-               tty_tx(DC4);     // Tape off
+               sendbyte(DC4);   // Tape off
          }
       }
       if (!strcmp(suffix, "text") || !strcmp(suffix, "line") || !strcmp(suffix, "bell"))
@@ -355,16 +374,16 @@ const char *app_callback(int client, const char *prefix, const char *target, con
             else if (b == '\r')
             {                   // Explicit CR, let's assume no NL
                cr();            // We want a carriage return
-               tty_tx(0);       // Assuming no LF, need extra null
+               sendbyte(0);     // Assuming no LF, need extra null
             } else
-               tty_tx(pe(b));
+               sendbyte(pe(b));
          }
          if (!strcmp(suffix, "line") || !strcmp(suffix, "bell"))
          {
             cr();
             nl();
             if (!strcmp(suffix, "bell"))
-               tty_tx(pe(7));
+               sendbyte(pe(7));
          }
       }
       return "";
@@ -385,25 +404,25 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       {                         // raw send
          power_needed();
          while (len--)
-            tty_tx(*value++);
+            sendbyte(*value++);
       }
       if (!strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
       {                         // Raw punched data (with DC2/DC4)
          power_needed();
          if (!nodc4)
-            tty_tx(DC2);        // Tape on
+            sendbyte(DC2);      // Tape on
          if (!suffix[5])
          {
             for (int i = 0; i < tapelead; i++)
-               tty_tx(0);
+               sendbyte(0);
          }
          while (len--)
          {
             uint8_t c = *value++;
-            tty_tx(c);
+            sendbyte(c);
             c &= 0x7f;
             if (!nodc4 && c == DC4)
-               tty_tx(DC2);     // Turn tape back on
+               sendbyte(DC2);   // Turn tape back on
             if (c == WRU)
             {
                suppress = 1;    // Suppress WRU response
@@ -413,10 +432,10 @@ const char *app_callback(int client, const char *prefix, const char *target, con
          if (!suffix[5])
          {
             for (int i = 0; i < tapetail; i++)
-               tty_tx(0);
+               sendbyte(0);
          }
          if (!nodc4)
-            tty_tx(DC4);        // Tape off
+            sendbyte(DC4);      // Tape off
       }
       free(buf);
    }
@@ -565,8 +584,6 @@ void asr33_main(void *param)
          else if (wantpower == 1)
             power_on();
       }
-      if (!lastrx)
-         gap = 0;
       if (hayes == 3 && gap > 1000000)
       {                         // End of Hayes +++ escape sequence
          hayes++;               // Command prompt
@@ -588,7 +605,7 @@ void asr33_main(void *param)
             {
                inet6_ntoa_r(ip6, temp, sizeof(temp) - 1);
                sendstring(temp);
-               sendstring(" AND ");
+               sendstring(" & ");
             }
             tcpip_adapter_ip_info_t ip4;
             if (!tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip4))
@@ -602,7 +619,7 @@ void asr33_main(void *param)
             sendstring("\r\nOR ");
          }
          if (!nocave)
-            sendstring("WOULD YOU LIKE TO PLAY A GAME? (Y/N)\r\n>");
+            sendstring("WOULD YOU LIKE TO PLAY A GAME? (Y/N)\r\n> ");
       }
       // Check tcp
       if (csock >= 0)
@@ -623,7 +640,7 @@ void asr33_main(void *param)
                jo_string(j, "reason", "close");
                revk_event("closed", &j);
             } else
-               tty_tx(b);
+               sendbyte(b);
          }
       }
       int len = tty_rx_ready();
@@ -649,6 +666,7 @@ void asr33_main(void *param)
                jo_t j = jo_object_alloc();
                jo_string(j, "reason", "break");
                revk_event("closed", &j);
+               manual = 0;
             }
             power_needed();     // Power on BREAK
          }
@@ -678,6 +696,7 @@ void asr33_main(void *param)
                      const struct addrinfo hints = {
                         .ai_family = AF_UNSPEC,
                         .ai_socktype = SOCK_STREAM,
+                        .ai_flags = AI_CANONNAME,
                      };
                      char ports[20];
                      sprintf(ports, "%d", port);
@@ -697,26 +716,27 @@ void asr33_main(void *param)
                               {
                                  csock = s;
                                  sendstring("+++ CONNECTED ");
-                                 char addr_str[40] = "";
-                                 if (a->ai_family == PF_INET)
-                                    inet_ntoa_r(((struct sockaddr_in *) &a->ai_addr)->sin_addr, addr_str, sizeof(addr_str) - 1);
-                                 else if (a->ai_family == PF_INET6)
-                                    inet6_ntoa_r(((struct sockaddr_in6 *) &a->ai_addr)->sin6_addr, addr_str, sizeof(addr_str) - 1);
-                                 sendstring(addr_str);
+                                 if (res->ai_canonname)
+                                    sendstring(res->ai_canonname);
                                  sendstring(" +++\r\n");
                                  break;
                               }
                               close(s);
                            }
                         }
-                        freeaddrinfo(res);
                         if (csock < 0)
-                           sendstring("+++ COULD NOT CONNECT +++\r\n");
+                        {
+                           sendstring("+++ COULD NOT CONNECT ");
+                           if (res && res->ai_canonname)
+                              sendstring(res->ai_canonname);
+                           sendstring(" +++\r\n");
+                        }
+                        freeaddrinfo(res);
                      }
                   }
                } else if ((b & 0x7f) > ' ' && rxp < MAXRX)
                {
-                  tty_tx(b);    // echo
+                  sendbyte(b);  // echo
                   line[rxp++] = (b & 0x7F);
                }
             } else
@@ -761,16 +781,16 @@ void asr33_main(void *param)
                         if (b == pe(DC4))
                         {       // End
                            for (int i = 0; i < 9; i++)
-                              tty_tx(0);
-                           tty_tx(pe(DC4));
+                              sendbyte(0);
+                           sendbyte(pe(DC4));
                            dobig = 0;
                         } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
-                           tty_tx(0);
+                           sendbyte(0);
                      } else if (b == pe(DC2) && doecho && !nobig)
                      {          // Start big lettering
-                        tty_tx(pe(DC2));
+                        sendbyte(pe(DC2));
                         for (int i = 0; i < 10; i++)
-                           tty_tx(0);
+                           sendbyte(0);
                         dobig = 1;
                      }
                      // else if (b == pe(RU) && !nocave) docave = 1;
@@ -786,16 +806,16 @@ void asr33_main(void *param)
                         if (!nover)
                         {
                            if (*wru)
-                              tty_tx(pe(' '));
+                              sendbyte(pe(' '));
                            sendstring(revk_app);
                            sendstring(" BUILD ");
                            sendstring(revk_version);
                         }
                         sendstring("\r\n");     // CR LF
                         if (ack)
-                           tty_tx(pe(ack));     // ACK
+                           sendbyte(pe(ack));   // ACK
                      } else if (!xoff)
-                        tty_tx(b);
+                        sendbyte(b);
                   }
                }
             }
