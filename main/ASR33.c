@@ -129,16 +129,18 @@ void nl(void)
 
 
 void sendstring(const char *c)
-{                               // Simple text string
+{                               // Simple text string, with wrap and \n for line breaks
    if (c)
       while (*c)
       {
-         if (*c == '\r')
-            cr();
-         else if (*c == '\n')
+         if (*c == '\n')
             nl();
          else
+         {
+            if (pos == 72)
+               nl();
             sendbyte(pe(*c));
+         }
          c++;
       }
 }
@@ -588,14 +590,14 @@ void asr33_main(void *param)
       {                         // End of Hayes +++ escape sequence
          hayes++;               // Command prompt
          rxp = 0;
-         sendstring("\r\nASR33 CONTROLLER BY REVK (BUILD ");
+         sendstring("\nASR33 CONTROLLER BY REVK (BUILD ");
          sendstring(revk_version);
-         sendstring(")\r\n");
+         sendstring(")\n");
          if (revk_link_down())
          {
             sendstring("OFFLINE (SSID ");
             sendstring(revk_wifi());
-            sendstring(")\r\n");
+            sendstring(")\n");
          } else if (port)
          {                      // Online
             sendstring("LISTENING ON ");
@@ -613,13 +615,13 @@ void asr33_main(void *param)
                inet_ntoa_r(ip4.ip, temp, sizeof(temp) - 1);
                sendstring(temp);
             }
-            sendstring("\r\nENTER IP/DOMAIN TO MAKE CONNECTION");
+            sendstring("\nENTER IP/DOMAIN TO MAKE CONNECTION");
             sprintf(temp, " (USING TCP PORT %d)", port);
             sendstring(temp);
-            sendstring("\r\nOR ");
+            sendstring("\nOR ");
          }
          if (!nocave)
-            sendstring("WOULD YOU LIKE TO PLAY A GAME? (Y/N)\r\n> ");
+            sendstring("WOULD YOU LIKE TO PLAY A GAME? (Y/N)\n> ");
       }
       // Check tcp
       if (csock >= 0)
@@ -683,14 +685,14 @@ void asr33_main(void *param)
             {                   // Hayes command prompt only
                if (b == pe('\r') || b == pe('\n'))
                {                // Command
-                  sendstring("\r\n");
+                  sendstring("\n");
                   line[rxp] = 0;
                   hayes = 0;
                   rxp = 0;
                   if (!strcmp(line, "Y") || !strcmp(line, "YES"))
                      docave = 1;
                   else if (!strcmp(line, "N") || !strcmp(line, "NO"))
-                     sendstring("SHAME, BYE\r\n");
+                     sendstring("SHAME, BYE\n");
                   else if (*line)
                   {             // DNS/IP?
                      const struct addrinfo hints = {
@@ -704,7 +706,7 @@ void asr33_main(void *param)
                          *a;
                      int err = getaddrinfo(line, ports, &hints, &res);
                      if (err || !res)
-                        sendstring("+++ HOST NAME NOT FOUND +++\r\n");
+                        sendstring("+++ HOST NAME NOT FOUND +++\n");
                      else
                      {
                         for (a = res; a; a = a->ai_next)
@@ -718,7 +720,7 @@ void asr33_main(void *param)
                                  sendstring("+++ CONNECTED ");
                                  if (res->ai_canonname)
                                     sendstring(res->ai_canonname);
-                                 sendstring(" +++\r\n");
+                                 sendstring(" +++\n");
                                  break;
                               }
                               close(s);
@@ -729,7 +731,7 @@ void asr33_main(void *param)
                            sendstring("+++ COULD NOT CONNECT ");
                            if (res && res->ai_canonname)
                               sendstring(res->ai_canonname);
-                           sendstring(" +++\r\n");
+                           sendstring(" +++\n");
                         }
                         freeaddrinfo(res);
                      }
@@ -801,7 +803,9 @@ void asr33_main(void *param)
                      else if (b == pe(WRU) && (!nover || *wru))
                      {          // WRU
                         // See 3.27 of ISS 8, SECTION 574-122-700TC
-                        sendstring("\r\n\x7f"); // CR LF RO
+                        sendbyte(pe('\r'));     // CR
+                        sendbyte(pe('\n'));     // LF
+                        sendbyte(pe(0x7F));     // RO
                         sendstring(wru);
                         if (!nover)
                         {
@@ -811,7 +815,8 @@ void asr33_main(void *param)
                            sendstring(" BUILD ");
                            sendstring(revk_version);
                         }
-                        sendstring("\r\n");     // CR LF
+                        sendbyte(pe('\r'));     // CR
+                        sendbyte(pe('\n'));     // LF
                         if (ack)
                            sendbyte(pe(ack));   // ACK
                      } else if (!xoff)
