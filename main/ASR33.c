@@ -681,9 +681,18 @@ void asr33_main(void *param)
                suppress = 0;    // Suppressed WRU response timeout can end
             if (hayes > 3)
             {                   // Hayes command prompt
-               // TODO
                if (b == pe('\r') || b == pe('\n'))
+               {                // Command
+                  queuebytes("\r\n");
+                  line[rxp] = 0;
+                  // TODO handle command
                   hayes = 0;
+                  rxp = 0;
+               } else if ((b & 0x7f) > ' ' && rxp < MAXRX)
+               {
+                  queuebyte(b); // echo
+                  line[rxp++] = (b & 0x7F);
+               }
             } else if (!hayes)
             {
                if (b == pe('+') && !rxp && gap > 1000000)
@@ -713,7 +722,7 @@ void asr33_main(void *param)
                   jo_stringn(j, NULL, (void *) line, rxp);
                   revk_event("line", &j);
                   rxp = 0;
-               } else if ((b & 0x7f) && (b & 0x7F) != '\r' && rxp < MAXRX)
+               } else if ((b & 0x7f) > ' ' && rxp < MAXRX)
                   line[rxp++] = (b & 0x7F);
                if (doecho)
                {                // Handling local characters and echoing (maybe, depends on xoff too)
