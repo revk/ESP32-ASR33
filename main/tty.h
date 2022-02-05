@@ -10,3 +10,4 @@ void tty_tx(uint8_t b);
 void tty_break(void);
 uint8_t tty_rx(void);
 int tty_tx_space(void);
+int tty_tx_waiting(void);

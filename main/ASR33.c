@@ -1,14 +1,6 @@
 // ASR33 direct control over MQTT
 // Copyright © 2019 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
 
-
-// TODO
-// Switch to soft uart only, assuming all works well with actual ASR33
-// Change soft uart to large tx buffer and drop the tx buffer in main code
-// Add Hayes style pause,+++,pause escape to prompt for domain/IP to make outgoing TCP connect
-// Make cave start from same prompt - maybe "GAME" or something.
-// Maybe we can detect BREAK to do power on for when no RUN GPIO
-
 #include "revk.h"
 #include <esp_spi_flash.h>
 #include <driver/gpio.h>
@@ -33,7 +25,6 @@
   u1t(rxpu)	\
   t(pwrtopic)	\
   t(mtrtopic)	\
-  s8(uart,-1)	\
   u1(noecho)	\
   u1(nobig)	\
   u1(nover)	\
@@ -69,7 +60,6 @@ settings;
 #undef io
 #undef u1
 #undef u1t
-#define	MAXTX	65536           // Tx buffer max
 #define	MAXRX	256             // Line max
 
 #define	LINELEN	72              // ASR33 line len
@@ -87,17 +77,12 @@ int lsock = -1;                 // Listen socket
 int csock = -1;                 // Connected sockets
 volatile uint8_t havepower = 0; // Power state
 volatile uint8_t wantpower = 0; // Power state wanted
-uint8_t buf[MAXTX];             // Tx pending buffer
-volatile uint32_t txi = 0;      // Tx buffer in pointer
-volatile uint32_t txo = 0;      // Tx buffer out pointer
 char line[MAXRX + 1];           // Rx line buffer
-int64_t eot = 0;                // When tx expected to end
-volatile int64_t done = 0;      // When to next turn off
 int64_t lastrx = 0;             // Last rx
+int64_t done = 0;               // When to turn off
 int8_t pos = -1;                // Position (-1 is unknown)
 uint32_t rxp = 0;               // Rx line buffer pointer
 uint8_t hayes = 0;              // Hayes +++ counter
-SemaphoreHandle_t queue_mutex = NULL;
 
 const unsigned char small_f[256][5] = {
 #include "smallfont.h"
@@ -112,41 +97,11 @@ static inline uint8_t pe(uint8_t b)
    return b;
 }
 
-int64_t timeout(int extra)
-{                               // Set power off timeout
-   int64_t now = esp_timer_get_time();
-   if (eot < now)
-      eot = now;
-   eot += extra;
-   done = eot + 1000000 * (manual ? keyidle : idle);
-   return now;
-}
-
-void queuebyte(uint8_t b)
-{                               // Queue a byte
-   xSemaphoreTake(queue_mutex, portMAX_DELAY);
-   uint32_t n = txi + 1;
-   if (n >= MAXTX)
-      n = 0;
-   if (n != txo)
-   {                            // Not going too far
-      buf[txi] = b;
-      txi = n;
-      // Position tracking
-      b &= 0x7F;
-      if (b == '\r')
-         pos = 0;
-      else if (b >= ' ' && b < 0x7F && pos < LINELEN)
-         pos++;
-   }
-   xSemaphoreGive(queue_mutex);
-   wantpower = 1;
-}
-
-void queuebytes(const char *c)
+void sendstring(const char *c)
 {
-   while (*c)
-      queuebyte(pe(*c++));
+   if (c)
+      while (*c)
+         tty_tx(pe(*c++));
 }
 
 int queuebig(int c)
@@ -166,10 +121,10 @@ int queuebig(int c)
    while (l--)
    {
       uint8_t c = *d++;
-      queuebyte(c);
+      tty_tx(c);
       c &= 0x7f;
       if (!nodc4 && c == DC4)
-         queuebyte(DC2);
+         tty_tx(DC2);
       if (c == WRU)
       {
          suppress = 1;
@@ -184,11 +139,11 @@ void cr(void)
    int8_t p = pos;
    if (p)
    {
-      queuebyte(pe('\r'));      // CR
+      tty_tx(pe('\r'));         // CR
       if (p < 0 || p > 40)
-         queuebyte(0);          // allow extra time for CR
+         tty_tx(0);             // allow extra time for CR
       if (p < 0)
-         queuebyte(0);          // allow extra time for CR
+         tty_tx(0);             // allow extra time for CR
    }
 }
 
@@ -196,7 +151,7 @@ void nl(void)
 {                               // Do new line
    if (pos)
       cr();                     // CR
-   queuebyte(pe('\n'));         // LF (allows time for CR as well)
+   tty_tx(pe('\n'));            // LF (allows time for CR as well)
 }
 
 void reportstate(void)
@@ -218,9 +173,6 @@ void power_off(void)
    if (havepower == 0)
       return;
    manual = 0;
-   done = 0;
-   txi = 0;
-   txo = 0;
    rxp = 0;
    hayes = 0;
    doecho = !noecho;
@@ -270,7 +222,7 @@ void power_on(void)
    havepower = 1;
    reportstate();
    tty_flush();
-   timeout(0);
+   done = esp_timer_get_time() + 1000000 * (manual ? keyidle : idle);
 }
 
 void power_needed(void)
@@ -309,6 +261,7 @@ const char *app_callback(int client, const char *prefix, const char *target, con
    {
       wantpower = 0;
       manual = 0;
+      done = 0;
    }
    if (!strcmp(suffix, "echo"))
       doecho = 1;
@@ -332,27 +285,27 @@ const char *app_callback(int client, const char *prefix, const char *target, con
          if (!suffix[4])
          {
             if (!nodc4)
-               queuebyte(DC2);  // Tape on
+               tty_tx(DC2);     // Tape on
             for (int i = 0; i < tapelead; i++)
-               queuebyte(0);
+               tty_tx(0);
          }
          if (!strcmp(suffix, "taperaw"))
             while (len--)
-               queuebyte(*value++);     // Raw
+               tty_tx(*value++);        // Raw
          else                   // Large text
             while (len--)
             {
                if (!queuebig(*value++))
                   continue;
                if (len)
-                  queuebyte(0);
+                  tty_tx(0);
             }
          if (!suffix[4])
          {
             for (int i = 0; i < tapetail; i++)
-               queuebyte(0);
+               tty_tx(0);
             if (!nodc4)
-               queuebyte(DC4);  // Tape off
+               tty_tx(DC4);     // Tape off
          }
       }
       if (!strcmp(suffix, "text") || !strcmp(suffix, "line") || !strcmp(suffix, "bell"))
@@ -402,16 +355,16 @@ const char *app_callback(int client, const char *prefix, const char *target, con
             else if (b == '\r')
             {                   // Explicit CR, let's assume no NL
                cr();            // We want a carriage return
-               queuebyte(0);    // Assuming no LF, need extra null
+               tty_tx(0);       // Assuming no LF, need extra null
             } else
-               queuebyte(pe(b));
+               tty_tx(pe(b));
          }
          if (!strcmp(suffix, "line") || !strcmp(suffix, "bell"))
          {
             cr();
             nl();
             if (!strcmp(suffix, "bell"))
-               queuebyte(pe(7));
+               tty_tx(pe(7));
          }
       }
       return "";
@@ -432,25 +385,25 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       {                         // raw send
          power_needed();
          while (len--)
-            queuebyte(*value++);
+            tty_tx(*value++);
       }
       if (!strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
       {                         // Raw punched data (with DC2/DC4)
          power_needed();
          if (!nodc4)
-            queuebyte(DC2);     // Tape on
+            tty_tx(DC2);        // Tape on
          if (!suffix[5])
          {
             for (int i = 0; i < tapelead; i++)
-               queuebyte(0);
+               tty_tx(0);
          }
          while (len--)
          {
             uint8_t c = *value++;
-            queuebyte(c);
+            tty_tx(c);
             c &= 0x7f;
             if (!nodc4 && c == DC4)
-               queuebyte(DC2);  // Turn tape back on
+               tty_tx(DC2);     // Turn tape back on
             if (c == WRU)
             {
                suppress = 1;    // Suppress WRU response
@@ -460,10 +413,10 @@ const char *app_callback(int client, const char *prefix, const char *target, con
          if (!suffix[5])
          {
             for (int i = 0; i < tapetail; i++)
-               queuebyte(0);
+               tty_tx(0);
          }
          if (!nodc4)
-            queuebyte(DC4);     // Tape off
+            tty_tx(DC4);        // Tape off
       }
       free(buf);
    }
@@ -472,7 +425,6 @@ const char *app_callback(int client, const char *prefix, const char *target, con
 
 void asr33_main(void *param)
 {
-   queue_mutex = xSemaphoreCreateMutex();
    revk_boot(&app_callback);
 #define u32(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u16(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
@@ -535,6 +487,8 @@ void asr33_main(void *param)
    while (1)
    {
       usleep(10000);
+      int64_t now = esp_timer_get_time();
+      int64_t gap = now - lastrx;
       if (run && gpio_get_level(port_mask(run)) != port_inv(run))
       {                         // RUN button
          if (!pressed)
@@ -565,16 +519,22 @@ void asr33_main(void *param)
       } else
          pressed = 0;
       // Check tx buffer usage
-      if ((txi + MAXTX - txo) % MAXTX > MAXTX * 2 / 3 && busy != 1)
+      if (tty_tx_space() < 4096)
       {
-         busy = 1;
-         reportstate();
-      } else if ((txi + MAXTX - txo) % MAXTX < MAXTX * 1 / 3 && busy != 0)
+         if (!busy)
+         {
+            busy = 1;
+            reportstate();
+         }
+      } else
       {
-         busy = 0;
-         reportstate();
+         if (busy)
+         {
+            busy = 0;
+            reportstate();
+         }
       }
-      if (txi != txo || csock >= 0)
+      if (tty_tx_waiting() || csock >= 0)
          wantpower = 1;
       if (lsock >= 0 && csock < 0)
       {                         // Allow for connection
@@ -589,12 +549,9 @@ void asr33_main(void *param)
             csock = accept(lsock, (struct sockaddr *) &source_addr, &addr_len);
             char addr_str[40] = "";
             if (source_addr.ss_family == PF_INET)
-            {
                inet_ntoa_r(((struct sockaddr_in *) &source_addr)->sin_addr, addr_str, sizeof(addr_str) - 1);
-            } else if (source_addr.ss_family == PF_INET6)
-            {
+            else if (source_addr.ss_family == PF_INET6)
                inet6_ntoa_r(((struct sockaddr_in6 *) &source_addr)->sin6_addr, addr_str, sizeof(addr_str) - 1);
-            }
             jo_t j = jo_object_alloc();
             jo_string(j, "ip", addr_str);
             revk_event("connect", &j);
@@ -608,48 +565,44 @@ void asr33_main(void *param)
          else if (wantpower == 1)
             power_on();
       }
-      if ((pwr || *pwrtopic) && havepower != 1)
-         continue;              // Not running
-      int64_t now = esp_timer_get_time();
-      int64_t gap = now - lastrx;
       if (!lastrx)
          gap = 0;
       if (hayes == 3 && gap > 1000000)
       {                         // End of Hayes +++ escape sequence
          hayes++;               // Command prompt
          rxp = 0;
-         queuebytes("\r\nASR33 CONTROLLER BY REVK (BUILD ");
-         queuebytes(revk_version);
-         queuebytes(")\r\n");
+         sendstring("\r\nASR33 CONTROLLER BY REVK (BUILD ");
+         sendstring(revk_version);
+         sendstring(")\r\n");
          if (revk_link_down())
          {
-            queuebytes("OFFLINE (SSID ");
-            queuebytes(revk_wifi());
-            queuebytes(")\r\n");
+            sendstring("OFFLINE (SSID ");
+            sendstring(revk_wifi());
+            sendstring(")\r\n");
          } else if (port)
          {                      // Online
-            queuebytes("LISTENING ON ");
+            sendstring("LISTENING ON ");
             char temp[50];
             ip6_addr_t ip6;
             if (!tcpip_adapter_get_ip6_global(TCPIP_ADAPTER_IF_STA, &ip6))
             {
-               sprintf(temp, IPV6STR, IPV62STR(ip6));
-               queuebytes(temp);
-               queuebytes(" AND ");
+               inet6_ntoa_r(ip6, temp, sizeof(temp) - 1);
+               sendstring(temp);
+               sendstring(" AND ");
             }
             tcpip_adapter_ip_info_t ip4;
             if (!tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip4))
             {
-               sprintf(temp, IPSTR, IP2STR(&ip4.ip));
-               queuebytes(temp);
+               inet_ntoa_r(ip4.ip, temp, sizeof(temp) - 1);
+               sendstring(temp);
             }
-            queuebytes("\r\nENTER IP/DOMAIN TO MAKE CONNECTION");
+            sendstring("\r\nENTER IP/DOMAIN TO MAKE CONNECTION");
             sprintf(temp, " (USING TCP PORT %d)", port);
-            queuebytes(temp);
-            queuebytes("\r\nOR ");
+            sendstring(temp);
+            sendstring("\r\nOR ");
          }
          if (!nocave)
-            queuebytes("WOULD YOU LIKE TO PLAY A GAME?\r\n>");
+            sendstring("WOULD YOU LIKE TO PLAY A GAME? (Y/N)\r\n>");
       }
       // Check tcp
       if (csock >= 0)
@@ -670,10 +623,9 @@ void asr33_main(void *param)
                jo_string(j, "reason", "close");
                revk_event("closed", &j);
             } else
-               queuebyte(b);
+               tty_tx(b);
          }
       }
-      // Check rx - TODO check rx even when power off? Or check BREAK at least
       int len = tty_rx_ready();
       if (!len)
       {
@@ -698,7 +650,7 @@ void asr33_main(void *param)
                jo_string(j, "reason", "break");
                revk_event("closed", &j);
             }
-            // TODO should we power up on break, as an option, if no RUN GPIO?
+            power_needed();     // Power on BREAK
          }
       } else if (len > 0)
       {
@@ -713,21 +665,58 @@ void asr33_main(void *param)
             {                   // Hayes command prompt only
                if (b == pe('\r') || b == pe('\n'))
                {                // Command
-                  queuebytes("\r\n");
+                  sendstring("\r\n");
                   line[rxp] = 0;
                   hayes = 0;
                   rxp = 0;
                   if (!strcmp(line, "Y") || !strcmp(line, "YES"))
                      docave = 1;
                   else if (!strcmp(line, "N") || !strcmp(line, "NO"))
-                     queuebytes("SHAME, BYE\r\n");
+                     sendstring("SHAME, BYE\r\n");
                   else if (*line)
                   {             // DNS/IP?
-
+                     const struct addrinfo hints = {
+                        .ai_family = AF_UNSPEC,
+                        .ai_socktype = SOCK_STREAM,
+                     };
+                     char ports[20];
+                     sprintf(ports, "%d", port);
+                     struct addrinfo *res = NULL,
+                         *a;
+                     int err = getaddrinfo(line, ports, &hints, &res);
+                     if (err || !res)
+                        sendstring("+++ HOST NAME NOT FOUND +++\r\n");
+                     else
+                     {
+                        for (a = res; a; a = a->ai_next)
+                        {
+                           int s = socket(a->ai_family, a->ai_socktype, a->ai_protocol);
+                           if (s >= 0)
+                           {
+                              if (!connect(s, a->ai_addr, a->ai_addrlen))
+                              {
+                                 csock = s;
+                                 sendstring("+++ CONNECTED ");
+                                 char addr_str[40] = "";
+                                 if (a->ai_family == PF_INET)
+                                    inet_ntoa_r(((struct sockaddr_in *) &a->ai_addr)->sin_addr, addr_str, sizeof(addr_str) - 1);
+                                 else if (a->ai_family == PF_INET6)
+                                    inet6_ntoa_r(((struct sockaddr_in6 *) &a->ai_addr)->sin6_addr, addr_str, sizeof(addr_str) - 1);
+                                 sendstring(addr_str);
+                                 sendstring(" +++\r\n");
+                                 break;
+                              }
+                              close(s);
+                           }
+                        }
+                        freeaddrinfo(res);
+                        if (csock < 0)
+                           sendstring("+++ COULD NOT CONNECT +++\r\n");
+                     }
                   }
                } else if ((b & 0x7f) > ' ' && rxp < MAXRX)
                {
-                  queuebyte(b); // echo
+                  tty_tx(b);    // echo
                   line[rxp++] = (b & 0x7F);
                }
             } else
@@ -748,8 +737,10 @@ void asr33_main(void *param)
                   if (b && b != 0xFF && b == pe(b))
                   {
                      if (b == pe(EOT))
+                     {
                         manual = 0;     // EOT, short timeout
-                     else
+                        done = 0;
+                     } else
                         manual = 1;     // Typing
                   }
                   jo_t j = jo_object_alloc();
@@ -770,16 +761,16 @@ void asr33_main(void *param)
                         if (b == pe(DC4))
                         {       // End
                            for (int i = 0; i < 9; i++)
-                              queuebyte(0);
-                           queuebyte(pe(DC4));
+                              tty_tx(0);
+                           tty_tx(pe(DC4));
                            dobig = 0;
                         } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
-                           queuebyte(0);
+                           tty_tx(0);
                      } else if (b == pe(DC2) && doecho && !nobig)
                      {          // Start big lettering
-                        queuebyte(pe(DC2));
+                        tty_tx(pe(DC2));
                         for (int i = 0; i < 10; i++)
-                           queuebyte(0);
+                           tty_tx(0);
                         dobig = 1;
                      }
                      // else if (b == pe(RU) && !nocave) docave = 1;
@@ -790,29 +781,28 @@ void asr33_main(void *param)
                      else if (b == pe(WRU) && (!nover || *wru))
                      {          // WRU
                         // See 3.27 of ISS 8, SECTION 574-122-700TC
-                        queuebytes("\r\n\x7f"); // CR LF RO
-                        queuebytes(wru);
+                        sendstring("\r\n\x7f"); // CR LF RO
+                        sendstring(wru);
                         if (!nover)
                         {
                            if (*wru)
-                              queuebyte(pe(' '));
-                           queuebytes(revk_app);
-                           queuebytes(" BUILD ");
-                           queuebytes(revk_version);
+                              tty_tx(pe(' '));
+                           sendstring(revk_app);
+                           sendstring(" BUILD ");
+                           sendstring(revk_version);
                         }
-                        queuebytes("\r\n");     // CR LF
+                        sendstring("\r\n");     // CR LF
                         if (ack)
-                           queuebyte(pe(ack));  // ACK
+                           tty_tx(pe(ack));     // ACK
                      } else if (!xoff)
-                        queuebyte(b);
+                        tty_tx(b);
                   }
                }
             }
          }
          lastrx = now;
       }
-      // Check tx
-      if (txi == txo)
+      if (!tty_tx_waiting())
       {                         // Nothing to send
          if (docave)
          {                      // Let's play a game
@@ -825,24 +815,11 @@ void asr33_main(void *param)
             }
             advent();
             manual = 0;
-         }
-         if (done < now)
+            done = 0;
+         } else if (now > done)
             wantpower = 0;      // Idle complete, power off
-         continue;
-      }
-      if (eot > now + 2000000)
-         continue;              // Let's wait for these to send...
-      // TODO we don't need EOT when we have the soft UART stuff in place with tx_space()
-      if (!tty_tx_space())
-         continue;              // No space
-      // Get next character
-      uint32_t n = txo + 1;
-      if (n >= MAXTX)
-         n = 0;
-      uint8_t b = buf[txo];
-      txo = n;
-      tty_tx(b);
-      timeout(50000000 * (2 + databits * 2 + stopx2) / baudx100);
+      } else
+         done = now + 1000000 * (manual ? keyidle : idle);
    }
 }
 

@@ -21,9 +21,9 @@ struct softuart_s {
    int8_t stops;                // Stop bits in interrupts
 
    int8_t tx;                   // Tx GPIO
-   uint8_t txdata[32];          // The tx message
-   volatile uint8_t txi;        // Next byte to which new tx byte to be written (set by non int)
-   volatile uint8_t txo;        // Next byte from which a tx byte will be read (set by int)
+   uint8_t txdata[32768];       // The tx message
+   volatile uint16_t txi;       // Next byte to which new tx byte to be written (set by non int)
+   volatile uint16_t txo;       // Next byte from which a tx byte will be read (set by int)
    uint8_t txbit;               // Tx bit count, 0 means idle
    volatile uint8_t txsubbit;   // Tx sub bit count
    uint8_t txbyte;              // Tx byte being clocked in
@@ -83,8 +83,8 @@ bool IRAM_ATTR timer_isr(void *up)
          }
       } else if (!u->txbit)
       {                         // Do we have a next byte to start
-         uint8_t txi = u->txi;
-         uint8_t txo = u->txo;
+         uint16_t txi = u->txi;
+         uint16_t txo = u->txo;
          if (!u->txnext)
          {
             u->txsubbit = u->stops;
@@ -248,7 +248,7 @@ void softuart_tx(softuart_t * u, uint8_t b)
 {
    while (!softuart_tx_space(u))
       usleep(10000);
-   uint8_t txi = u->txi;
+   uint16_t txi = u->txi;
    u->txdata[txi] = b;
    txi++;
    if (txi == sizeof(u->txdata))
