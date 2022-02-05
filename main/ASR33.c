@@ -7,6 +7,7 @@
 // Change soft uart to large tx buffer and drop the tx buffer in main code
 // Add Hayes style pause,+++,pause escape to prompt for domain/IP to make outgoing TCP connect
 // Make cave start from same prompt - maybe "GAME" or something.
+// Maybe we can detect BREAK to do power on for when no RUN GPIO
 
 #include "revk.h"
 #include <esp_spi_flash.h>
