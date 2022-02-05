@@ -23,10 +23,10 @@
 
 #define settings  \
   io(tx,4)      \
-  io(rx,13)     \
-  io(run,15)  \
-  io(pwr,2)      \
-  io(mtr,27)  \
+  io(rx,-5)     \
+  io(run,21)  \
+  io(pwr,23)      \
+  io(mtr,22)  \
   u1(txod)	\
   u1(txpu)	\
   u1(rxpu)	\
