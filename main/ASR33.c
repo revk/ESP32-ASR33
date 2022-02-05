@@ -577,6 +577,7 @@ void asr33_main(void *param)
             jo_string(j, "ip", addr_str);
             revk_event("connect", &j);
             power_needed();
+            pos = -1;
          }
       }
       if (wantpower != havepower)
@@ -642,7 +643,7 @@ void asr33_main(void *param)
                jo_string(j, "reason", "close");
                revk_event("closed", &j);
             } else
-               sendbyte(b);
+               tty_tx(b);       // Raw send to teletype
          }
       }
       int len = tty_rx_ready();
@@ -721,6 +722,11 @@ void asr33_main(void *param)
                                  if (res->ai_canonname)
                                     sendstring(res->ai_canonname);
                                  sendstring(" +++\n");
+                                 jo_t j = jo_object_alloc();
+                                 if (res && res->ai_canonname)
+                                    jo_string(j, "target", res->ai_canonname);
+                                 revk_event("connect", &j);
+                                 pos = -1;
                                  break;
                               }
                               close(s);
