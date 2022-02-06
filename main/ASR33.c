@@ -71,8 +71,6 @@ settings;
 #undef u1t
 #define	MAXRX	256             // Line max
 
-#define	LINELEN	72              // ASR33 line len
-
 volatile int8_t power = 0;      // power request, -1 means want off, 1 means want on, 2 means want on with long timeout
 int8_t on = 0;                  // Power is on
 int8_t busy = 0;                // Busy state (tx queue is low)
@@ -83,12 +81,12 @@ uint8_t doecho = 0;             // Do echo (set each start up)
 uint8_t dobig = 0;              // Do big lettering on tape
 uint8_t docave = 0;             // Fun advent()
 uint8_t suppress = 0;           // Suppress WRU
+uint8_t pos = 0;                // Pos for wrapping
 int lsock = -1;                 // Listen socket
 int csock = -1;                 // Connected sockets
 char line[MAXRX + 1];           // Rx line buffer
 int64_t lastrx = 0;             // Last rx
 int64_t done = 0;               // When to turn off
-int8_t pos = -1;                // Position (-1 is unknown)
 uint32_t rxp = 0;               // Rx line buffer pointer
 uint8_t hayes = 0;              // Hayes +++ counter
 
@@ -111,30 +109,20 @@ void sendbyte(uint8_t b)
    b &= 0x7F;
    if (b == CR)
       pos = 0;
-   else if (b >= ' ' && b < 0x7F && pos < LINELEN)
+   else if (b >= ' ' && b < RO)
       pos++;
 }
 
 void cr(void)
 {                               // Do a carriage return
-   int8_t p = pos;
-   if (p)
-   {
-      sendbyte(pe(CR));         // CR
-      if (p < 0 || p > 40)
-         sendbyte(NUL);         // allow extra time for CR
-      if (p < 0)
-         sendbyte(NUL);         // allow extra time for CR
-   }
+   sendbyte(pe(CR));
 }
 
 void nl(void)
 {                               // Do new line
-   if (pos)
-      cr();                     // CR
-   sendbyte(pe(LF));            // LF (allows time for CR as well)
+   cr();
+   sendbyte(pe(LF));
 }
-
 
 void sendstring(const char *c)
 {                               // Simple text string, with wrap and \n for line breaks
@@ -145,7 +133,7 @@ void sendstring(const char *c)
             nl();
          else
          {
-            if (pos == 72)
+            if (pos >= linelen)
                nl();
             sendbyte(pe(*c));
          }
@@ -217,8 +205,7 @@ void power_off(void)
       if (mtr)
          gpio_set_level(port_mask(mtr), port_inv(mtr)); // Off
       sleep(1);                 // Takes time for motor to spin down - ensure this is done before power goes off
-   } else
-      pos = -1;                 // No direct motor control, assume gash character(s) so pos unknown
+   }
    if (pwr || *pwrtopic)
    {
       if (*pwrtopic)
@@ -364,7 +351,7 @@ const char *app_callback(int client, const char *prefix, const char *target, con
                b = '"';         // Common quote escape
             if (b >= 0x80)
                b = 0x5E;        // Other unicode so print as Up arrow
-            if (b >= ' ' && b < 0x7F && pos >= LINELEN)
+            if (b >= ' ' && b < 0x7F && pos >= linelen)
                nl();            // Force newline as would overprint
             if (b == LF)
                nl();            // We want a new line (does CR too)
@@ -584,7 +571,6 @@ void asr33_main(void *param)
             jo_t j = jo_object_alloc();
             jo_string(j, "ip", addr_str);
             revk_event("connect", &j);
-            pos = -1;
             power = 1;
          }
       }
@@ -646,7 +632,7 @@ void asr33_main(void *param)
                jo_string(j, "reason", "close");
                revk_event("closed", &j);
             } else
-               tty_tx(b);       // Raw send to teletype
+               sendbyte(b);     // Raw send to teletype
          }
       }
       int len = tty_rx_ready();
@@ -729,7 +715,6 @@ void asr33_main(void *param)
                                  if (res && res->ai_canonname)
                                     jo_string(j, "target", res->ai_canonname);
                                  revk_event("connect", &j);
-                                 pos = -1;
                                  break;
                               }
                               close(s);

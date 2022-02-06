@@ -352,8 +352,8 @@ void softuart_xon(softuart_t * u)
    u->txwait = 0;
 }
 
-void softuart_stats(softuart_t *u,softuart_stats_t*s)
-{// Get (and clear) stats
-	*s=u->stats;
-	memset(&u->stats,0,sizeof(u->stats));
+void softuart_stats(softuart_t * u, softuart_stats_t * s)
+{                               // Get (and clear) stats
+   *s = u->stats;
+   memset(&u->stats, 0, sizeof(u->stats));
 }
