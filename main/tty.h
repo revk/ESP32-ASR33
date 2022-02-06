@@ -13,3 +13,4 @@ int tty_tx_space(void);
 int tty_tx_waiting(void);
 void tty_xoff(void);
 void tty_xon(void);
+void tty_stats(softuart_stats_t *);

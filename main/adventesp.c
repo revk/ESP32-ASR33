@@ -4,11 +4,10 @@
 
 #include "revk.h"
 #include <string.h>
+#include "softuart.h"
 #include "tty.h"
 #include "adventesp.h"
 extern int8_t uart;
-extern void nl(void);
-
 static inline uint8_t pe(uint8_t b)
 {                               // Make even parity
    b &= 0x7F;
@@ -52,7 +51,7 @@ char *readline(const char *prompt)
       }
       if (b == '\r' || b == '\n')
          break;
-      if (b >= ' ' && b <= 0x7F)
+      if (b >= ' ' && b < 0x7F)
       {
          pesend(&b, 1);         // Echo
          line[p++] = b;
@@ -60,10 +59,9 @@ char *readline(const char *prompt)
             break;
       }
    }
-   nl();
    line[p] = 0;
    extern uint8_t think;
-   pesend("\r\n", 2);
+   pesend("\r\n\n", 3);
    for (int i = 0; i < think; i++)
       pesend("", 1);
    return strdup(line);

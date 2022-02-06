@@ -4,6 +4,7 @@
 #include "revk.h"
 #include <esp_spi_flash.h>
 #include <driver/gpio.h>
+#include "softuart.h"
 #include "tty.h"
 
 #define	NUL	0
@@ -50,7 +51,7 @@
   u8(databits,8)	\
   u8(stopx2,4)	\
   u8(linelen,72)	\
-  u16(crms,160)		\
+  u16(crms,170)		\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
@@ -174,8 +175,7 @@ int queuebig(int c)
 void reportstate(void)
 {
    uint64_t t = esp_timer_get_time();
-   jo_t j = jo_create_alloc();
-   jo_object(j, NULL);
+   jo_t j = jo_object_alloc();
    jo_litf(j, "up", "%d.%06d", (uint32_t) (t / 1000000LL), (uint32_t) (t % 1000000LL));
    jo_bool(j, "power", on);
    jo_bool(j, "break", brk);
@@ -272,6 +272,19 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       doecho = 0;
    if (!strcmp(suffix, "break"))
       tty_break();
+   if (!strcmp(suffix, "uartstats"))
+   {
+      softuart_stats_t s;
+      tty_stats(&s);
+      jo_t j = jo_object_alloc();
+      jo_int(j, "tx", s.tx);
+      jo_int(j, "rx", s.rx);
+      jo_int(j, "rxbadstart", s.rxbadstart);
+      jo_int(j, "rxbadstop", s.rxbadstop);
+      jo_int(j, "rxbad0", s.rxbad0);
+      jo_int(j, "rxbad1", s.rxbad1);
+      revk_info("uartstats", &j);
+   }
 
    if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw") || !strcmp(suffix, "text") || !strcmp(suffix, "line") || !strcmp(suffix, "bell"))
    {                            // Plain text functions - simple JSON string

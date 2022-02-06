@@ -4,8 +4,8 @@
 
 #include <driver/gpio.h>
 #include "revk.h"
-#include "tty.h"
 #include "softuart.h"
+#include "tty.h"
 extern uint8_t rx;
 extern uint8_t rxpu;
 extern uint8_t tx;
@@ -89,4 +89,9 @@ void tty_xoff(void)
 void tty_xon(void)
 {
    softuart_xon(u);
+}
+
+void tty_stats(softuart_stats_t * s)
+{
+   softuart_stats(u, s);
 }

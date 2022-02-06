@@ -9,12 +9,15 @@
 #include "softuart.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 #include <driver/timer.h>
 #include <driver/gpio.h>
 
 #define	STEPS	5               // Interrupts per clock
 
 struct softuart_s {
+   SemaphoreHandle_t mutex;     // Protect softuart_tx
+
    int8_t timer;                // Which timer
    uint16_t baudx100;           // Baud rate, x 100
    uint8_t bits;                // Bits
@@ -218,6 +221,7 @@ softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uin
    if (!u)
       return u;
    memset(u, 0, sizeof(*u));
+   u->mutex = xSemaphoreCreateMutex();
    u->baudx100 = (baudx100 ? : 11000);
    u->bits = (bits ? : 8);
    u->stops = ((stopx2 ? : 4) * STEPS + 1) / 2;
@@ -272,6 +276,8 @@ void *softuart_end(softuart_t * u)
    {
       if (u->started)
          timer_disable_intr(0, u->timer);
+      if (u->mutex)
+         vSemaphoreDelete(u->mutex);
       free(u);
    }
    return NULL;
@@ -280,6 +286,7 @@ void *softuart_end(softuart_t * u)
 // Low level messaging
 void softuart_tx(softuart_t * u, uint8_t b)
 {
+   xSemaphoreTake(u->mutex, portMAX_DELAY);     // Just to protect from itself, e.g. called from different tasks
    while (!softuart_tx_space(u))
       usleep(10000);
    uint16_t txi = u->txi;
@@ -288,10 +295,12 @@ void softuart_tx(softuart_t * u, uint8_t b)
    if (txi == sizeof(u->txdata))
       txi = 0;
    u->txi = txi;
+   xSemaphoreGive(u->mutex);
 }
 
 uint8_t softuart_rx(softuart_t * u)
 {
+   xSemaphoreTake(u->mutex, portMAX_DELAY);     // Just to protect from itself, e.g. called from different tasks
    while (softuart_rx_ready(u) <= 0)
       usleep(1000);
    uint8_t rxo = u->rxo;
@@ -300,6 +309,7 @@ uint8_t softuart_rx(softuart_t * u)
    if (rxo == sizeof(u->rxdata))
       rxo = 0;
    u->rxo = rxo;
+   xSemaphoreGive(u->mutex);
    return b;
 }
 
