@@ -51,7 +51,7 @@
   u8(databits,8)	\
   u8(stopx2,4)	\
   u8(linelen,72)	\
-  u16(crms,170)		\
+  u16(crms,200)		\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;
