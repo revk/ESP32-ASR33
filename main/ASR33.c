@@ -207,6 +207,7 @@ void power_off(void)
    reportstate();
    tty_flush();
    tty_xoff();
+   usleep(100000);
    if (mtr || *mtrtopic)
    {                            // Motor direct control, off
       if (*mtrtopic)
@@ -530,28 +531,20 @@ void asr33_main(void *param)
       {                         // Power off
          if (on && !tty_tx_waiting())
          {                      // Do power off once tx done
-            power_off();
             if (csock >= 0)
             {                   // Close connection
                close(csock);
                csock = -1;
                jo_t j = jo_object_alloc();
-               jo_string(j, "reason", "run/stop");
+               jo_string(j, "reason", "power");
                revk_event("closed", &j);
             }
-            jo_t j = jo_create_alloc();
-            jo_string(j, NULL, "off");
-            revk_event(NULL, &j);
+            power_off();
          }
       } else if (power)
       {
          if (!on)
-         {                      // Do power on
             power_on();
-            jo_t j = jo_create_alloc();
-            jo_string(j, NULL, "on");
-            revk_event(NULL, &j);
-         }
       }
       // Check tx buffer usage
       if (tty_tx_space() < 4096)
