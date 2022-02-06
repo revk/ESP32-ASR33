@@ -49,6 +49,8 @@
   u16(baudx100,11000)	\
   u8(databits,8)	\
   u8(stopx2,4)	\
+  u8(linelen,72)	\
+  u16(crms,160)		\
 
 #define u32(n,d) uint32_t n;
 #define u16(n,d) uint16_t n;

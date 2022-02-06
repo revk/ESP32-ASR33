@@ -28,6 +28,10 @@ struct softuart_s {
    volatile uint8_t txsubbit;   // Tx sub bit count
    uint8_t txbyte;              // Tx byte being clocked in
    volatile uint8_t txbreak;    // Tx break (bit count up to max)
+   uint8_t crwait;              // Tx waiting for CR (sub bit count down)
+   uint8_t crline;              // Tx wait extra sub bits for whole line
+   uint8_t linelen;             // Line len
+   uint8_t pos;                 // Carriage posn
 
    int8_t rx;                   // Rx pin (can be same as tx)
    uint8_t rxdata[32];          // The Rx data
@@ -48,6 +52,7 @@ struct softuart_s {
     uint8_t:0;                  //      Bits set from non int
    uint8_t started:1;           // Int handler started
    uint8_t txwait:1;            // Hold off on tx
+   softuart_stats_t stats;
 };
 
 // Low level direct GPIO controls - inlines were not playing with some optimisation modes
@@ -67,6 +72,8 @@ bool IRAM_ATTR timer_isr(void *up)
    // Tx
    if (u->txsubbit)
       u->txsubbit--;            // Working through sub bits
+   if (u->crwait)
+      u->crwait--;
    if (!u->txsubbit && !u->txwait)
    {                            // Work out next tx
       if (u->txbit)
@@ -93,13 +100,26 @@ bool IRAM_ATTR timer_isr(void *up)
          } else if (txi != txo)
          {                      // We have a byte
             u->txbyte = u->txdata[txo];
-            txo++;
-            if (txo == sizeof(u->txdata))
-               txo = 0;
-            u->txo = txo;
-            u->txbit = u->bits + 1;
-            u->txsubbit = STEPS;        // Start bit
-            u->txnext = 0;
+            uint8_t b = (u->txbyte & 0x7F);
+            if (!u->crwait || b < ' ' || b >= 0x7F)
+            {                   // Either Ok to send not (CR time done) or non printable, so OK to send anyway
+               txo++;
+               if (txo == sizeof(u->txdata))
+                  txo = 0;
+               u->txo = txo;
+               u->txbit = u->bits + 1;
+               u->txsubbit = STEPS;     // Start bit
+               u->txnext = 0;
+               if (b == '\r')
+               {                // CR
+                  if (!u->crwait)
+                     u->crwait = (int) u->pos * u->crline / u->linelen + (1 + u->bits) * STEPS + u->stops;      // Allow extra time for CR
+                  u->pos = 0;
+               } else if (b >= ' ' && b < 0x7F && u->pos < u->linelen)
+                  u->pos++;
+               u->stats.tx++;
+            }
+
          } else if (u->txbreak)
          {
             u->txsubbit = u->txbreak;
@@ -125,13 +145,20 @@ bool IRAM_ATTR timer_isr(void *up)
       {                         // Bit received
          if (u->rxbit)
          {                      // Clocking in a byte
-            if (u->rxbit == u->bits + 1 && u->rxcount >= 2)
+            if (u->rxbit == u->bits + 1 && u->rxcount >= (STEPS - 1) / 2)
+            {
                u->rxbit = 0;    // Bad start bit
-            else
+               u->stats.rxbadstart++;
+            } else
             {
                u->rxbyte >>= 1;
-               if (u->rxcount >= 2)
+               if (u->rxcount >= (STEPS - 1) / 2)
+               {
                   u->rxbyte |= (1 << (u->bits - 1));
+                  if (u->rxcount < (STEPS - 2))
+                     u->stats.rxbad1++;
+               } else if (u->rxcount)
+                  u->stats.rxbad0++;
                u->rxbit--;
                u->rxsubbit = STEPS;     // Next bit
             }
@@ -139,13 +166,14 @@ bool IRAM_ATTR timer_isr(void *up)
          {                      // Stop bit
             if (!u->rxbreak)
             {                   // Normal (stop bit now clocked in)
-               if (u->rxcount < 2)
+               if (u->rxcount < (STEPS - 1) / 2)
                {                // Bad stop bit, don't clock in byte
                   if (!r)
                   {             // Looks like break
                      u->rxbreak = (u->bits + 2) * STEPS;        // Start break condition (we have had this many sub bits)
                      u->rxsubbit = 1;   // Wait end of break
                   }
+                  u->stats.rxbadstop++;
                   // else leave rxsubbit unset so we wait for next start bit - don't clock in duff byte
                } else
                {                // Normal end of byte - record received byte (clean start and stop bit)
@@ -156,6 +184,7 @@ bool IRAM_ATTR timer_isr(void *up)
                      rxi = 0;
                   if (rxi != u->rxo)
                      u->rxi = rxi;      // Has space
+                  u->stats.rx++;
                   // leave rxsubbit unset so we wait for next start bit
                }
             } else
@@ -170,7 +199,7 @@ bool IRAM_ATTR timer_isr(void *up)
             }
          }
          u->rxcount = 0;
-      } else if (r && u->rxsubbit <= 3)
+      } else if (r && u->rxsubbit <= (STEPS - 2))
          u->rxcount++;
    }
    u->rxlast = r;
@@ -178,7 +207,7 @@ bool IRAM_ATTR timer_isr(void *up)
 }
 
    // Set up
-softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uint8_t rxinv, uint16_t baudx100, uint8_t bits, uint8_t stopx2)
+softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uint8_t rxinv, uint16_t baudx100, uint8_t bits, uint8_t stopx2, uint8_t linelen, uint16_t crms)
 {
    if (timer < 0 || tx < 0 || rx < 0 || tx == rx ||     //
        !GPIO_IS_VALID_OUTPUT_GPIO(tx)   //
@@ -199,6 +228,10 @@ softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uin
    u->rxinv = rxinv;
    u->rxlast = 1;
    u->timer = timer;
+   u->linelen = linelen;
+   u->pos = linelen;
+   if (crms)
+      u->crline = (uint32_t) crms *STEPS * baudx100 / 100000;
    gpio_reset_pin(u->tx);
    gpio_set(u->tx);
    gpio_set_direction(u->tx, GPIO_MODE_OUTPUT);
@@ -317,4 +350,10 @@ void softuart_xoff(softuart_t * u)
 void softuart_xon(softuart_t * u)
 {
    u->txwait = 0;
+}
+
+void softuart_stats(softuart_t *u,softuart_stats_t*s)
+{// Get (and clear) stats
+	*s=u->stats;
+	memset(&u->stats,0,sizeof(u->stats));
 }

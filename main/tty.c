@@ -14,12 +14,14 @@ extern uint8_t txod;
 extern uint16_t baudx100;
 extern uint8_t databits;
 extern uint8_t stopx2;
+extern uint8_t linelen;
+extern uint16_t crms;
 
 static softuart_t *u = NULL;
 
 void tty_setup(void)
 {                               // Does UART setup, expects uart to be set globally, UART number for hard, or negative for soft
-   u = softuart_init(0, port_mask(tx), port_inv(tx), port_mask(rx), port_inv(rx), baudx100, databits, stopx2);
+   u = softuart_init(0, port_mask(tx), port_inv(tx), port_mask(rx), port_inv(rx), baudx100, databits, stopx2, linelen, crms);
    if (!u)
       ESP_LOGE("TTY", "Failed to init soft uart");
    else
