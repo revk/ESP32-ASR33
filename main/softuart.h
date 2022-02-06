@@ -23,6 +23,8 @@ int softuart_tx_waiting(softuart_t *);  // Report how many bytes still being tra
 void softuart_tx_flush(softuart_t *);   // Wait for all tx to complete
 void softuart_tx(softuart_t *, uint8_t b);      // Send byte, blocking
 void softuart_tx_break(softuart_t *);   // Send a break
+void softuart_xoff(softuart_t *); // Stop sending
+void softuart_xon(softuart_t *); // Start sending
 int softuart_rx_ready(softuart_t *);    // Report how many bytes are available to read (-1 means BREAK)
 uint8_t softuart_rx(softuart_t *);      // Receive byte, blocking
 

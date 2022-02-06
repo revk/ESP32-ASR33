@@ -39,7 +39,7 @@ struct softuart_s {
    uint8_t rxbyte;              // Rx byte being clocked in
    volatile uint16_t rxbreak;   // Rx break (bit count up to max)
 
-    uint8_t:0;                  //      Bits set/used from int
+    uint8_t:0;                  //      Bits set from int
    uint8_t txinv;               // Invert tx
    uint8_t rxinv;               // Invert rx
    uint8_t rxlast:1;            // Last rx bit
@@ -47,6 +47,7 @@ struct softuart_s {
 
     uint8_t:0;                  //      Bits set from non int
    uint8_t started:1;           // Int handler started
+   uint8_t txwait:1;            // Hold off on tx
 };
 
 // Low level direct GPIO controls - inlines were not playing with some optimisation modes
@@ -66,7 +67,7 @@ bool IRAM_ATTR timer_isr(void *up)
    // Tx
    if (u->txsubbit)
       u->txsubbit--;            // Working through sub bits
-   if (!u->txsubbit)
+   if (!u->txsubbit && !u->txwait)
    {                            // Work out next tx
       if (u->txbit)
       {                         // Sending a byte
@@ -306,4 +307,14 @@ int softuart_rx_ready(softuart_t * u)
    if (!s)
       s = -(u->rxbreak / STEPS);        // How many bits of break
    return s;
+}
+
+void softuart_xoff(softuart_t * u)
+{
+   u->txwait = 1;
+}
+
+void softuart_xon(softuart_t * u)
+{
+   u->txwait = 0;
 }

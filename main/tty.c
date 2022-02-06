@@ -78,3 +78,13 @@ int tty_tx_waiting(void)
 {
    return softuart_tx_waiting(u);
 }
+
+void tty_xoff(void)
+{
+   softuart_xoff(u);
+}
+
+void tty_xon(void)
+{
+   softuart_xon(u);
+}
