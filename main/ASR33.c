@@ -672,8 +672,7 @@ void asr33_main(void *param)
                jo_string(j, "reason", "break");
                revk_event("closed", &j);
                power = -1;
-            } else if (!on)
-               power = 2;
+            }
          }
       } else if (len > 0)
       {
