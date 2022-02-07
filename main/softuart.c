@@ -246,6 +246,7 @@ softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uin
 
 void softuart_start(softuart_t * u)
 {
+	if(!u)return;
    if (u->started)
       return;
    u->started = 1;
@@ -272,20 +273,19 @@ void softuart_start(softuart_t * u)
 
 void *softuart_end(softuart_t * u)
 {
-   if (u)
-   {
+	if(!u)return NULL;
       if (u->started)
          timer_disable_intr(0, u->timer);
       if (u->mutex)
          vSemaphoreDelete(u->mutex);
       free(u);
-   }
    return NULL;
 }
 
 // Low level messaging
 void softuart_tx(softuart_t * u, uint8_t b)
 {
+	if(!u)return;
    xSemaphoreTake(u->mutex, portMAX_DELAY);     // Just to protect from itself, e.g. called from different tasks
    while (!softuart_tx_space(u))
       usleep(10000);
@@ -300,6 +300,7 @@ void softuart_tx(softuart_t * u, uint8_t b)
 
 uint8_t softuart_rx(softuart_t * u)
 {
+	if(!u)return 0;
    xSemaphoreTake(u->mutex, portMAX_DELAY);     // Just to protect from itself, e.g. called from different tasks
    while (softuart_rx_ready(u) <= 0)
       usleep(1000);
@@ -315,6 +316,7 @@ uint8_t softuart_rx(softuart_t * u)
 
 int softuart_tx_space(softuart_t * u)
 {                               // Report how much space for sending
+	if(!u)return 0;
    int s = (int) u->txi - (int) u->txo;
    if (s < 0)
       s += sizeof(u->txdata);
@@ -323,6 +325,7 @@ int softuart_tx_space(softuart_t * u)
 
 int softuart_tx_waiting(softuart_t * u)
 {                               // Report how many bytes still being transmitted including one in process of transmission
+	if(!u)return 0;
    int s = (int) u->txi - (int) u->txo;
    if (s < 0)
       s += sizeof(u->txdata);
@@ -333,17 +336,20 @@ int softuart_tx_waiting(softuart_t * u)
 
 void softuart_tx_flush(softuart_t * u)
 {                               // Wait for all tx to complete
+	if(!u)return;
    while (softuart_tx_waiting(u))
       usleep(1000);
 }
 
 void softuart_tx_break(softuart_t * u)
 {                               // Send a break (once tx done)
+	if(!u)return;
    u->txbreak = 255;
 }
 
 int softuart_rx_ready(softuart_t * u)
 {                               // Report how many bytes are available to read (negative means BREAK)
+	if(!u)return 0;
    int s = (int) u->rxi - (int) u->rxo;
    if (s < 0)
       s += sizeof(u->rxdata);
@@ -354,16 +360,19 @@ int softuart_rx_ready(softuart_t * u)
 
 void softuart_xoff(softuart_t * u)
 {
+	if(!u)return;
    u->txwait = 1;
 }
 
 void softuart_xon(softuart_t * u)
 {
+	if(!u)return;
    u->txwait = 0;
 }
 
 void softuart_stats(softuart_t * u, softuart_stats_t * s)
 {                               // Get (and clear) stats
+	if(!u)return;
    *s = u->stats;
    memset(&u->stats, 0, sizeof(u->stats));
 }
