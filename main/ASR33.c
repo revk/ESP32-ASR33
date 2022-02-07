@@ -742,7 +742,7 @@ void asr33_main(void *param)
                         freeaddrinfo(res);
                      }
                   }
-               } else if ((b & 0x7f) > ' ' && rxp < MAXRX)
+               } else if ((b & 0x7f) >= ' ' && rxp < MAXRX)
                {
                   sendbyte(b);  // echo
                   line[rxp++] = (b & 0x7F);
