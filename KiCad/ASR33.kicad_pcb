@@ -1546,7 +1546,7 @@
     (property "Sheetfile" "ASR33.kicad_sch")
     (property "Sheetname" "")
     (path "/a775717d-e690-4114-87a0-5bb6d6a2759f")
-    (attr exclude_from_pos_files)
+    (attr exclude_from_pos_files exclude_from_bom)
     (fp_text reference "JP1" (at 0 -1.8 90) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp ef3abe03-d68b-4855-bc8f-417487ded968)
@@ -1593,7 +1593,7 @@
     (property "Sheetfile" "ASR33.kicad_sch")
     (property "Sheetname" "")
     (path "/518de22b-56ee-4f45-ad7c-14e855227d9a")
-    (attr exclude_from_pos_files)
+    (attr exclude_from_pos_files exclude_from_bom)
     (fp_text reference "JP4" (at 0 -1.8 90) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp c8406481-1ea5-42bb-87b3-211f7918dc17)
@@ -1931,7 +1931,7 @@
     (property "Sheetfile" "ASR33.kicad_sch")
     (property "Sheetname" "")
     (path "/d8c34768-f582-40bc-9814-8eaf59ecc634")
-    (attr exclude_from_pos_files)
+    (attr exclude_from_pos_files exclude_from_bom)
     (fp_text reference "JP2" (at 0 -1.8 90) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 82bc608e-c07a-4b87-b559-e7a246098aef)
@@ -2340,7 +2340,7 @@
     (property "Sheetfile" "ASR33.kicad_sch")
     (property "Sheetname" "")
     (path "/6a87cc5e-d4b2-4a57-a3b8-d6d908b578f0")
-    (attr exclude_from_pos_files)
+    (attr exclude_from_pos_files exclude_from_bom)
     (fp_text reference "JP3" (at 0 1.8) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp e391f3e9-2f57-49b0-b13b-d5ce769bff03)

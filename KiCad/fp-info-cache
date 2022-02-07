@@ -1,4 +1,4 @@
-19940734939710488
+19942402512175955
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -77763,9 +77763,16 @@ PN532-RF-Test
 2
 2
 RevK
-Pad_1206_0805_NF
-Resistor SMD 1206 (3216 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator
-resistor
+Pad_1206_0805_Bridged
+SMD Solder Jumper, 1x1.5mm Pads, 0.3mm gap, bridged with 2 copper strips
+net tie solder jumper bridged
+0
+4
+2
+RevK
+Pad_1206_0805_Open
+SMD Solder Jumper, 1x1.5mm Pads, 0.3mm gap, bridged with 2 copper strips
+net tie solder jumper bridged
 0
 4
 2

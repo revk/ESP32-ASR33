@@ -2,7 +2,7 @@
 <export version="E">
   <design>
     <source>/Users/adrian/git/ESP32-ASR33/KiCad/ASR33.kicad_sch</source>
-    <date>Sunday, 30 January 2022 at 12:59:47</date>
+    <date>Monday, 07 February 2022 at 11:24:16</date>
     <tool>Eeschema (6.0.1-0)</tool>
     <textvar name="DATE">2022-01-30</textvar>
     <sheet number="1" name="/" tstamps="/">
@@ -226,42 +226,6 @@
       <property name="Sheetfile" value="ASR33.kicad_sch"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamps>50327357-d103-486d-8000-4c27d3cfd288</tstamps>
-    </comp>
-    <comp ref="JP1">
-      <value>20R NF</value>
-      <footprint>RevK:Pad_1206_0805_Open</footprint>
-      <libsource lib="Jumper" part="SolderJumper_2_Open" description="Solder Jumper, 2-pole, open"/>
-      <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="ASR33.kicad_sch"/>
-      <sheetpath names="/" tstamps="/"/>
-      <tstamps>a775717d-e690-4114-87a0-5bb6d6a2759f</tstamps>
-    </comp>
-    <comp ref="JP2">
-      <value>20R NF</value>
-      <footprint>RevK:Pad_1206_0805_Open</footprint>
-      <libsource lib="Jumper" part="SolderJumper_2_Open" description="Solder Jumper, 2-pole, open"/>
-      <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="ASR33.kicad_sch"/>
-      <sheetpath names="/" tstamps="/"/>
-      <tstamps>d8c34768-f582-40bc-9814-8eaf59ecc634</tstamps>
-    </comp>
-    <comp ref="JP3">
-      <value>GND-Linked</value>
-      <footprint>RevK:Pad_1206_0805_Bridged</footprint>
-      <libsource lib="Jumper" part="SolderJumper_2_Bridged" description="Solder Jumper, 2-pole, closed/bridged"/>
-      <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="ASR33.kicad_sch"/>
-      <sheetpath names="/" tstamps="/"/>
-      <tstamps>6a87cc5e-d4b2-4a57-a3b8-d6d908b578f0</tstamps>
-    </comp>
-    <comp ref="JP4">
-      <value>20R NF</value>
-      <footprint>RevK:Pad_1206_0805_Open</footprint>
-      <libsource lib="Jumper" part="SolderJumper_2_Open" description="Solder Jumper, 2-pole, open"/>
-      <property name="Sheetname" value=""/>
-      <property name="Sheetfile" value="ASR33.kicad_sch"/>
-      <sheetpath names="/" tstamps="/"/>
-      <tstamps>518de22b-56ee-4f45-ad7c-14e855227d9a</tstamps>
     </comp>
     <comp ref="L1">
       <value>6.8uH</value>
@@ -922,8 +886,6 @@
     <net code="7" name="DC">
       <node ref="D4" pin="1" pinfunction="K" pintype="passive"/>
       <node ref="J2" pin="2" pinfunction="Pin_2" pintype="passive"/>
-      <node ref="JP1" pin="2" pinfunction="B" pintype="passive"/>
-      <node ref="JP2" pin="2" pinfunction="B" pintype="passive"/>
       <node ref="U3" pin="4" pinfunction="VS" pintype="power_in"/>
       <node ref="U4" pin="4" pinfunction="VS" pintype="power_in"/>
       <node ref="U6" pin="1" pinfunction="SHDN" pintype="input"/>
@@ -955,7 +917,6 @@
       <node ref="J3" pin="1" pinfunction="Pin_1" pintype="passive"/>
       <node ref="J4" pin="1" pinfunction="Pin_1" pintype="passive"/>
       <node ref="J5" pin="1" pinfunction="Pin_1" pintype="passive"/>
-      <node ref="JP3" pin="1" pinfunction="A" pintype="passive"/>
       <node ref="Q1" pin="2" pinfunction="S" pintype="passive"/>
       <node ref="R4" pin="2" pintype="passive"/>
       <node ref="R5" pin="1" pintype="passive"/>
@@ -1040,13 +1001,10 @@
     </net>
     <net code="24" name="Net-(J6-Pad1)">
       <node ref="J6" pin="1" pinfunction="Pin_1" pintype="passive"/>
-      <node ref="JP3" pin="2" pinfunction="B" pintype="passive"/>
-      <node ref="JP4" pin="1" pinfunction="A" pintype="passive"/>
       <node ref="U5" pin="2" pintype="passive"/>
     </net>
     <net code="25" name="Net-(J6-Pad2)">
       <node ref="J6" pin="2" pinfunction="Pin_2" pintype="passive"/>
-      <node ref="JP4" pin="2" pinfunction="B" pintype="passive"/>
       <node ref="U5" pin="1" pintype="passive"/>
     </net>
     <net code="26" name="Net-(J6-Pad3)">
@@ -1056,11 +1014,9 @@
       <node ref="U4" pin="5" pinfunction="IOUT" pintype="passive"/>
     </net>
     <net code="27" name="Net-(JP1-Pad1)">
-      <node ref="JP1" pin="1" pinfunction="A" pintype="passive"/>
       <node ref="U3" pin="6" pinfunction="REXT" pintype="passive"/>
     </net>
     <net code="28" name="Net-(JP2-Pad1)">
-      <node ref="JP2" pin="1" pinfunction="A" pintype="passive"/>
       <node ref="U4" pin="6" pinfunction="REXT" pintype="passive"/>
     </net>
     <net code="29" name="Net-(R8-Pad2)">

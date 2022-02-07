@@ -3807,7 +3807,7 @@
   )
 
   (symbol (lib_id "Jumper:SolderJumper_2_Open") (at 245.745 137.16 90) (unit 1)
-    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (in_bom no) (on_board yes) (fields_autoplaced)
     (uuid 518de22b-56ee-4f45-ad7c-14e855227d9a)
     (property "Reference" "JP4" (id 0) (at 247.396 136.2515 90)
       (effects (font (size 1.27 1.27)) (justify right))
@@ -3860,7 +3860,7 @@
   )
 
   (symbol (lib_id "Jumper:SolderJumper_2_Bridged") (at 239.395 148.59 90) (unit 1)
-    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (in_bom no) (on_board yes) (fields_autoplaced)
     (uuid 6a87cc5e-d4b2-4a57-a3b8-d6d908b578f0)
     (property "Reference" "JP3" (id 0) (at 241.046 147.6815 90)
       (effects (font (size 1.27 1.27)) (justify right))
@@ -3999,7 +3999,7 @@
   )
 
   (symbol (lib_id "Jumper:SolderJumper_2_Open") (at 177.8 103.505 90) (unit 1)
-    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (in_bom no) (on_board yes) (fields_autoplaced)
     (uuid a775717d-e690-4114-87a0-5bb6d6a2759f)
     (property "Reference" "JP1" (id 0) (at 179.451 102.5965 90)
       (effects (font (size 1.27 1.27)) (justify right))
@@ -4204,7 +4204,7 @@
   )
 
   (symbol (lib_id "Jumper:SolderJumper_2_Open") (at 177.8 132.715 90) (unit 1)
-    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (in_bom no) (on_board yes) (fields_autoplaced)
     (uuid d8c34768-f582-40bc-9814-8eaf59ecc634)
     (property "Reference" "JP2" (id 0) (at 179.451 131.8065 90)
       (effects (font (size 1.27 1.27)) (justify right))
