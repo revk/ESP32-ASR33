@@ -236,7 +236,7 @@ int main(int argc, const char *argv[])
          { "lead", 'l', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &lead, 0, "Lead", "N" },
          { "gap", 'g', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &gap, 0, "Gap", "N" },
          { "tail", 't', POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &tail, 0, "Tail", "N" },
-         { "alteran", 'A', POPT_ARG_NONE, &alteran, 0, "Ateran" },
+         { "alteran", 'A', POPT_ARG_NONE, &alteran, 0, "Alteran" },
          { "small", 'S', POPT_ARG_NONE, &small, 0, "Small" },
          { "zig-zag", 'Z', POPT_ARG_NONE, &zig, 0, "Zig-Zag" },
          { "dc4", 0, POPT_ARG_NONE, &dc4, 0, "DC4 is OK (not handled)" },
