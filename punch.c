@@ -1,5 +1,6 @@
 // Generate binary output to punch lettering on to paper tape
 
+#define	CR	13              // Carriage return
 #define	DC2	0x12            // Tape on
 #define	DC4	0x14            // Tape off
 
@@ -213,8 +214,8 @@ int main(int argc, const char *argv[])
    int alteran = 0;
    int small = 0;
    int zig = 0;
-   int dc4 = 0;
-   int startstop = 0;
+   int nodc4 = 0;
+   int nostartstop = 0;
    const char *infile = NULL;
    FILE *f = open_memstream(&data, &len);
    unsigned char zigzag(void) {
@@ -254,8 +255,8 @@ int main(int argc, const char *argv[])
          { "alteran", 'A', POPT_ARG_NONE, &alteran, 0, "Alteran" },
          { "small", 'S', POPT_ARG_NONE, &small, 0, "Small" },
          { "zig-zag", 'Z', POPT_ARG_NONE, &zig, 0, "Zig-Zag" },
-         { "dc4", 0, POPT_ARG_NONE, &dc4, 0, "DC4 is OK (not handled)" },
-         { "start-stop", 0, POPT_ARG_NONE, &startstop, 0, "Send DC4/DC2 start/stop" },
+         { "no-dc4", 0, POPT_ARG_NONE, &nodc4, 0, "DC4 is OK (not handled)" },
+         { "no-start-stop", 0, POPT_ARG_NONE, &nostartstop, 0, "Send DC4/DC2 start/stop" },
          { "space", 0, POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &space, 0, "Space size", "N" },
          { "file", 'f', POPT_ARG_STRING, &infile, 0, "File to punch", "filename" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
@@ -337,13 +338,13 @@ int main(int argc, const char *argv[])
       return 0;
    }
    // Write out binary
-   if (startstop)
+   if (!nostartstop)
       fputc(DC2, stdout);       // DC2
    for (int i = 0; i < lead; i++)
       fputc(0, stdout);
    while (repeat--)
    {
-      if (!dc4)
+      if (nodc4)
          fwrite(data, len, 1, stdout);
       else
          for (int i = 0; i < len; i++)
@@ -358,8 +359,11 @@ int main(int argc, const char *argv[])
    }
    for (int i = 0; i < tail; i++)
       fputc(0, stdout);
-   if (startstop)
+   if (!nostartstop)
+   {
       fputc(DC4, stdout);       // DC4
+      fputc(CR, stdout);        // CR
+   }
 
    return 0;
 }
