@@ -272,6 +272,7 @@ const char *app_callback(int client, const char *prefix, const char *target, con
       doecho = 0;
    if (!strcmp(suffix, "break"))
    {
+      power = 1;
       int chars = 10;
       if (j && jo_here(j) == JO_NUMBER)
          chars = jo_read_int(j);
