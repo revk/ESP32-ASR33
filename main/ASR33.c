@@ -212,7 +212,6 @@ void power_off(void)
          revk_mqtt_send_raw(pwrtopic, 0, "0", 0);
       if (pwr)
          gpio_set_level(port_mask(pwr), port_inv(pwr)); // Off
-      sleep(1);
    }
    on = 0;
    reportstate();
