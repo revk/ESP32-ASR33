@@ -1,6 +1,6 @@
 // Generated case design for KiCad/ASR33.kicad_pcb
 // By https://github.com/revk/PCBCase
-// Generated 2022-02-08 12:10:31
+// Generated 2022-02-08 12:12:17
 // title:	ASR33 driver
 // date:	${DATE}
 // rev:	1
@@ -185,9 +185,12 @@ translate([-A/2,-2.94,-2.5])
 
 module m11(pushed=false)
 { // RevK:SW_PUSH_6mm_PTH SW_PUSH_6mm
-b(0,0,0,6,6,4);
-cylinder(d=4,h=100);
-for(x=[-3,3])for(y=[-2,2])translate([x,y,-2])cylinder(d=2,h=4);
+translate([3,3,0])
+{
+	b(0,0,0,6,6,4);
+	cylinder(d=4,h=100);
+	for(x=[-3,3])for(y=[-2,2])translate([x,y,-2])cylinder(d=2,h=4);
+}
 }
 
 module m12(pushed=false)
