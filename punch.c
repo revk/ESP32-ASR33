@@ -187,6 +187,10 @@ font_t small_f[256] = {
 #include "main/smallfont.h"
 };
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <popt.h>
@@ -198,7 +202,7 @@ int debug = 0;
 int main(int argc, const char *argv[])
 {
    int repeat = 1;
-   int gap = 5;
+   int gap = 10;
    int lead = 15;
    int tail = 15;
    int svg = 0;
@@ -211,7 +215,18 @@ int main(int argc, const char *argv[])
    int zig = 0;
    int dc4 = 0;
    int startstop = 0;
+   const char *infile = NULL;
    FILE *f = open_memstream(&data, &len);
+   unsigned char zigzag(void) {
+      if (!zig)
+         return 0;
+      static int p = 0;
+      static unsigned char pattern[] = { 0x01, 0x02, 0x04, 0x02 };
+      p++;
+      if (p >= sizeof(pattern))
+         p = 0;
+      return pattern[p];
+   }
    void punch(unsigned char c) {
       const unsigned char *d = font[c];
       if (!*d && islower(c))
@@ -224,8 +239,8 @@ int main(int argc, const char *argv[])
       if (!l)
          return;                // No character
       while (l--)
-         fputc(*d++, f);
-      fputc(0, f);
+         fputc(*d++ | zigzag(), f);
+      fputc(zigzag(), f);
    }
 
    {                            // POPT
@@ -242,6 +257,7 @@ int main(int argc, const char *argv[])
          { "dc4", 0, POPT_ARG_NONE, &dc4, 0, "DC4 is OK (not handled)" },
          { "start-stop", 0, POPT_ARG_NONE, &startstop, 0, "Send DC4/DC2 start/stop" },
          { "space", 0, POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &space, 0, "Space size", "N" },
+         { "file", 'f', POPT_ARG_STRING, &infile, 0, "File to punch", "filename" },
          { "debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug" },
          POPT_AUTOHELP { }
       };
@@ -253,9 +269,11 @@ int main(int argc, const char *argv[])
       if ((c = poptGetNextOpt(optCon)) < -1)
          errx(1, "%s: %s\n", poptBadOption(optCon, POPT_BADOPTION_NOALIAS), poptStrerror(c));
 
-      if (!poptPeekArg(optCon))
+      if (!poptPeekArg(optCon) && !infile)
          errx(1, "Specify text");
 
+      if (zig)
+         small = 1;
       if (alteran && small)
          font = alteran_small_f;
       else if (alteran)
@@ -263,26 +281,36 @@ int main(int argc, const char *argv[])
       else if (small)
          font = small_f;
 
-      while (poptPeekArg(optCon))
-      {
-         const char *t = poptGetArg(optCon);
-         while (*t)
-            punch(*t++);
-         if (poptPeekArg(optCon))
-            punch(' ');
-      }
+      if (!poptPeekArg(optCon))
+         for (const char *p = infile; *p; p++)
+            punch(*p);
+      else
+         while (poptPeekArg(optCon))
+         {
+            const char *t = poptGetArg(optCon);
+            while (*t)
+               punch(*t++);
+            if (poptPeekArg(optCon))
+               punch(' ');
+         }
       poptFreeContext(optCon);
+   }
+   if (infile)
+   {
+      for (int i = 0; i < gap; i++)
+         fputc(0, f);
+      int i = open(infile, O_RDONLY);
+      if (i < 0)
+         err(1, "Cannot open %s", infile);
+      unsigned char buf[1024];
+      size_t l;
+      while ((l = read(i, buf, sizeof(buf))) > 0)
+         fwrite(buf, l, 1, f);
    }
 
    fclose(f);
    if (len && !data[len - 1])
       len--;                    // Trailing end of last character
-
-   const unsigned char zigzag[] = { 0x01, 0x02, 0x04, 0x02 };
-   if (zig)
-      for (int i = 0; i < len; i++)
-         data[i] |= zigzag[i % 4];
-
 
    if (svg)
    {                            // Write SVG
