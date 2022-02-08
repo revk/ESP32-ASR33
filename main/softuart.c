@@ -99,7 +99,7 @@ bool IRAM_ATTR timer_isr(void *up)
          if (!u->txnext)
          {
             if (u->txbreak)
-               u->txbreak;      // More break
+               u->txbreak--;    // More break
             else
                u->txnext = 1;   // Idle
             u->txsubbit = (1 + u->bits) * STEPS + u->stops;     // Whole char
