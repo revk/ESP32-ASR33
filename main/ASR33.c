@@ -561,12 +561,12 @@ void asr33_main(void *param)
       usleep(10000);
       int64_t now = esp_timer_get_time();
       int64_t gap = now - lastrx;
-      if (tty_tx_waiting())
-         revk_blink(1, 1, "RG");
-      else if (csock >= 0)
-         revk_blink(1, 0, "G");
+      if (csock >= 0)
+         revk_blink(1, 0, tty_tx_waiting()? "CR" : "C");
       else if (hayes > 3)
-         revk_blink(1, 0, "C");
+         revk_blink(1, 0, "M");
+      else if (on)
+         revk_blink(1, 0, tty_tx_waiting()? "RG" : "G");
       else
          revk_blink(0, 0, NULL);
       // Handle RUN button
