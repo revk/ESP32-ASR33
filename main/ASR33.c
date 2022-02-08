@@ -43,6 +43,7 @@
   u1(autocave)	\
   u1(autoon)	\
   u1(autoprompt)	\
+  t(autoconnect)	\
   u1(nodc4)	\
   u8(tapelead,15) \
   u8(tapetail,15) \
@@ -506,12 +507,52 @@ void asr33_main(void *param)
       lsock = -1;
    }
    tty_xoff();
+   void doconnect(const char *line) {
+      const struct addrinfo hints = {
+         .ai_family = AF_UNSPEC,
+         .ai_socktype = SOCK_STREAM,
+         .ai_flags = AI_CANONNAME,
+      };
+      char ports[20];
+      sprintf(ports, "%d", port);
+      struct addrinfo *res = NULL,
+          *a;
+      int err = getaddrinfo(line, ports, &hints, &res);
+      if (err || !res)
+         sendstring("+++ HOST NAME NOT FOUND +++\n");
+      else
+      {
+         for (a = res; a; a = a->ai_next)
+         {
+            int s = socket(a->ai_family, a->ai_socktype, a->ai_protocol);
+            if (s >= 0)
+            {
+               if (!connect(s, a->ai_addr, a->ai_addrlen))
+               {
+                  csock = s;
+                  jo_t j = jo_object_alloc();
+                  if (res && res->ai_canonname)
+                     jo_string(j, "target", res->ai_canonname);
+                  revk_event("connect", &j);
+                  break;
+               }
+               close(s);
+            }
+         }
+         freeaddrinfo(res);
+      }
+   }
    void dorun(void) {           // RUN button manual start
       power = 2;
-      if (autoprompt)
-         hayes = 3;
-      else if (autocave)
-         docave = 1;
+      if (*autoconnect)
+         doconnect(autoconnect);
+      if (csock < 0)
+      {
+         if (autoprompt)
+            hayes = 3;
+         else if (autocave)
+            docave = 1;
+      }
    }
    if (autoon)
       dorun();
@@ -520,6 +561,14 @@ void asr33_main(void *param)
       usleep(10000);
       int64_t now = esp_timer_get_time();
       int64_t gap = now - lastrx;
+      if (tty_tx_waiting())
+         revk_blink(1, 1, "RG");
+      else if (csock >= 0)
+         revk_blink(1, 0, "G");
+      else if (hayes > 3)
+         revk_blink(1, 0, "C");
+      else
+         revk_blink(0, 0, NULL);
       // Handle RUN button
       if (run && gpio_get_level(port_mask(run)) != port_inv(run))
       {                         // RUN button
@@ -702,50 +751,8 @@ void asr33_main(void *param)
                      sendstring("SHAME, BYE\n");
                   else if (*line)
                   {             // DNS/IP?
-                     const struct addrinfo hints = {
-                        .ai_family = AF_UNSPEC,
-                        .ai_socktype = SOCK_STREAM,
-                        .ai_flags = AI_CANONNAME,
-                     };
-                     char ports[20];
-                     sprintf(ports, "%d", port);
-                     struct addrinfo *res = NULL,
-                         *a;
-                     int err = getaddrinfo(line, ports, &hints, &res);
-                     if (err || !res)
-                        sendstring("+++ HOST NAME NOT FOUND +++\n");
-                     else
-                     {
-                        for (a = res; a; a = a->ai_next)
-                        {
-                           int s = socket(a->ai_family, a->ai_socktype, a->ai_protocol);
-                           if (s >= 0)
-                           {
-                              if (!connect(s, a->ai_addr, a->ai_addrlen))
-                              {
-                                 csock = s;
-                                 sendstring("+++ CONNECTED ");
-                                 if (res->ai_canonname)
-                                    sendstring(res->ai_canonname);
-                                 sendstring(" +++\n");
-                                 jo_t j = jo_object_alloc();
-                                 if (res && res->ai_canonname)
-                                    jo_string(j, "target", res->ai_canonname);
-                                 revk_event("connect", &j);
-                                 break;
-                              }
-                              close(s);
-                           }
-                        }
-                        if (csock < 0)
-                        {
-                           sendstring("+++ COULD NOT CONNECT ");
-                           if (res && res->ai_canonname)
-                              sendstring(res->ai_canonname);
-                           sendstring(" +++\n");
-                        }
-                        freeaddrinfo(res);
-                     }
+                     doconnect(line);
+                     sendstring(csock < 0 ? "+++ COULD NOT CONNECT +++\n" : "+++ CONNECTED +++\n");
                   }
                } else if ((b & 0x7f) >= ' ' && rxp < MAXRX)
                {
@@ -842,6 +849,7 @@ void asr33_main(void *param)
                busy = 1;
                reportstate();
             }
+            revk_blink(1, 0, "B");
             advent();
             power = -1;
          } else if (now > done)
