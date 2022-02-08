@@ -471,4 +471,5 @@ module parts()
 	base();
 	translate([spacing,0,0])top();
 }
-base(); translate([spacing,0,0])top();
+difference(){top();translate([3,30,-1])cube([45,30,10]);}
+translate([spacing,0,0])base();
