@@ -271,7 +271,12 @@ const char *app_callback(int client, const char *prefix, const char *target, con
    if (!strcmp(suffix, "noecho"))
       doecho = 0;
    if (!strcmp(suffix, "break"))
-      tty_break();
+   {
+      int chars = 10;
+      if (j && jo_here(j) == JO_NUMBER)
+         chars = jo_read_int(j);
+      tty_break(chars);
+   }
    if (!strcmp(suffix, "uartstats"))
    {
       softuart_stats_t s;
