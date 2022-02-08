@@ -56,9 +56,9 @@ int tty_rx_ready(void)
    return softuart_rx_ready(u);
 }
 
-void tty_break(void)
+void tty_break(uint8_t chars)
 {                               // Send a break (softuart)
-   softuart_tx_break(u);
+   softuart_tx_break(u,chars);
 }
 
 void tty_tx(uint8_t b)

@@ -30,7 +30,7 @@ struct softuart_s {
    uint8_t txbit;               // Tx bit count, 0 means idle
    volatile uint8_t txsubbit;   // Tx sub bit count
    uint8_t txbyte;              // Tx byte being clocked in
-   volatile uint8_t txbreak;    // Tx break (bit count up to max)
+   volatile uint8_t txbreak;    // Tx break (chars to send)
    uint8_t crwait;              // Tx waiting for CR (sub bit count down)
    uint8_t crline;              // Tx wait extra sub bits for whole line
    uint8_t linelen;             // Line len
@@ -38,8 +38,8 @@ struct softuart_s {
 
    int8_t rx;                   // Rx pin (can be same as tx)
    uint8_t rxdata[32];          // The Rx data
-   volatile uint8_t rxi;        // Next byte to which new rx byte to be written (set by int)
-   volatile uint8_t rxo;        // Next byte from which a rx byte will be read (set by non int)
+   volatile uint16_t rxi;       // Next byte to which new rx byte to be written (set by int)
+   volatile uint16_t rxo;       // Next byte from which a rx byte will be read (set by non int)
    uint8_t rxbit;               // Rx bit count, 0 means idle
    uint8_t rxsubbit;            // Rx sub bit count
    uint8_t rxcount;             // Rx sub bit 1 count for majority check in mid bit
@@ -77,8 +77,8 @@ bool IRAM_ATTR timer_isr(void *up)
       u->txsubbit--;            // Working through sub bits
    if (u->crwait)
       u->crwait--;
-   if (!u->txsubbit && !u->txwait)
-   {                            // Work out next tx
+   if (!u->txsubbit)
+   {                            // Work out next tx bit
       if (u->txbit)
       {                         // Sending a byte
          u->txbit--;
@@ -92,14 +92,17 @@ bool IRAM_ATTR timer_isr(void *up)
             u->txnext = (u->txbyte & 1);
             u->txbyte >>= 1;
          }
-      } else if (!u->txbit)
+      } else if (!u->txbit && !u->txwait)
       {                         // Do we have a next byte to start
          uint16_t txi = u->txi;
          uint16_t txo = u->txo;
          if (!u->txnext)
          {
-            u->txsubbit = u->stops;
-            u->txnext = 1;      // End of a break.
+            if (u->txbreak)
+               u->txbreak--;    // More break
+            else
+               u->txnext = 1;   // Idle
+            u->txsubbit = (1 + u->bits) * STEPS + u->stops;     // Whole char
          } else if (txi != txo)
          {                      // We have a byte
             u->txbyte = u->txdata[txo];
@@ -125,8 +128,8 @@ bool IRAM_ATTR timer_isr(void *up)
 
          } else if (u->txbreak)
          {
-            u->txsubbit = u->txbreak;
-            u->txbreak = 0;
+            u->txbreak--;
+            u->txsubbit = (1 + u->bits) * STEPS + u->stops;     // Whole char
             u->txnext = 0;
          }
       }
@@ -180,7 +183,7 @@ bool IRAM_ATTR timer_isr(void *up)
                   // else leave rxsubbit unset so we wait for next start bit - don't clock in duff byte
                } else
                {                // Normal end of byte - record received byte (clean start and stop bit)
-                  uint8_t rxi = u->rxi;
+                  uint16_t rxi = u->rxi;
                   u->rxdata[rxi] = u->rxbyte;
                   rxi++;
                   if (rxi == sizeof(u->rxdata))
@@ -289,33 +292,46 @@ void softuart_tx(softuart_t * u, uint8_t b)
 {
    if (!u)
       return;
-   xSemaphoreTake(u->mutex, portMAX_DELAY);     // Just to protect from itself, e.g. called from different tasks
-   while (!softuart_tx_space(u))
-      usleep(10000);
    uint16_t txi = u->txi;
-   u->txdata[txi] = b;
    txi++;
    if (txi == sizeof(u->txdata))
       txi = 0;
-   u->txi = txi;
-   xSemaphoreGive(u->mutex);
+   while (1)
+   {
+      xSemaphoreTake(u->mutex, portMAX_DELAY);  // Just to protect from itself, e.g. called from different tasks
+      if (u->txo != txi)
+      {                         // We have space
+         u->txdata[txi] = b;
+         u->txi = txi;
+         xSemaphoreGive(u->mutex);
+         return;
+      }
+      xSemaphoreGive(u->mutex);
+      usleep(1000);             // Wait a bit - yes, some sort of mutex for this would be cleaner, but at this Baud rate?
+   }
 }
 
 uint8_t softuart_rx(softuart_t * u)
 {
    if (!u)
       return 0;
-   xSemaphoreTake(u->mutex, portMAX_DELAY);     // Just to protect from itself, e.g. called from different tasks
-   while (softuart_rx_ready(u) <= 0)
-      usleep(1000);
-   uint8_t rxo = u->rxo;
-   uint8_t b = u->rxdata[rxo];
-   rxo++;
-   if (rxo == sizeof(u->rxdata))
-      rxo = 0;
-   u->rxo = rxo;
-   xSemaphoreGive(u->mutex);
-   return b;
+   uint16_t rxo = u->rxo;
+   while (1)
+   {
+      xSemaphoreTake(u->mutex, portMAX_DELAY);  // Just to protect from itself, e.g. called from different tasks
+      if (u->rxi != rxo)
+      {                         // There are bytes
+         uint8_t b = u->rxdata[rxo];
+         rxo++;
+         if (rxo == sizeof(u->rxdata))
+            rxo = 0;
+         u->rxo = rxo;
+         xSemaphoreGive(u->mutex);
+         return b;
+      }
+      xSemaphoreGive(u->mutex);
+      usleep(1000);             // Wait a bit - yes, some sort of mutex for this would be cleaner, but at this Baud rate?
+   }
 }
 
 int softuart_tx_space(softuart_t * u)
@@ -335,7 +351,7 @@ int softuart_tx_waiting(softuart_t * u)
    int s = (int) u->txi - (int) u->txo;
    if (s < 0)
       s += sizeof(u->txdata);
-   if (u->txsubbit)
+   if (u->txsubbit || u->txbreak)
       s++;                      // Sending a byte
    return s;
 }
@@ -348,11 +364,11 @@ void softuart_tx_flush(softuart_t * u)
       usleep(1000);
 }
 
-void softuart_tx_break(softuart_t * u)
+void softuart_tx_break(softuart_t * u, uint8_t chars)
 {                               // Send a break (once tx done)
    if (!u)
       return;
-   u->txbreak = 255;
+   u->txbreak = chars;
 }
 
 int softuart_rx_ready(softuart_t * u)
