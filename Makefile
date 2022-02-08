@@ -53,6 +53,6 @@ KiCad/ASR33.scad: KiCad/ASR33.kicad_pcb PCBCase/case Makefile
 
 KiCad/ASR33h.scad: KiCad/ASR33.kicad_pcb PCBCase/case Makefile
 	PCBCase/case -n -o $@ $< --edge=2 --base=4.9 --top=6
-	echo "intersection(){base();cube([25,28+4,10]);}" >> $@
-	echo "translate([23,0,0])top();" >> $@
+	echo "difference(){top();translate([3,30,-1])cube([45,30,10]);}" >> $@
+	echo "translate([spacing,0,0])base();" >> $@
 
