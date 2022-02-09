@@ -29,7 +29,6 @@
   u1(txod)	\
   u1(txpu)	\
   u1t(rxpu)	\
-  u1t(breakrun)	\
   t(pwrtopic)	\
   t(mtrtopic)	\
   u1(noecho)	\
@@ -712,13 +711,6 @@ void asr33_main(void *param)
          {                      // End of break
             brk = 0;
             reportstate();
-            if (breakrun)
-            {                   // BREAK used as RUN button
-               if (!on)
-                  dorun();
-               else
-                  power = -1;
-            }
          }
       } else if (len < 0)
       {                         // Break
@@ -728,6 +720,15 @@ void asr33_main(void *param)
             hayes = 0;
             rxp = 0;
             reportstate();
+            if (csock >= 0)
+            {                   // Close connection
+               close(csock);
+               csock = -1;
+               jo_t j = jo_object_alloc();
+               jo_string(j, "reason", "break");
+               revk_event("closed", &j);
+               power = -1;
+            }
          }
       } else if (len > 0)
       {
