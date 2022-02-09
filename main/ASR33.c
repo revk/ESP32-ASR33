@@ -29,6 +29,7 @@
   u1(txod)	\
   u1(txpu)	\
   u1t(rxpu)	\
+  u1t(breakrun)	\
   t(pwrtopic)	\
   t(mtrtopic)	\
   u1(noecho)	\
@@ -542,6 +543,8 @@ void asr33_main(void *param)
          freeaddrinfo(res);
       }
    }
+   if (run && gpio_get_level(port_mask(run)) != port_inv(run))
+      pressed = 1;              // Initial state for RUN/STOP button
    void dorun(void) {           // RUN button manual start
       power = 2;
       if (*autoconnect)
@@ -704,32 +707,32 @@ void asr33_main(void *param)
       }
       int len = tty_rx_ready();
       if (!len)
-      {
+      {                         // Nothing waiting and not break
          if (brk)
-         {
+         {                      // End of break
             brk = 0;
             reportstate();
+            if (breakrun)
+            {                   // BREAK used as RUN button
+               if (!on)
+                  dorun();
+               else
+                  power = -1;
+            }
          }
       } else if (len < 0)
       {                         // Break
          if (!brk)
-         {
+         {                      // Start of break
             brk = 1;
             hayes = 0;
             rxp = 0;
             reportstate();
-            if (csock >= 0)
-            {
-               close(csock);
-               csock = -1;
-               jo_t j = jo_object_alloc();
-               jo_string(j, "reason", "break");
-               revk_event("closed", &j);
-               power = -1;
-            }
          }
       } else if (len > 0)
       {
+         if (!on)
+            dorun();            // Must be not using power controls, so turn on for rx data
          uint8_t b = tty_rx();
          if (csock >= 0)
             send(csock, &b, 1, 0);      // Connected via TCP
@@ -852,7 +855,7 @@ void asr33_main(void *param)
             revk_blink(1, 0, "B");
             advent();
             power = -1;
-         } else if (now > done)
+         } else if (on && now > done)
             power = -1;
       } else
          done = now + 1000000 * (power > 1 ? keyidle : idle);
