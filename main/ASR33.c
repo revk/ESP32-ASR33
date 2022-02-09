@@ -788,7 +788,7 @@ void asr33_main(void *param)
                      jo_stringn(j, NULL, (void *) line, rxp);
                      revk_event("line", &j);
                      rxp = 0;
-                  } else if ((b & 0x7f) > ' ' && rxp < MAXRX)
+                  } else if ((b & 0x7f) >= ' ' && rxp < MAXRX)
                      line[rxp++] = (b & 0x7F);
                   if (doecho)
                   {             // Handling local characters and echoing (maybe, depends on xoff too)
