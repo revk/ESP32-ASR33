@@ -292,17 +292,17 @@ void softuart_tx(softuart_t * u, uint8_t b)
 {
    if (!u)
       return;
-   uint16_t txi = u->txi;
-   txi++;
-   if (txi == sizeof(u->txdata))
-      txi = 0;
+   uint16_t txi = u->txi,
+       txn = txi + 1;
+   if (txn == sizeof(u->txdata))
+      txn = 0;
    while (1)
    {
       xSemaphoreTake(u->mutex, portMAX_DELAY);  // Just to protect from itself, e.g. called from different tasks
       if (u->txo != txi)
       {                         // We have space
          u->txdata[txi] = b;
-         u->txi = txi;
+         u->txi = txn;
          xSemaphoreGive(u->mutex);
          return;
       }
