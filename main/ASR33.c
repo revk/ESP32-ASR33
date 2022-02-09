@@ -508,6 +508,8 @@ void asr33_main(void *param)
    }
    tty_xoff();
    void doconnect(const char *line) {
+      if (csock >= 0)
+         return;
       const struct addrinfo hints = {
          .ai_family = AF_UNSPEC,
          .ai_socktype = SOCK_STREAM,
