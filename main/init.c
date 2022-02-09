@@ -11,43 +11,46 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
+#include <string.h>
 
 #include "advent.h"
 
-struct settings_t settings = {
-   .logfp = NULL,
-   .oldstyle = false,
-   .prompt = true
-};
+struct settings_t settings;
 
-struct game_t game = {
-   .dloc[1] = LOC_KINGHALL,
-   .dloc[2] = LOC_WESTBANK,
-   .dloc[3] = LOC_Y2,
-   .dloc[4] = LOC_ALIKE3,
-   .dloc[5] = LOC_COMPLEX,
-
-   /*  Sixth dwarf is special (the pirate).  He always starts at his
-    *  chest's eventual location inside the maze. This loc is saved
-    *  in chloc for ref. The dead end in the other maze has its
-    *  loc stored in chloc2. */
-   .dloc[6] = LOC_DEADEND12,
-   .chloc = LOC_DEADEND12,
-   .chloc2 = LOC_DEADEND13,
-   .abbnum = 5,
-   .clock1 = WARNTIME,
-   .clock2 = FLASHTIME,
-   .newloc = LOC_START,
-   .loc = LOC_START,
-   .limit = GAMELIMIT,
-   .foobar = WORD_EMPTY,
-};
+struct game_t game;
 
 int initialise(void)
 {
    srand(time(NULL));
    int seedval = (int) rand();
    set_seed(seedval);
+
+   memset(&settings, 0, sizeof(settings));
+   settings.logfp = NULL;
+   settings.oldstyle = false;
+   settings.prompt = true;
+
+   memset(&game, 0, sizeof(game));
+   game.dloc[1] = LOC_KINGHALL;
+   game.dloc[2] = LOC_WESTBANK;
+   game.dloc[3] = LOC_Y2;
+   game.dloc[4] = LOC_ALIKE3;
+   game.dloc[5] = LOC_COMPLEX;
+
+   /*  Sixth dwarf is special (the pirate).  He always starts at his
+    *  chest's eventual location inside the maze. This loc is saved
+    *  in chloc for ref. The dead end in the other maze has its
+    *  loc stored in chloc2. */
+   game.dloc[6] = LOC_DEADEND12;
+   game.chloc = LOC_DEADEND12;
+   game.chloc2 = LOC_DEADEND13;
+   game.abbnum = 5;
+   game.clock1 = WARNTIME;
+   game.clock2 = FLASHTIME;
+   game.newloc = LOC_START;
+   game.loc = LOC_START;
+   game.limit = GAMELIMIT;
+   game.foobar = WORD_EMPTY;
 
    for (int i = 1; i <= NOBJECTS; i++)
    {

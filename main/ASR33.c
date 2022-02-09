@@ -734,6 +734,8 @@ void asr33_main(void *param)
          }
       } else if (len > 0)
       {
+         if (power < 0)
+            power = 0;          // Abort power off
          if (!on)
             dorun();            // Must be not using power controls, so turn on for rx data
          uint8_t b = tty_rx();
