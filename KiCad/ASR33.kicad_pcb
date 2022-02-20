@@ -233,7 +233,7 @@
       (options (clearance outline) (anchor rect))
       (primitives
     (gr_arc (start 2.89 -3.045) (mid 0 -0.155) (end -2.89 -3.045) (width 0.25))
-    (gr_arc (start 4.294753 -3.49127) (mid -0.012228 -1.026222) (end -4.307036 -3.512417) (width 0.25))
+    (gr_arc (start 4.294753 -3.49127) (mid -0.007887 -1.026213) (end -4.302688 -3.504904) (width 0.25))
     (gr_arc (start -3.2 -2.485) (mid -4.015 -3.3) (end -3.2 -4.115) (width 0.25))
     (gr_arc (start 3.2 -4.115) (mid 4.015 -3.3) (end 3.2 -2.485) (width 0.25))
     (gr_arc (start -4.32 0.635) (mid -0.000001 -1.154403) (end 4.319999 0.634999) (width 0.25))
@@ -2544,10 +2544,6 @@
     (fp_text user "HTTPS://ASR33.REVK.UL/" (at 0 -2.5 unlocked) (layer "B.Fab")
       (effects (font (size 0.1 0.1) (thickness 0.02)) (justify mirror))
       (tstamp 433eb72c-eb25-4955-8ab0-db5e66141f00)
-    )
-    (fp_text user "HTTPS://ASR33.REVK.UK/" (at -1.2 41.9 unlocked) (layer "B.Fab")
-      (effects (font (size 0.1 0.1) (thickness 0.02)) (justify mirror))
-      (tstamp a9e900cd-dfc5-4d13-bb59-0da61b512540)
     )
     (fp_poly (pts
         (xy -2.9 2.9)
