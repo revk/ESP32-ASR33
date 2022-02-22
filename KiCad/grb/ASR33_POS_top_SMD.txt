@@ -1,16 +1,12 @@
-### Module positions - created on 2022-02-20 11:32
+### Module positions - created on 2022-02-22 20:10
 ### Printed by pcb_positions plugin
 ## Unit = mm, Angle = deg.
 ## Pcb Height 38.100mm, Pcb Width 45.100mm [based on Edge bounding box]
 ## Side : top
 ## Board Aux Origin: 0.000mm ,0.000mm
 # Ref         Val                 Package                       PosX       PosY       Pin1_PosX  Pin1_PosY    Rot     Side      Type
-U1            ESP32-WROOM-32      ESP32-WROOM-32                149.2500   -91.7500   157.5050   -83.2500    -90.0    top       SMD
-R3            10k                 R_0603                        138.1000   -91.6000   138.1000   -92.4250     90.0    top       SMD
-R2            4k7                 R_0603                        136.9000   -91.6000   136.9000   -90.7750    -90.0    top       SMD
-R1            10k                 R_0603                        129.8000   -90.8000   129.8000   -91.6250     90.0    top       SMD
+U1            FT231XQ             QFN-20-1EP_4x4mm_P0.5mm_EP2.. 133.7500   -94.6500   131.8500   -93.6500      0.0    top       SMD
 J1            USB-C               USC16-TR-Round                120.0000   -104.4000  0.0000     0.0000      -90.0    top       SMD
-U2            FT231XQ             QFN-20-1EP_4x4mm_P0.5mm_EP2.. 133.7500   -94.6500   131.8500   -93.6500      0.0    top       SMD
 R6            220R                R_0603                        124.8000   -84.1500   124.8000   -84.9750     90.0    top       SMD
 C1            100nF               C_0603                        130.1000   -99.2000   130.1000   -98.4250    -90.0    top       SMD
 R8            5K1                 R_0603                        129.1000   -106.8000  129.1000   -107.6250    90.0    top       SMD
@@ -30,12 +26,16 @@ L1            6.8uH               Hidden                        123.3500   -89.2
 C5            0.1uF               Hidden                        123.6000   -95.2500   0.0000     0.0000        0.0    top       SMD
 U4            NCR402U             SOT-457                       144.7500   -109.4000  145.9500   -110.3500   180.0    top       SMD
 U3            NCR402U             SOT-457                       134.0000   -109.4000  135.2000   -110.3500   180.0    top       SMD
+R1            10k                 R_0603                        129.8000   -90.8000   129.8000   -91.6250     90.0    top       SMD
 U5            LTV-356T            SO-4_4.4x3.6mm_P2.54mm        144.9000   -104.6000  141.7500   -103.3300     0.0    top       SMD
 D2            BAV99S              SOT-363_SC-70-6               160.0000   -109.4000  160.9500   -110.0500   180.0    top       SMD
 Q1            NX7002AK            SOT-23                        136.8000   -103.6000  137.7500   -102.6625   -90.0    top       SMD
 R12           3M 1% or NF         R_0603                        124.5000   -97.2500   125.3250   -97.2500    180.0    top       SMD
 D3            BAV99S              SOT-363_SC-70-6               151.2500   -109.4000  150.3000   -108.7500     0.0    top       SMD
+R2            4k7                 R_0603                        136.9000   -91.6000   136.9000   -90.7750    -90.0    top       SMD
 D4            Schottky            D_1206_3216Metric             123.6000   -110.9000  122.2000   -110.9000     0.0    top       SMD
+U2            ESP32-WROOM-32      ESP32-WROOM-32                149.2500   -91.7500   157.5050   -83.2500    -90.0    top       SMD
+R3            10k                 R_0603                        138.1000   -91.6000   138.1000   -92.4250     90.0    top       SMD
 R11           10M 1% or 0R        R_0603                        121.6750   -97.2500   120.8500   -97.2500      0.0    top       SMD
 U6            LMR16006+FB         RegulatorBlockFB              123.3500   -93.1500   124.7000   -94.1000     90.0    top       SMD
 ## End

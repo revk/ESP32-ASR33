@@ -1,4 +1,4 @@
-### Module positions - created on 2022-02-20 11:32
+### Module positions - created on 2022-02-22 20:10
 ### Printed by pcb_positions plugin
 ## Unit = mm, Angle = deg.
 ## Pcb Height 38.100mm, Pcb Width 45.100mm [based on Edge bounding box]
@@ -6,7 +6,7 @@
 ## Board Aux Origin: 0.000mm ,0.000mm
 # Ref         Val                 Package                       PosX       PosY       Pin1_PosX  Pin1_PosY    Rot     Side      Type
 J5            Tx                  Molex_MiniSPOX_H3RA           132.5000   -113.4000  130.0000   -113.4000     0.0    top       THD
-SW1           SW_Push             SW_PUSH_6mm_PTH               133.5000   -85.9000   130.2500   -83.6500      0.0    top       THD
+SW1           SW_Push             SW_PUSH_6mm_PTH               133.5000   -85.9000   136.7500   -83.6500      0.0    top       THD
 J6            Rx                  Molex_MiniSPOX_H3RA           142.5000   -113.4000  140.0000   -113.4000     0.0    top       THD
 J2            DC                  Molex_MiniSPOX_H2RA           123.7500   -113.4000  122.5000   -113.4000     0.0    top       THD
 J3            Power               Molex_MiniSPOX_H3RA           160.0000   -113.4000  157.5000   -113.4000     0.0    top       THD
