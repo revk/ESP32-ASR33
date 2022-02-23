@@ -2,7 +2,7 @@
 <export version="E">
   <design>
     <source>/Users/adrian/git/ESP32-ASR33/KiCad/ASR33.kicad_sch</source>
-    <date>Wednesday, 23 February 2022 at 09:01:59</date>
+    <date>Wednesday, 23 February 2022 at 11:01:13</date>
     <tool>Eeschema (6.0.2-0)</tool>
     <textvar name="DATE">2022-02-22</textvar>
     <sheet number="1" name="/" tstamps="/">
@@ -619,6 +619,24 @@
         <pin num="4" name="" type="passive"/>
       </pins>
     </libpart>
+    <libpart lib="Jumper" part="Jumper_2_Bridged">
+      <description>Jumper, 2-pole, closed/bridged</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Jumper*</fp>
+        <fp>TestPoint*2Pads*</fp>
+        <fp>TestPoint*Bridge*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">JP</field>
+        <field name="Value">Jumper_2_Bridged</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="A" type="passive"/>
+        <pin num="2" name="B" type="passive"/>
+      </pins>
+    </libpart>
     <libpart lib="RevK" part="AJK">
       <fields>
         <field name="Reference">Logo</field>
@@ -821,6 +839,9 @@
     </library>
     <library logical="Isolator">
       <uri>/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols//Isolator.kicad_sym</uri>
+    </library>
+    <library logical="Jumper">
+      <uri>/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols//Jumper.kicad_sym</uri>
     </library>
     <library logical="RevK">
       <uri>/Users/adrian/Documents/KiCad/6.0/symbols/RevK.kicad_sym</uri>
