@@ -1,4 +1,4 @@
-### Module positions - created on 2022-02-23 18:47
+### Module positions - created on 2022-02-24 08:18
 ### Printed by pcb_positions plugin
 ## Unit = mm, Angle = deg.
 ## Pcb Height 26.600mm, Pcb Width 45.100mm [based on Edge bounding box]
@@ -40,7 +40,7 @@ R10           27R                 R_0603                        134.0000   -96.0
 J2            DC                  Molex_MiniSPOX_H2RA           123.7500   -113.4000  122.5000   -113.4000     0.0    top       THD
 L1            6.8uH               Hidden                        100.8900   -107.5700  0.0000     0.0000        0.0    top       SMD
 C6            2.2uF               Hidden                        105.1300   -107.7500  0.0000     0.0000        0.0    top       SMD
-SW1           SW_Push             SW_PUSH_6mm_PTH               135.5000   -103.7500  133.2500   -107.0000    90.0    top       THD
+SW1           SW_Push             SW_PUSH_6mm_PTH               135.5000   -103.7500  133.2500   -100.5000    90.0    top       THD
 J3            Power               Molex_MiniSPOX_H3RA           160.0000   -113.4000  157.5000   -113.4000     0.0    top       THD
 D3            BAV99S              SOT-363_SC-70-6               151.2500   -110.2500  150.3000   -109.6000     0.0    top       SMD
 J4            RUN                 Molex_MiniSPOX_H2RA           151.2500   -113.4000  150.0000   -113.4000     0.0    top       THD
