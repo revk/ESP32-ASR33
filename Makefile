@@ -5,6 +5,7 @@
 
 PROJECT_NAME := ASR33
 SUFFIX := $(shell components/ESP32-RevK/suffix)
+MODELS := ASR33 ASR33h
 
 all: asr33 punch asrtweet
 	@echo Make: build/$(PROJECT_NAME)$(SUFFIX).bin
@@ -44,8 +45,8 @@ AJL/ajl.o: AJL/ajl.c AJL/ajlparse.c
 asrtweet: asrtweet.c Makefile AJL/ajl.o
 	cc -g -O -o $@ $< -I AJL AJL/ajl.o -lpopt -lmosquitto -pthread -lssl -lcrypto
 
-scad: KiCad/ASR33.scad KiCad/ASR33h.scad
-stl: KiCad/ASR33.stl KiCad/ASR33h.stl
+scad:   $(patsubst %,KiCad/%.scad,$(MODELS))
+stl:    $(patsubst %,KiCad/%.stl,$(MODELS))
 
 %.stl: %.scad
 	echo "Making $@"
