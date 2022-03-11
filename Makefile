@@ -45,6 +45,9 @@ AJL/ajl.o: AJL/ajl.c AJL/ajlparse.c
 asrtweet: asrtweet.c Makefile AJL/ajl.o
 	cc -g -O -o $@ $< -I AJL AJL/ajl.o -lpopt -lmosquitto -pthread -lssl -lcrypto
 
+PCBCase/case: PCBCase/case.c
+	make -C PCBCase
+
 scad:   $(patsubst %,KiCad/%.scad,$(MODELS))
 stl:    $(patsubst %,KiCad/%.stl,$(MODELS))
 
@@ -58,6 +61,6 @@ KiCad/ASR33.scad: KiCad/ASR33.kicad_pcb PCBCase/case Makefile
 
 KiCad/ASR33h.scad: KiCad/ASR33.kicad_pcb PCBCase/case Makefile
 	PCBCase/case -n -o $@ $< --edge=2 --base=4.9 --top=7
-	echo "difference(){top();translate([3,34,-1])cube([45,30,10]);}" >> $@
-	echo "translate([spacing,0,0])base();" >> $@
+	@echo "difference(){top();translate([3,34,-1])cube([45,30,10]);}" >> $@
+	@echo "translate([spacing,0,0])base();" >> $@
 
