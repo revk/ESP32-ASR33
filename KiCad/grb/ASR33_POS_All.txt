@@ -1,4 +1,4 @@
-### Module positions - created on 2022-02-24 08:18
+### Module positions - created on 2022-03-17 08:00
 ### Printed by pcb_positions plugin
 ## Unit = mm, Angle = deg.
 ## Pcb Height 26.600mm, Pcb Width 45.100mm [based on Edge bounding box]
@@ -14,14 +14,14 @@ U2            FT231XQ             QFN-20-1EP_4x4mm_P0.5mm_EP2.. 138.0000   -96.5
 U5            LTV-356T            SO-4_4.4x3.6mm_P2.54mm        141.0000   -107.5000  139.7300   -110.6500    90.0    top       SMD
 C4            10nF                C_0603                        130.2500   -103.0000  129.4750   -103.0000     0.0    top       SMD
 JP1           Jumper_2_Bridged    Pad_1206_0805_Bridged         145.0000   -105.2500  145.0000   -104.3375   -90.0    top       VIRTUAL
-R12           3M 1% or NF         R_0603                        120.7500   -98.0000   120.7500   -98.8250     90.0    top       SMD
+R12           30k 1% or NF        R_0603                        120.7500   -98.0000   120.7500   -98.8250     90.0    top       SMD
 C5            0.1uF               Hidden                        107.2500   -107.7500  0.0000     0.0000        0.0    top       SMD
 J5            Tx                  Molex_MiniSPOX_H3RA           132.5000   -113.4000  130.0000   -113.4000     0.0    top       THD
 C3            47pF                C_0603                        134.0000   -94.7500   133.2250   -94.7500      0.0    top       SMD
 U3            NCR402U             SOT-457                       135.2500   -110.2500  134.0500   -109.3000     0.0    top       SMD
 R8            5K1                 R_0603                        128.2500   -109.5000  128.2500   -110.3250    90.0    top       SMD
 C7            10uF                Hidden                        103.0100   -107.5700  0.0000     0.0000        0.0    top       SMD
-R11           10M 1% or 0R        R_0603                        120.7500   -95.0000   120.7500   -94.1750    -90.0    top       SMD
+R11           100k 1% or 0R       R_0603                        120.7500   -95.0000   120.7500   -94.1750    -90.0    top       SMD
 R7            5K1                 R_0603                        128.2500   -104.5000  128.2500   -105.3250    90.0    top       SMD
 R2            4k7                 R_0603                        131.2500   -101.0000  131.2500   -101.8250    90.0    top       SMD
 U1            ESP32-PICO-MINI-02  ESP32-PICO-MINI-02            153.0567   -100.2500  157.0567   -94.3500    -90.0    top       SMD
