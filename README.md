@@ -2,7 +2,7 @@
 
 Hardware and software for ESP32 based controller for ASR33 teletype.
 
-- 20mA (or 60mA) current sources for Tx and Rx 100 Baud.
+- 20mA current sources for Tx and Rx 100 Baud.
 - WiFi connection (IPv4 and IPv6)
 - Simple TCP socket to interface to teletype
 - MQTT connection
