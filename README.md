@@ -10,7 +10,7 @@ Hardware and software for ESP32 based controller for ASR33 teletype.
 
 See ASR33.pages for more details
 
-![ASR33](https://user-images.githubusercontent.com/996983/151703933-0d369dc1-1d2b-4c1f-b951-0e8e34954b85.png)
+![ASR33](https://user-images.githubusercontent.com/996983/170732167-bb23096c-f055-41e3-bca9-a1ce38849a1d.png)
 
 # Building
 
