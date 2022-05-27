@@ -4,7 +4,7 @@ Hardware and software for ESP32 based controller for ASR33 teletype.
 
 - 20mA current sources for Tx and Rx 110 Baud.
 - WiFi connection (IPv4 and IPv6)
-- Simple TCP socket to interface to teletype
+- Simple TCP socket to interface to teletype (inbound and outbound)
 - MQTT connection
 - Includes stand alone Colossal Cave adventure game
 
