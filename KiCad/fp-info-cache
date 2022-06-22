@@ -1,4 +1,4 @@
-20169254745107270
+20164940816672487
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -78313,7 +78313,7 @@ AA
 
 
 0
-2
+1
 0
 RevK
 AJK
@@ -78384,7 +78384,7 @@ ESP32-PICO-MINI-02
 
 0
 61
-61
+53
 RevK
 ESP32-WROOM-32
 Single 2.4 GHz Wi-Fi and Bluetooth combo chip https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf
@@ -78512,13 +78512,6 @@ connector Molex SPOX horizontal
 6
 6
 RevK
-Molex_MiniSPOX_H6RA_0.1
-Molex SPOX Connector System, 5268-05A, 5 Pins per row (https://www.molex.com/pdm_docs/sd/022057045_sd.pdf), generated with kicad-footprint-generator
-connector Molex SPOX horizontal
-0
-6
-6
-RevK
 Molex_MiniSPOX_H7RA
 Molex SPOX Connector System, 5268-05A, 5 Pins per row (https://www.molex.com/pdm_docs/sd/022057045_sd.pdf), generated with kicad-footprint-generator
 connector Molex SPOX horizontal
@@ -78617,33 +78610,12 @@ Through hole pin header THT 1x04 2.54mm single row
 4
 4
 RevK
-QFN-16-(hand)-1EP_4x4mm_P0.65mm_EP2.1x2.1mm
-QFN, 16 Pin (http://www.thatcorp.com/datashts/THAT_1580_Datasheet.pdf), generated with kicad-footprint-generator ipc_noLead_generator.py
-QFN NoLead
-0
-26
-17
-RevK
-QFN-20-(hand)-1EP_4x4mm_P0.5mm_EP2.5x2.5mm
-QFN, 20 Pin (http://ww1.microchip.com/downloads/en/PackagingSpec/00000049BQ.pdf#page=274), generated with kicad-footprint-generator ipc_noLead_generator.py
-QFN NoLead
-0
-31
-22
-RevK
 QFN-20-1EP_4x4mm_P0.5mm_EP2.5x2.5mm
 QFN, 20 Pin (http://ww1.microchip.com/downloads/en/PackagingSpec/00000049BQ.pdf#page=274), generated with kicad-footprint-generator ipc_noLead_generator.py
 QFN NoLead
 0
-26
+25
 21
-RevK
-QFN-40-(hand)-1EP_6x6mm_P0.5mm_EP4.6x4.6mm
-QFN, 40 Pin (http://ww1.microchip.com/downloads/en/PackagingSpec/00000049BQ.pdf#page=295), generated with kicad-footprint-generator ipc_noLead_generator.py
-QFN NoLead
-0
-58
-41
 RevK
 QFN-40-1EP_6x6mm_P0.5mm_EP4.6x4.6mm
 QFN, 40 Pin (http://ww1.microchip.com/downloads/en/PackagingSpec/00000049BQ.pdf#page=295), generated with kicad-footprint-generator ipc_noLead_generator.py
@@ -78664,6 +78636,13 @@ QR-ASR33
 
 0
 75
+0
+RevK
+QR-ENVMON
+
+
+0
+78
 0
 RevK
 QR-GENERIC
