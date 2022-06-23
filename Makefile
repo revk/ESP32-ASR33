@@ -4,7 +4,7 @@
 #
 
 PROJECT_NAME := ASR33
-SUFFIX := $(shell components/ESP32-RevK/suffix)
+SUFFIX := $(shell components/ESP32-RevK/buildsuffix)
 MODELS := ASR33 ASR33h
 
 all:    

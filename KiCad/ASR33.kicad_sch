@@ -2621,7 +2621,7 @@
       (effects (font (size 1.27 1.27)) (justify right) hide)
     )
   )
-  (global_label "TX20MA" (shape input) (at 76.2 81.28 0) (fields_autoplaced)
+  (global_label "TX20MA" (shape output) (at 76.2 81.28 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid 942e452c-ddf5-4720-b4d1-a533e80a891a)
     (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 85.6604 81.2006 0)
