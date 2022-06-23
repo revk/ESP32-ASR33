@@ -21,10 +21,10 @@
 #define	RO	0x7F
 
 #define settings  \
-  io(tx,16)      \
-  io(rx,-18)     \
-  io(run,21)  \
-  io(pwr,23)      \
+  io(tx,27)      \
+  io(rx,-26)     \
+  io(run,19)  \
+  io(pwr,21)      \
   io(mtr,22)  \
   u1(txod)	\
   u1(txpu)	\
