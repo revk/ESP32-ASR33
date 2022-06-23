@@ -3,9 +3,9 @@
     "GenerationSoftware": {
       "Vendor": "KiCad",
       "Application": "Pcbnew",
-      "Version": "(6.0.2-0)"
+      "Version": "(6.0.5-0)"
     },
-    "CreationDate": "2022-02-24T08:18:15+00:00"
+    "CreationDate": "2022-06-23T08:48:37+01:00"
   },
   "GeneralSpecs": {
     "ProjectId": {
@@ -90,6 +90,7 @@
     },
     {
       "Type": "SolderMask",
+      "Color": "Purple",
       "Thickness": 0.01,
       "Name": "Top Solder Mask"
     },
@@ -112,6 +113,7 @@
     },
     {
       "Type": "SolderMask",
+      "Color": "Purple",
       "Thickness": 0.01,
       "Name": "Bottom Solder Mask"
     },
