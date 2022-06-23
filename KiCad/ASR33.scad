@@ -1,6 +1,6 @@
 // Generated case design for KiCad/ASR33.kicad_pcb
 // By https://github.com/revk/PCBCase
-// Generated 2022-03-11 09:28:10
+// Generated 2022-06-23 08:12:56
 // title:	ASR33 driver
 // date:	${DATE}
 // rev:	1
@@ -23,9 +23,9 @@ hullcap=1.000000;
 hulledge=1.000000;
 useredge=false;
 
-module pcb(h=pcbthickness,r=0){linear_extrude(height=h)offset(r=r)polygon(points=[[38.750000,8.000000],[38.750000,26.500000],[0.000000,26.500000],[0.000000,0.000000],[45.000000,0.000000],[45.000000,8.000000]],paths=[[0,1,2,3,4,5,0]]);}
+module pcb(h=pcbthickness,r=0){linear_extrude(height=h)offset(r=r)polygon(points=[[38.750000,8.000000],[38.750000,26.500000],[0.000000,26.500000],[0.000000,0.000000],[45.000000,0.000000],[45.000000,8.000000]],paths=[[0,1,2,3,4,5]]);}
 
-module outline(h=pcbthickness,r=0){linear_extrude(height=h)offset(r=r)polygon(points=[[38.750000,8.000000],[38.750000,26.500000],[0.000000,26.500000],[0.000000,0.000000],[45.000000,0.000000],[45.000000,8.000000]],paths=[[0,1,2,3,4,5,0]]);}
+module outline(h=pcbthickness,r=0){linear_extrude(height=h)offset(r=r)polygon(points=[[38.750000,8.000000],[38.750000,26.500000],[0.000000,26.500000],[0.000000,0.000000],[45.000000,0.000000],[45.000000,8.000000]],paths=[[0,1,2,3,4,5]]);}
 spacing=61.000000;
 pcbwidth=45.000000;
 pcblength=26.500000;
@@ -88,22 +88,25 @@ rotate([90,0,0])translate([-4.47,-3.84,0])
 	}
 	translate([0,6.65,0])cube([8.94,1.1,1.63]);
 	translate([0,2.2,0])cube([8.94,1.6,1.63]);
-	// Plug
-	translate([1.63,-20,1.63])
-	rotate([-90,0,0])
-	hull()
+	if(!hulled)
 	{
-		cylinder(d=2.5,h=21,$fn=24);
-		translate([5.68,0,0])
-		cylinder(d=2.5,h=21,$fn=24);
-	}
-	translate([1.63,-22.5,1.63])
-	rotate([-90,0,0])
-	hull()
-	{
-		cylinder(d=7,h=21,$fn=24);
-		translate([5.68,0,0])
-		cylinder(d=7,h=21,$fn=24);
+		// Plug
+		translate([1.63,-20,1.63])
+		rotate([-90,0,0])
+		hull()
+		{
+			cylinder(d=2.5,h=21,$fn=24);
+			translate([5.68,0,0])
+			cylinder(d=2.5,h=21,$fn=24);
+		}
+		translate([1.63,-22.5,1.63])
+		rotate([-90,0,0])
+		hull()
+		{
+			cylinder(d=7,h=21,$fn=24);
+			translate([5.68,0,0])
+			cylinder(d=7,h=21,$fn=24);
+		}
 	}
 }
 
@@ -179,7 +182,7 @@ module m9(pushed=false,hulled=false)
 b(0,0,0,1.6,0.8,0.25);
 b(0,0,0,1.2,0.8,0.55);
 b(0,0,0,0.8,0.8,0.95);
-if(pushed)b(0,0,0,1,1,20);
+if(!hulled&&pushed)b(0,0,0,1,1,20);
 }
 
 module m10(pushed=false,hulled=false)
@@ -236,7 +239,7 @@ module m16(pushed=false,hulled=false)
 translate([3.25,-2.25,0])
 {
 	b(0,0,0,6,6,4);
-	cylinder(d=4,h=100);
+	if(!hulled&&pushed)cylinder(d=4,h=100);
 	for(x=[-3.25,3.25])for(y=[-2.25,2.25])translate([x,y,-2])cylinder(d=2,h=4);
 }
 }
@@ -265,10 +268,14 @@ module boardf()
 		intersection()
 		{
 			translate([-casewall-1,-casewall-1,-casebase-1]) cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
-			minkowski()
+			union()
 			{
-				boardh(true);
-				cylinder(h=height+100,d=margin,$fn=8);
+				minkowski()
+				{
+					boardh(true);
+					cylinder(h=height+100,d=margin,$fn=8);
+				}
+				board(false,false);
 			}
 		}
 	}
@@ -281,11 +288,15 @@ module boardb()
 		intersection()
 		{
 			translate([-casewall-1,-casewall-1,-casebase-1]) cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
-			minkowski()
+			union()
 			{
-				boardh(true);
-				translate([0,0,-height-100])
-				cylinder(h=height+100,d=margin,$fn=8);
+				minkowski()
+				{
+					boardh(true);
+					translate([0,0,-height-100])
+					cylinder(h=height+100,d=margin,$fn=8);
+				}
+				board(false,false);
 			}
 		}
 	}
@@ -392,7 +403,6 @@ module cutpb()
 		translate([-casewall,-casewall,-casebase])case();
 	}
 }
-
 
 module case()
 { // The basic case
