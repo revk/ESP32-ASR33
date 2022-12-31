@@ -4,14 +4,16 @@
 #
 
 PROJECT_NAME := ASR33
-SUFFIX := $(shell components/ESP32-RevK/suffix)
+SUFFIX := $(shell components/ESP32-RevK/buildsuffix)
 MODELS := ASR33 ASR33h
 
-all:    asr33 punch asrtweet
+all:    
 	@echo Make: $(PROJECT_NAME)$(SUFFIX).bin
 	@idf.py build
 	@cp build/$(PROJECT_NAME).bin $(PROJECT_NAME)$(SUFFIX).bin
 	@echo Done: $(PROJECT_NAME)$(SUFFIX).bin
+
+tools:	asr33 punch asrtweet
 
 set:    wroom solo pico
 
@@ -26,6 +28,12 @@ wroom:
 solo:  
 	components/ESP32-RevK/setbuildsuffix -S1-SOLO
 	@make
+
+ftdizap/ftdizap: ftdizap/ftdizap.c
+	make -C ftdizap
+
+ftdi: ftdizap/ftdizap
+	./ftdizap/ftdizap --serial="RevK" --description="Generic" --cbus0-mode=7 --cbus1-mode=13
 
 flash:
 	idf.py flash
