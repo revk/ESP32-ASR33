@@ -10,8 +10,11 @@
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
+#include "rom/gpio.h"
+#include "soc/gpio_reg.h"
 #include <driver/timer.h>
 #include <driver/gpio.h>
+#define TIMER_BASE_CLK   (APB_CLK_FREQ)
 
 #define	STEPS	5               // Interrupts per clock
 
