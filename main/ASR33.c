@@ -662,14 +662,14 @@ void asr33_main(void *param)
             sendstring("LISTENING ON ");
             char temp[50];
             ip6_addr_t ip6;
-            if (!tcpip_adapter_get_ip6_global(TCPIP_ADAPTER_IF_STA, &ip6))
+            if (!esp_netif_get_ip6_global(TCPIP_ADAPTER_IF_STA, &ip6))
             {
                inet6_ntoa_r(ip6, temp, sizeof(temp) - 1);
                sendstring(temp);
                sendstring(" & ");
             }
             tcpip_adapter_ip_info_t ip4;
-            if (!tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip4))
+            if (!esp_netif_get_ip_infoTCPIP_ADAPTER_IF_STA, &ip4))
             {
                inet_ntoa_r(ip4.ip, temp, sizeof(temp) - 1);
                sendstring(temp);
