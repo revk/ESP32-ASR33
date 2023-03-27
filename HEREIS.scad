@@ -9,41 +9,37 @@ gap=2.5; // Gap between rackets
 dip=0.75*25.4;  // Depth of dip for contacts
 dipsize=3; // Size of dip
 spacing=1.75*25.4/11; // spacing between cylinders
-chars=21; // characters (inclusing start)
+chars=21; // characters (including start) should be 21 - may work with 22
 rod=4+tol;  // diameter of rod through the middle (hole)
 collar=4.7; // Far end collar (usually too small to print)
 slot=5; // Size of stop slot
 $fn=200;
 
-// ASCII character codes for 20 characters
-// 256 is start, you can add additional starts if needed
-code=[256,  // Start (dont change)
-    13,     // CR   (standard)
-    10,     // LF   (standard)
-    127,    // RO   (standard)
-    119,    // w
-    119,    // w
-    119,    // w
-    46,     // .
-    109,    // m
-    101,    // e
-    46,     // .
-    117,    // u
-    107,    // k
-    32,     // SP
-    82,     // R
-    101,    // e
-    118,    // v
-    75,     // K
-    13,     // CR   (standard)
-    10,     // LF   (standard)
-    6,       // ACK (6) (standard) - sending WRU (5) is evil
-    ];
+// ASCII character codes for start and 20 characters
+START=chr(256); // suppress, and a cam stop at +6
+SKIP=chr(256+255); // suppress and all bits, not a cam stop
+CR=chr(13);
+LF=chr(10);
+WRU=chr(5);
+ACK=chr(6);
+RO=chr(127);
+// Stadard format starts CR/LF/RO, has CR/LF at end and ACK
+codes=str(START, // Non coded start (and cam stop at +6)
+    CR,LF,RO, // Standard header
+    // 14 chars available
+    "asr33.revk.uk",
+    CR,LF,ACK, // Standard trailer
+    SKIP,SKIP,SKIP,SKIP,SKIP,SKIP,SKIP,SKIP,SKIP,SKIP,SKIP,SKIP,SKIP,SKIP); // Padding for shorter name
+// Sending WRU instead of ACK would be evil
 
+// 4th pos is suppress
+// 5th pos is cam stop but has to offset 6 characters
+// 6th pos is driving lever 
 map=[128,64,32,256,0,0,16,8,4,2,1];
 function getbit(v,s)=((v/s)%2>=1?1:0);
 function parity(v)=(getbit(v,64)+getbit(v,32)+getbit(v,16)+getbit(v,8)+getbit(v,4)+getbit(v,2)+getbit(v,1))%2;
-function bit(p,b)=(b?map[b]?!getbit(p>=len(code)?256:code[p],map[b]):1:!parity(code[p]));
+function code(p)=ord(codes[p%chars]);
+function bit(p,b)=(b?map[b]?!getbit(code(p),map[b]):1:!parity(code(p)));
 
 translate([0,0,spacing*11])
 rotate([180,0,0])
@@ -69,8 +65,8 @@ difference()
   cylinder(h=spacing*2,d=collar);
  }
  for(a=[0:chars-1])
- if(getbit(code[a],256))
- rotate([0,0,360*(a+6)/chars])
+ if(code(a)==256)
+ rotate([0,0,360*(a+6)/21]) // 21 in case chars is more
  translate([-slot/2,inner/2,4*spacing])
  hull()
  {
