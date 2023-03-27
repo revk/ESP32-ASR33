@@ -10,8 +10,11 @@
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
+#include "rom/gpio.h"
+#include "soc/gpio_reg.h"
 #include <driver/timer.h>
 #include <driver/gpio.h>
+#define TIMER_BASE_CLK   (APB_CLK_FREQ)
 
 #define	STEPS	5               // Interrupts per clock
 
@@ -259,14 +262,15 @@ void softuart_start(softuart_t * u)
    //ESP_LOGE("UART", "Baudx100=%u Base=%u divider=%d ticks=%u", u->baudx100, TIMER_BASE_CLK, divider, ticks);
 
    // Set up timer
-   timer_config_t config;
-   memset(&config, 0, sizeof(config));
-   config.divider = divider;
-   config.counter_dir = TIMER_COUNT_UP;
-   config.counter_en = TIMER_PAUSE;
-   config.alarm_en = TIMER_ALARM_EN;
-   config.intr_type = TIMER_INTR_LEVEL;
-   config.auto_reload = 1;
+   timer_config_t config = {
+      .divider = divider,
+      .counter_dir = TIMER_COUNT_UP,
+      .counter_en = TIMER_PAUSE,
+      .alarm_en = TIMER_ALARM_EN,
+      .intr_type = TIMER_INTR_LEVEL,
+      .auto_reload = 1,
+      .clk_src = TIMER_SRC_CLK_DEFAULT,
+   };
    timer_init(0, u->timer, &config);
    timer_set_counter_value(0, u->timer, 0x00000000ULL);
    timer_set_alarm_value(0, u->timer, ticks);
