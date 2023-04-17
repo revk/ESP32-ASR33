@@ -8,9 +8,9 @@ Hardware and software for ESP32 based controller for ASR33 teletype.
 - MQTT connection
 - Includes stand alone Colossal Cave adventure game
 
-See ASR33.pages for more details
+[More details](Manuals/ASR33-Controller.md)
 
-![ASR33](https://user-images.githubusercontent.com/996983/170732167-bb23096c-f055-41e3-bca9-a1ce38849a1d.png)
+![ASR33](Manuals/ASR33.png)
 
 # Building
 

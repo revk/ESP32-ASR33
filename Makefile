@@ -73,18 +73,18 @@ asrtweet: asrtweet.c Makefile AJL/ajl.o
 PCBCase/case: PCBCase/case.c
 	make -C PCBCase
 
-scad:   $(patsubst %,KiCad/%.scad,$(MODELS))
-stl:    $(patsubst %,KiCad/%.stl,$(MODELS))
+scad:   $(patsubst %,PCB/%.scad,$(MODELS))
+stl:    $(patsubst %,PCB/%.stl,$(MODELS))
 
 %.stl: %.scad
 	echo "Making $@"
 	/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD $< -o $@
 	echo "Made $@"
 
-KiCad/ASR33.scad: KiCad/ASR33.kicad_pcb PCBCase/case Makefile
-	PCBCase/case -o $@ $< --edge=2 --base=2 --top=7
+PCB/ASR33.scad: PCB/ASR33.kicad_pcb PCBCase/case Makefile
+	PCBCase/case -o $@ $< --edge=2 --base=3 --top=6
 
-KiCad/ASR33h.scad: KiCad/ASR33.kicad_pcb PCBCase/case Makefile
+PCB/ASR33h.scad: PCB/ASR33.kicad_pcb PCBCase/case Makefile
 	PCBCase/case -n -o $@ $< --edge=2 --base=2 --top=7
 	@echo "difference(){top();translate([3,34,-1])cube([45,30,10]);}" >> $@
 	@echo "translate([spacing,0,0])base();" >> $@
