@@ -21,8 +21,8 @@
 #define	RO	0x7F
 
 #define settings  \
-  io(tx,27)      \
-  io(rx,-26)     \
+  io(tx,13)      \
+  io(rx,-14)     \
   io(run,19)  \
   io(pwr,21)      \
   io(mtr,22)  \
