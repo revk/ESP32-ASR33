@@ -18,7 +18,9 @@ Note this document describes the new ESP32-PICO-MINI-02 based board.
 
 The hardware has a USB-C connector that is used for power. In my ASR33 I have a simple one gang extension lead which has USB power, and this is used with a USB lead to power the controller.
 
-The USB is also used for programming the ESP32 module. It can be used with your own software for serial USB, but note that RTS is used to control the reset line (EN) so should not be asserted. DTR is connected to GPIO0. This arrangement works with the ESP IDF `esptools` to allow flashing of the ESP32.
+The USB ma also be used for programming the ESP32 module. It can be used with your own software for serial USB, but note that RTS is used to control the reset line (EN) so should not be asserted. DTR is connected to GPIO0. This arrangement works with the ESP IDF `esptools` to allow flashing of the ESP32.
+
+Note: In some cases the boards may be supplied without the USB/UART (e.g. if no supply available). In which case they can be programmed using a 5 pin header with a [Tasmotizer](https://github.com/revk/Tasmotizer-PCB) board. The USB-C connectory can still be used for power.
 
 The unit can alternatively be powered by DC supply (4V-40V)
 
