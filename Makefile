@@ -10,10 +10,13 @@ MODELS := ASR33 ASR33h
 all:    
 	@echo Make: $(PROJECT_NAME)$(SUFFIX).bin
 	@idf.py build
-	@cp build/$(PROJECT_NAME).bin $(PROJECT_NAME)$(SUFFIX).bin
+	@cp --remove-destination build/$(PROJECT_NAME).bin $(PROJECT_NAME)$(SUFFIX).bin
 	@echo Done: $(PROJECT_NAME)$(SUFFIX).bin
 
 tools:	asr33 punch asrtweet
+
+issue:  set
+	cp --remove-destination ASR33*.bin release
 
 set:    wroom solo pico
 
