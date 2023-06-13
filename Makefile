@@ -18,7 +18,7 @@ issue:
 	-git submodule update --recursive
 	-git commit -a -m checkpoint
 	@make set
-	cp --remove-destination LED*.bin release
+	cp --remove-destination ASR33*.bin release
 	git commit -a -m release
 	git push
 
