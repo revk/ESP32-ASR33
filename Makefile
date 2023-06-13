@@ -13,10 +13,16 @@ all:
 	@cp --remove-destination build/$(PROJECT_NAME).bin $(PROJECT_NAME)$(SUFFIX).bin
 	@echo Done: $(PROJECT_NAME)$(SUFFIX).bin
 
-tools:	asr33 punch asrtweet
+issue:
+	-git pull
+	-git submodule update --recursive
+	-git commit -a -m checkpoint
+	@make set
+	cp --remove-destination LED*.bin release
+	git commit -a -m release
+	git push
 
-issue:  set
-	cp --remove-destination ASR33*.bin release
+tools:	asr33 punch asrtweet
 
 set:    wroom solo pico
 
