@@ -2,7 +2,6 @@
 // Copyright © 2019 Adrian Kennard, Andrews & Arnold Ltd. See LICENCE file for details. GPL 3.0
 
 #include "revk.h"
-#include <esp_spi_flash.h>
 #include <driver/gpio.h>
 #include "softuart.h"
 #include "tty.h"
