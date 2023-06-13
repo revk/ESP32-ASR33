@@ -678,6 +678,7 @@ asr33_main (void *param)
          {                      // Online
             sendstring ("LISTENING ON ");
             char temp[50];
+#ifdef CONFIG_LWIP_IPV6
             esp_ip6_addr_t ip;
             if (!esp_netif_get_ip6_global (sta_netif, &ip) && ip.addr)
             {
@@ -685,6 +686,7 @@ asr33_main (void *param)
                sendstring (temp);
                sendstring (" & ");
             }
+#endif
             esp_netif_ip_info_t ip4;
             if (!esp_netif_get_ip_info (sta_netif, &ip4))
             {
