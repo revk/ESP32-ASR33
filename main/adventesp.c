@@ -66,3 +66,21 @@ char *readline(const char *prompt)
       pesend("", 1);
    return strdup(line);
 }
+
+void
+cheese (void)
+{
+   sendline ("\007\r\n\200\200\200\200\200\200\200\200\200\200+++\200\200\200\200\200\200\200\200\200\200",-1);
+   const char *e[] = {          // Some error messages
+      "??++ OUT OF CHEESE ERROR. REDO FROM START.",   //
+      "Mr. Jelly! Mr. Jelly!",  //
+      "Error At Address: 14, Treacle Mine Road, Ankh-Morpork",  //
+      "MELON MELON MELON",      //
+      "Divide By Cucumber Error. Please Reinstall Universe And Reboot", //
+      "Whoops! Here Comes The Cheese!", //
+      "Oneoneoneoneoneoneone",  //
+   };
+   sendline (e[esp_random () % (sizeof (e) / sizeof (*e))], -1);
+   sendline ("+++\r\n\r\n\007\007", -1);
+}
+

@@ -6,6 +6,7 @@
 #include <driver/gpio.h>
 #include "softuart.h"
 #include "tty.h"
+#include "adventesp.h"
 
 #define	NUL	0
 #define	EOT	4
@@ -96,7 +97,8 @@ const unsigned char small_f[256][5] = {
 #include "smallfont.h"
 };
 
-static inline uint8_t pe(uint8_t b)
+static inline uint8_t
+pe (uint8_t b)
 {                               // Make even parity
    b &= 0x7F;
    for (int i = 0; i < 7; i++)
@@ -105,9 +107,10 @@ static inline uint8_t pe(uint8_t b)
    return b;
 }
 
-void sendbyte(uint8_t b)
+void
+sendbyte (uint8_t b)
 {
-   tty_tx(b);
+   tty_tx (b);
    b &= 0x7F;
    if (b == CR)
       pos = 0;
@@ -115,37 +118,41 @@ void sendbyte(uint8_t b)
       pos++;
 }
 
-void cr(void)
+void
+cr (void)
 {                               // Do a carriage return
-   sendbyte(pe(CR));
+   sendbyte (pe (CR));
 }
 
-void nl(void)
+void
+nl (void)
 {                               // Do new line
-   cr();
-   sendbyte(pe(LF));
+   cr ();
+   sendbyte (pe (LF));
 }
 
-void sendstring(const char *c)
+void
+sendstring (const char *c)
 {                               // Simple text string, with wrap and \n for line breaks
    if (c)
       while (*c)
       {
          if (*c == LF)
-            nl();
+            nl ();
          else
          {
             if (pos >= linelen)
-               nl();
-            sendbyte(pe(*c));
+               nl ();
+            sendbyte (pe (*c));
          }
          c++;
       }
 }
 
-int queuebig(int c)
+int
+queuebig (int c)
 {                               // Send a big character for tape
-   if (c >= sizeof(small_f) / sizeof(&small_f))
+   if (c >= sizeof (small_f) / sizeof (&small_f))
       return 0;
    const unsigned char *d = small_f[c];
    if (!*d && c >= 'a' && c <= 'z')
@@ -160,10 +167,10 @@ int queuebig(int c)
    while (l--)
    {
       uint8_t c = *d++;
-      sendbyte(c);
+      sendbyte (c);
       c &= 0x7f;
       if (!nodc4 && c == DC4)
-         sendbyte(DC2);
+         sendbyte (DC2);
       if (c == WRU)
       {
          suppress = 1;
@@ -173,20 +180,22 @@ int queuebig(int c)
    return 1;
 }
 
-void reportstate(void)
+void
+reportstate (void)
 {
-   uint64_t t = esp_timer_get_time();
-   jo_t j = jo_object_alloc();
-   jo_litf(j, "up", "%d.%06d", (uint32_t) (t / 1000000LL), (uint32_t) (t % 1000000LL));
-   jo_bool(j, "power", on);
-   jo_bool(j, "break", brk);
-   jo_bool(j, "busy", busy);
+   uint64_t t = esp_timer_get_time ();
+   jo_t j = jo_object_alloc ();
+   jo_litf (j, "up", "%d.%06d", (uint32_t) (t / 1000000LL), (uint32_t) (t % 1000000LL));
+   jo_bool (j, "power", on);
+   jo_bool (j, "break", brk);
+   jo_bool (j, "busy", busy);
    if (port)
-      jo_bool(j, "connected", csock >= 0);
-   revk_state(NULL, &j);
+      jo_bool (j, "connected", csock >= 0);
+   revk_state (NULL, &j);
 }
 
-void power_off(void)
+void
+power_off (void)
 {
    if (!on)
       return;                   // Already off
@@ -195,142 +204,145 @@ void power_off(void)
    hayes = 0;
    doecho = !noecho;
    xoff = 0;
-   reportstate();
-   tty_flush();
-   tty_xoff();
-   usleep(100000);
+   reportstate ();
+   tty_flush ();
+   tty_xoff ();
+   usleep (100000);
    if (mtr || *mtrtopic)
    {                            // Motor direct control, off
       if (*mtrtopic)
-         revk_mqtt_send_raw(mtrtopic, 0, "0", 0);
+         revk_mqtt_send_raw (mtrtopic, 0, "0", 0);
       if (mtr)
-         gpio_set_level(port_mask(mtr), port_inv(mtr)); // Off
-      sleep(1);                 // Takes time for motor to spin down - ensure this is done before power goes off
+         gpio_set_level (port_mask (mtr), port_inv (mtr));      // Off
+      sleep (1);                // Takes time for motor to spin down - ensure this is done before power goes off
    }
    if (pwr || *pwrtopic)
    {
       if (*pwrtopic)
-         revk_mqtt_send_raw(pwrtopic, 0, "0", 0);
+         revk_mqtt_send_raw (pwrtopic, 0, "0", 0);
       if (pwr)
-         gpio_set_level(port_mask(pwr), port_inv(pwr)); // Off
+         gpio_set_level (port_mask (pwr), port_inv (pwr));      // Off
    }
    on = 0;
-   reportstate();
+   reportstate ();
 }
 
-void power_on(void)
+void
+power_on (void)
 {
-   done = esp_timer_get_time() + 1000000 * (power > 1 ? keyidle : idle);
+   done = esp_timer_get_time () + 1000000 * (power > 1 ? keyidle : idle);
    if (on)
       return;                   // Already on
    if (pwr || *pwrtopic)
    {                            // Power, direct control, on
       if (*pwrtopic)
-         revk_mqtt_send_raw(pwrtopic, 0, "1", 0);
+         revk_mqtt_send_raw (pwrtopic, 0, "1", 0);
       if (pwr)
-         gpio_set_level(port_mask(pwr), 1 - port_inv(pwr));     // On
-      usleep(100000);           // Min is 20ms for zero crossing, and 9ms for one bit for solenoid, but can be longer for safety
+         gpio_set_level (port_mask (pwr), 1 - port_inv (pwr));  // On
+      usleep (100000);          // Min is 20ms for zero crossing, and 9ms for one bit for solenoid, but can be longer for safety
    }
    if (mtr || *mtrtopic)
    {                            // Motor, direct control, on
       if (*mtrtopic)
-         revk_mqtt_send_raw(mtrtopic, 0, "1", 0);
+         revk_mqtt_send_raw (mtrtopic, 0, "1", 0);
       if (mtr)
-         gpio_set_level(port_mask(mtr), 1 - port_inv(mtr));     // On
-      usleep(250000);           // Min 100ms for a null character from power off, and some for motor to start and get to speed
+         gpio_set_level (port_mask (mtr), 1 - port_inv (mtr));  // On
+      usleep (250000);          // Min 100ms for a null character from power off, and some for motor to start and get to speed
    }
    on = 1;
-   reportstate();
-   tty_xon();
+   reportstate ();
+   tty_xon ();
 }
 
-const char *app_callback(int client, const char *prefix, const char *target, const char *suffix, jo_t j)
+const char *
+app_callback (int client, const char *prefix, const char *target, const char *suffix, jo_t j)
 {
-   if (client || target || !prefix || strcmp(prefix, "command"))
+   if (client || target || !prefix || strcmp (prefix, "command"))
       return NULL;              // Not what we want
-   if (!strcmp(suffix, "status"))
-      reportstate();
-   if (!strcmp(suffix, "connect"))
+   if (!strcmp (suffix, "status"))
+      reportstate ();
+   if (!strcmp (suffix, "connect"))
    {
       if (*pwrtopic)
-         revk_mqtt_send_raw(pwrtopic, 0, on ? "1" : "0", 0);
+         revk_mqtt_send_raw (pwrtopic, 0, on ? "1" : "0", 0);
       if (*mtrtopic)
-         revk_mqtt_send_raw(mtrtopic, 0, on ? "1" : "0", 0);
-      reportstate();
+         revk_mqtt_send_raw (mtrtopic, 0, on ? "1" : "0", 0);
+      reportstate ();
    }
-   if (!strcmp(suffix, "restart"))
+   if (!strcmp (suffix, "restart"))
       power = -1;
-   if (!strcmp(suffix, "cave"))
+   if (!strcmp (suffix, "cave"))
       docave = 1;
-   if (!strcmp(suffix, "on"))
+   if (!strcmp (suffix, "on"))
       power = 2;
-   if (!strcmp(suffix, "off"))
+   if (!strcmp (suffix, "off"))
       power = -1;
-   if (!strcmp(suffix, "echo"))
+   if (!strcmp (suffix, "echo"))
       doecho = 1;
-   if (!strcmp(suffix, "noecho"))
+   if (!strcmp (suffix, "noecho"))
       doecho = 0;
-   if (!strcmp(suffix, "break"))
+   if (!strcmp (suffix, "break"))
    {
       power = 1;
       int chars = 10;
-      if (j && jo_here(j) == JO_NUMBER)
-         chars = jo_read_int(j);
-      tty_break(chars);
+      if (j && jo_here (j) == JO_NUMBER)
+         chars = jo_read_int (j);
+      tty_break (chars);
    }
-   if (!strcmp(suffix, "uartstats"))
+   if (!strcmp (suffix, "uartstats"))
    {
       softuart_stats_t s;
-      tty_stats(&s);
-      jo_t j = jo_object_alloc();
-      jo_int(j, "tx", s.tx);
-      jo_int(j, "rx", s.rx);
-      jo_int(j, "rxbadstart", s.rxbadstart);
-      jo_int(j, "rxbadstop", s.rxbadstop);
-      jo_int(j, "rxbad0", s.rxbad0);
-      jo_int(j, "rxbad1", s.rxbad1);
-      revk_info("uartstats", &j);
+      tty_stats (&s);
+      jo_t j = jo_object_alloc ();
+      jo_int (j, "tx", s.tx);
+      jo_int (j, "rx", s.rx);
+      jo_int (j, "rxbadstart", s.rxbadstart);
+      jo_int (j, "rxbadstop", s.rxbadstop);
+      jo_int (j, "rxbad0", s.rxbad0);
+      jo_int (j, "rxbad1", s.rxbad1);
+      revk_info ("uartstats", &j);
    }
 
-   if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw") || !strcmp(suffix, "text") || !strcmp(suffix, "line") || !strcmp(suffix, "bell"))
+   if (!strcmp (suffix, "tape") || !strcmp (suffix, "taperaw") || !strcmp (suffix, "text") || !strcmp (suffix, "line")
+       || !strcmp (suffix, "bell"))
    {                            // Plain text functions - simple JSON string
-      int len = jo_strlen(j);
+      int len = jo_strlen (j);
       if (len < 0)
          return "JSON string expected";
-      char *buf = jo_strdup(j),
-          *value = buf;
+      char *buf = jo_strdup (j),
+         *value = buf;
       if (!buf)
          return "Malloc";
-      if (!strcmp(suffix, "tape") || !strcmp(suffix, "taperaw"))
+      if (!strcmp (suffix, "tape") || !strcmp (suffix, "taperaw"))
       {                         // Punched tape text
          power = 1;
          if (!suffix[4])
          {
             if (!nodc4)
-               sendbyte(DC2);   // Tape on
+               sendbyte (DC2);  // Tape on
             for (int i = 0; i < tapelead; i++)
-               sendbyte(NUL);
+               sendbyte (NUL);
          }
-         if (!strcmp(suffix, "taperaw"))
+         if (!strcmp (suffix, "taperaw"))
             while (len--)
-               sendbyte(*value++);      // Raw
+               sendbyte (*value++);     // Raw
          else                   // Large text
             while (len--)
             {
-               if (!queuebig(*value++))
+               if (!queuebig (*value++))
                   continue;
                if (len)
-                  sendbyte(NUL);
+                  sendbyte (NUL);
             }
          if (!suffix[4])
          {
             for (int i = 0; i < tapetail; i++)
-               sendbyte(NUL);
+               sendbyte (NUL);
             if (!nodc4)
-               sendbyte(DC4);   // Tape off
+               sendbyte (DC4);  // Tape off
          }
       }
-      if (!strcmp(suffix, "text") || !strcmp(suffix, "line") || !strcmp(suffix, "bell"))
+      if (!strcmp (suffix, "text") || !strcmp (suffix, "line") || !strcmp (suffix, "bell"))
       {
          power = 1;
          while (len--)
@@ -339,7 +351,8 @@ const char *app_callback(int client, const char *prefix, const char *target, con
             // We assume this is utf-8
             if ((b & 0xC0) == 0x80)
                b = 0x7F;        // Silly, not even utf-8, rub out
-            else if ((b & 0xF8) == 0xF0 && len >= 3 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80 && (value[2] & 0xC0) == 0x80)
+            else if ((b & 0xF8) == 0xF0 && len >= 3 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80
+                     && (value[2] & 0xC0) == 0x80)
             {
                b = (value[2] & 0x3F) + ((value[1] & 0x3F) << 6) + ((value[0] & 0x3F) << 12) + ((b & 0x07) << 18);
                value += 3;
@@ -371,61 +384,62 @@ const char *app_callback(int client, const char *prefix, const char *target, con
             if (b >= 0x80)
                b = 0x5E;        // Other unicode so print as Up arrow
             if (b >= ' ' && b < 0x7F && pos >= linelen)
-               nl();            // Force newline as would overprint
+               nl ();           // Force newline as would overprint
             if (b == LF)
-               nl();            // We want a new line (does CR too)
+               nl ();           // We want a new line (does CR too)
             else if (b == CR)
             {                   // Explicit CR, let's assume no NL
-               cr();            // We want a carriage return
-               sendbyte(NUL);   // Assuming no LF, need extra null
+               cr ();           // We want a carriage return
+               sendbyte (NUL);  // Assuming no LF, need extra null
             } else
-               sendbyte(pe(b));
+               sendbyte (pe (b));
          }
-         if (!strcmp(suffix, "line") || !strcmp(suffix, "bell"))
+         if (!strcmp (suffix, "line") || !strcmp (suffix, "bell"))
          {
-            cr();
-            nl();
-            if (!strcmp(suffix, "bell"))
-               sendbyte(pe(BEL));
+            cr ();
+            nl ();
+            if (!strcmp (suffix, "bell"))
+               sendbyte (pe (BEL));
          }
       }
       return "";
    }
-   if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw") || !strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
+   if (!strcmp (suffix, "tx") || !strcmp (suffix, "txraw") || !strcmp (suffix, "raw") || !strcmp (suffix, "punch")
+       || !strcmp (suffix, "punchraw"))
    {
       // Functions that expect hex data
-      int len = jo_strncpy(j, NULL, 0);
+      int len = jo_strncpy (j, NULL, 0);
       if (len < 0)
          return "Expecting JSON string";
 
-      char *buf = malloc(len),
-          *value = buf;
+      char *buf = malloc (len),
+         *value = buf;
       if (!buf)
          return "Malloc";
-      jo_strncpy(j, buf, len);
-      if (!strcmp(suffix, "tx") || !strcmp(suffix, "txraw") || !strcmp(suffix, "raw"))
+      jo_strncpy (j, buf, len);
+      if (!strcmp (suffix, "tx") || !strcmp (suffix, "txraw") || !strcmp (suffix, "raw"))
       {                         // raw send
          power = 1;
          while (len--)
-            sendbyte(*value++);
+            sendbyte (*value++);
       }
-      if (!strcmp(suffix, "punch") || !strcmp(suffix, "punchraw"))
+      if (!strcmp (suffix, "punch") || !strcmp (suffix, "punchraw"))
       {                         // Raw punched data (with DC2/DC4)
          power = 1;
          if (!nodc4)
-            sendbyte(DC2);      // Tape on
+            sendbyte (DC2);     // Tape on
          if (!suffix[5])
          {
             for (int i = 0; i < tapelead; i++)
-               sendbyte(NUL);
+               sendbyte (NUL);
          }
          while (len--)
          {
             uint8_t c = *value++;
-            sendbyte(c);
+            sendbyte (c);
             c &= 0x7f;
             if (!nodc4 && c == DC4)
-               sendbyte(DC2);   // Turn tape back on
+               sendbyte (DC2);  // Turn tape back on
             if (c == WRU)
             {
                suppress = 1;    // Suppress WRU response
@@ -435,24 +449,25 @@ const char *app_callback(int client, const char *prefix, const char *target, con
          if (!suffix[5])
          {
             for (int i = 0; i < tapetail; i++)
-               sendbyte(NUL);
+               sendbyte (NUL);
          }
          if (!nodc4)
-            sendbyte(DC4);      // Tape off
+            sendbyte (DC4);     // Tape off
       }
-      free(buf);
+      free (buf);
    }
    return "";
 }
 
-void asr33_main(void *param)
+void
+asr33_main (void *param)
 {
-   revk_boot(&app_callback);
+   revk_boot (&app_callback);
 #define u32(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u16(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define u8(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
 #define s8(n,d) revk_register(#n,0,sizeof(n),&n,#d,SETTING_SIGNED);
-#define io(n,d) revk_register(#n,0,sizeof(n),&n,"- "#d,SETTING_SET|SETTING_BITFIELD);
+#define io(n,d) revk_register(#n,0,sizeof(n),&n,"- "#d,SETTING_SET|SETTING_BITFIELD|SETTING_FIX);
 #define u1(n) revk_register(#n,0,sizeof(n),&n,NULL,SETTING_BOOLEAN);
 #define u1t(n) revk_register(#n,0,sizeof(n),&n,"1",SETTING_BOOLEAN);
 #define t(n) revk_register(#n,0,0,&n,NULL,0);
@@ -465,49 +480,50 @@ void asr33_main(void *param)
 #undef io
 #undef u1
 #undef u1t
-   revk_start();
+   revk_start ();
    doecho = !noecho;
 
-   tty_setup();
+   tty_setup ();
 
    if (run)
    {                            // RUN input
-      gpio_set_direction(port_mask(run), GPIO_MODE_INPUT);
-      gpio_set_pull_mode(port_mask(run), GPIO_PULLUP_ONLY);
-      gpio_pullup_en(port_mask(run));
+      gpio_set_direction (port_mask (run), GPIO_MODE_INPUT);
+      gpio_set_pull_mode (port_mask (run), GPIO_PULLUP_ONLY);
+      gpio_pullup_en (port_mask (run));
    }
    if (pwr)
    {                            // PWR output
-      gpio_set_level(port_mask(pwr), port_inv(pwr));    // Off
-      gpio_set_direction(port_mask(pwr), GPIO_MODE_OUTPUT);
+      gpio_set_level (port_mask (pwr), port_inv (pwr)); // Off
+      gpio_set_direction (port_mask (pwr), GPIO_MODE_OUTPUT);
    }
    if (mtr)
    {                            // MTR output
-      gpio_set_level(port_mask(mtr), port_inv(mtr));    // Off
-      gpio_set_direction(port_mask(mtr), GPIO_MODE_OUTPUT);
+      gpio_set_level (port_mask (mtr), port_inv (mtr)); // Off
+      gpio_set_direction (port_mask (mtr), GPIO_MODE_OUTPUT);
    }
    if (port)
-      lsock = socket(AF_INET6, SOCK_STREAM, 0); // IPPROTO_IPV6);
+      lsock = socket (AF_INET6, SOCK_STREAM, 0);        // IPPROTO_IPV6);
    if (lsock >= 0)
    {
       struct sockaddr_storage dest_addr;
       struct sockaddr_in6 *dest_addr_ip6 = (struct sockaddr_in6 *) &dest_addr;
-      bzero(&dest_addr_ip6->sin6_addr.un, sizeof(dest_addr_ip6->sin6_addr.un));
+      bzero (&dest_addr_ip6->sin6_addr.un, sizeof (dest_addr_ip6->sin6_addr.un));
       dest_addr_ip6->sin6_family = AF_INET6;
-      dest_addr_ip6->sin6_port = htons(port);
-      if (bind(lsock, (struct sockaddr *) &dest_addr, sizeof(dest_addr)))
+      dest_addr_ip6->sin6_port = htons (port);
+      if (bind (lsock, (struct sockaddr *) &dest_addr, sizeof (dest_addr)))
       {
-         close(lsock);
+         close (lsock);
          lsock = -1;
       }
    }
-   if (lsock >= 0 && listen(lsock, 1))
+   if (lsock >= 0 && listen (lsock, 1))
    {
-      close(lsock);
+      close (lsock);
       lsock = -1;
    }
-   tty_xoff();
-   void doconnect(const char *line) {
+   tty_xoff ();
+   void doconnect (const char *line)
+   {
       if (csock >= 0)
          return;
       const struct addrinfo hints = {
@@ -516,40 +532,41 @@ void asr33_main(void *param)
          .ai_flags = AI_CANONNAME,
       };
       char ports[20];
-      sprintf(ports, "%d", port);
+      sprintf (ports, "%d", port);
       struct addrinfo *res = NULL,
-          *a;
-      int err = getaddrinfo(line, ports, &hints, &res);
+         *a;
+      int err = getaddrinfo (line, ports, &hints, &res);
       if (err || !res)
-         sendstring("+++ HOST NAME NOT FOUND +++\n");
+         sendstring ("+++ HOST NAME NOT FOUND +++\n");
       else
       {
          for (a = res; a; a = a->ai_next)
          {
-            int s = socket(a->ai_family, a->ai_socktype, a->ai_protocol);
+            int s = socket (a->ai_family, a->ai_socktype, a->ai_protocol);
             if (s >= 0)
             {
-               if (!connect(s, a->ai_addr, a->ai_addrlen))
+               if (!connect (s, a->ai_addr, a->ai_addrlen))
                {
                   csock = s;
-                  jo_t j = jo_object_alloc();
+                  jo_t j = jo_object_alloc ();
                   if (res && res->ai_canonname)
-                     jo_string(j, "target", res->ai_canonname);
-                  revk_event("connect", &j);
+                     jo_string (j, "target", res->ai_canonname);
+                  revk_event ("connect", &j);
                   break;
                }
-               close(s);
+               close (s);
             }
          }
-         freeaddrinfo(res);
+         freeaddrinfo (res);
       }
    }
-   if (run && gpio_get_level(port_mask(run)) != port_inv(run))
+   if (run && gpio_get_level (port_mask (run)) != port_inv (run))
       pressed = 1;              // Initial state for RUN/STOP button
-   void dorun(void) {           // RUN button manual start
+   void dorun (void)
+   {                            // RUN button manual start
       power = 2;
       if (*autoconnect)
-         doconnect(autoconnect);
+         doconnect (autoconnect);
       if (csock < 0)
       {
          if (autoprompt)
@@ -559,22 +576,22 @@ void asr33_main(void *param)
       }
    }
    if (autoon)
-      dorun();
+      dorun ();
    while (1)
    {
-      usleep(10000);
-      int64_t now = esp_timer_get_time();
+      usleep (10000);
+      int64_t now = esp_timer_get_time ();
       int64_t gap = now - lastrx;
       if (csock >= 0)
-         revk_blink(1, 0, tty_tx_waiting()? "CR" : "C");
+         revk_blink (1, 0, tty_tx_waiting ()? "CR" : "C");
       else if (hayes > 3)
-         revk_blink(1, 0, "M");
+         revk_blink (1, 0, "M");
       else if (on)
-         revk_blink(1, 0, tty_tx_waiting()? "RG" : "G");
+         revk_blink (1, 0, tty_tx_waiting ()? "RG" : "G");
       else
-         revk_blink(0, 0, NULL);
+         revk_blink (0, 0, NULL);
       // Handle RUN button
-      if (run && gpio_get_level(port_mask(run)) != port_inv(run))
+      if (run && gpio_get_level (port_mask (run)) != port_inv (run))
       {                         // RUN button
          if (!pressed)
          {                      // Button pressed
@@ -582,66 +599,66 @@ void asr33_main(void *param)
             if (on)
                power = -1;      // Turn off
             else
-               dorun();
+               dorun ();
          }
       } else
          pressed = 0;
       // Handle power change
       if (power < 0)
       {                         // Power off
-         if (on && !tty_tx_waiting())
+         if (on && !tty_tx_waiting ())
          {                      // Do power off once tx done
             if (csock >= 0)
             {                   // Close connection
-               close(csock);
+               close (csock);
                csock = -1;
-               jo_t j = jo_object_alloc();
-               jo_string(j, "reason", "power");
-               revk_event("closed", &j);
+               jo_t j = jo_object_alloc ();
+               jo_string (j, "reason", "power");
+               revk_event ("closed", &j);
             }
-            power_off();
+            power_off ();
          }
       } else if (power)
       {
          if (!on)
-            power_on();
+            power_on ();
       }
       // Check tx buffer usage
-      if (tty_tx_space() < 4096)
+      if (tty_tx_space () < 4096)
       {
          if (!busy)
          {
             busy = 1;
-            reportstate();
+            reportstate ();
          }
       } else
       {
          if (busy)
          {
             busy = 0;
-            reportstate();
+            reportstate ();
          }
       }
       // Handle incoming connection
       if (lsock >= 0 && csock < 0)
       {                         // Allow for connection
          fd_set s;
-         FD_ZERO(&s);
-         FD_SET(lsock, &s);
+         FD_ZERO (&s);
+         FD_SET (lsock, &s);
          struct timeval timeout = { };
-         if (select(lsock + 1, &s, NULL, NULL, &timeout) > 0)
+         if (select (lsock + 1, &s, NULL, NULL, &timeout) > 0)
          {
             struct sockaddr_storage source_addr;        // Large enough for both IPv4 or IPv6
-            socklen_t addr_len = sizeof(source_addr);
-            csock = accept(lsock, (struct sockaddr *) &source_addr, &addr_len);
+            socklen_t addr_len = sizeof (source_addr);
+            csock = accept (lsock, (struct sockaddr *) &source_addr, &addr_len);
             char addr_str[40] = "";
             if (source_addr.ss_family == PF_INET)
-               inet_ntoa_r(((struct sockaddr_in *) &source_addr)->sin_addr, addr_str, sizeof(addr_str) - 1);
+               inet_ntoa_r (((struct sockaddr_in *) &source_addr)->sin_addr, addr_str, sizeof (addr_str) - 1);
             else if (source_addr.ss_family == PF_INET6)
-               inet6_ntoa_r(((struct sockaddr_in6 *) &source_addr)->sin6_addr, addr_str, sizeof(addr_str) - 1);
-            jo_t j = jo_object_alloc();
-            jo_string(j, "ip", addr_str);
-            revk_event("connect", &j);
+               inet6_ntoa_r (((struct sockaddr_in6 *) &source_addr)->sin6_addr, addr_str, sizeof (addr_str) - 1);
+            jo_t j = jo_object_alloc ();
+            jo_string (j, "ip", addr_str);
+            revk_event ("connect", &j);
             power = 1;
          }
       }
@@ -649,70 +666,70 @@ void asr33_main(void *param)
       {                         // End of Hayes +++ escape sequence
          hayes++;               // Command prompt
          rxp = 0;
-         sendstring("\nASR33 CONTROLLER (BUILD ");
-         sendstring(revk_version);
-         sendstring(") ASR33.REVK.UK\n");
-         if (revk_link_down())
+         sendstring ("\nASR33 CONTROLLER (BUILD ");
+         sendstring (revk_version);
+         sendstring (") ASR33.REVK.UK\n");
+         if (revk_link_down ())
          {
-            sendstring("OFFLINE (SSID ");
-            sendstring(revk_wifi());
-            sendstring(")\n");
+            sendstring ("OFFLINE (SSID ");
+            sendstring (revk_wifi ());
+            sendstring (")\n");
          } else if (port)
          {                      // Online
-            sendstring("LISTENING ON ");
+            sendstring ("LISTENING ON ");
             char temp[50];
-            esp_ip_addr_t ip6;
-            if (!esp_netif_get_ip6_global(sta_netif, &ip6))
+            esp_ip6_addr_t ip;
+            if (!esp_netif_get_ip6_global (sta_netif, &ip) && ip.addr)
             {
-               inet6_ntoa_r(ip6, temp, sizeof(temp) - 1);
-               sendstring(temp);
-               sendstring(" & ");
+               sprintf (temp, IPV6STR, IPV62STR (ip));
+               sendstring (temp);
+               sendstring (" & ");
             }
             esp_netif_ip_info_t ip4;
-            if (!esp_netif_get_ip_info(sta_netif, &ip4))
+            if (!esp_netif_get_ip_info (sta_netif, &ip4))
             {
-               inet_ntoa_r(ip4.ip, temp, sizeof(temp) - 1);
-               sendstring(temp);
+               inet_ntoa_r (ip4.ip, temp, sizeof (temp) - 1);
+               sendstring (temp);
             }
-            sendstring("\nENTER IP/DOMAIN TO MAKE CONNECTION");
-            sprintf(temp, " (USING TCP PORT %d)", port);
-            sendstring(temp);
-            sendstring("\n");
+            sendstring ("\nENTER IP/DOMAIN TO MAKE CONNECTION");
+            sprintf (temp, " (USING TCP PORT %d)", port);
+            sendstring (temp);
+            sendstring ("\n");
             if (!nocave)
-               sendstring("OR ");
+               sendstring ("OR ");
          }
          if (!nocave)
-            sendstring("WOULD YOU LIKE TO PLAY A GAME? (Y/N)\n> ");
+            sendstring ("WOULD YOU LIKE TO PLAY A GAME? (Y/N)\n> ");
       }
       // Check tcp
       if (csock >= 0)
       {
          fd_set s;
-         FD_ZERO(&s);
-         FD_SET(csock, &s);
+         FD_ZERO (&s);
+         FD_SET (csock, &s);
          struct timeval timeout = { };
-         if (select(csock + 1, &s, NULL, NULL, &timeout) > 0)
+         if (select (csock + 1, &s, NULL, NULL, &timeout) > 0)
          {
             uint8_t b = 0;
-            int len = recv(csock, &b, 1, 0);
+            int len = recv (csock, &b, 1, 0);
             if (len <= 0)
             {                   // Closed
-               close(csock);
+               close (csock);
                csock = -1;
-               jo_t j = jo_object_alloc();
-               jo_string(j, "reason", "close");
-               revk_event("closed", &j);
+               jo_t j = jo_object_alloc ();
+               jo_string (j, "reason", "close");
+               revk_event ("closed", &j);
             } else
-               sendbyte(b);     // Raw send to teletype
+               sendbyte (b);    // Raw send to teletype
          }
       }
-      int len = tty_rx_ready();
+      int len = tty_rx_ready ();
       if (!len)
       {                         // Nothing waiting and not break
          if (brk)
          {                      // End of break
             brk = 0;
-            reportstate();
+            reportstate ();
          }
       } else if (len < 0)
       {                         // Break
@@ -721,14 +738,14 @@ void asr33_main(void *param)
             brk = 1;
             hayes = 0;
             rxp = 0;
-            reportstate();
+            reportstate ();
             if (csock >= 0)
             {                   // Close connection
-               close(csock);
+               close (csock);
                csock = -1;
-               jo_t j = jo_object_alloc();
-               jo_string(j, "reason", "break");
-               revk_event("closed", &j);
+               jo_t j = jo_object_alloc ();
+               jo_string (j, "reason", "break");
+               revk_event ("closed", &j);
                power = -1;
             }
          }
@@ -737,61 +754,69 @@ void asr33_main(void *param)
          if (power < 0)
             power = 0;          // Abort power off
          if (!on)
-            dorun();            // Must be not using power controls, so turn on for rx data
-         uint8_t b = tty_rx();
+            dorun ();           // Must be not using power controls, so turn on for rx data
+         uint8_t b = tty_rx ();
          if (csock >= 0)
-            send(csock, &b, 1, 0);      // Connected via TCP
+            send (csock, &b, 1, 0);     // Connected via TCP
          else
          {                      // Not connected via TCP
             if (gap > 250000)
                suppress = 0;    // Suppressed WRU response timeout can end
             if (hayes > 3)
             {                   // Hayes command prompt only
-               if (b == pe(CR) || b == pe(LF))
+               if (b == pe (CR) || b == pe (LF))
                {                // Command
-                  sendstring("\n");
+                  sendstring ("\n");
                   line[rxp] = 0;
                   hayes = 0;
                   rxp = 0;
-                  if (!strcmp(line, "Y") || !strcmp(line, "YES"))
+                  if (!strcmp (line, "Y") || !strcmp (line, "YES"))
                      docave = 1;
-                  else if (!strcmp(line, "N") || !strcmp(line, "NO"))
-                     sendstring("SHAME, BYE\n");
-                  else if (*line)
+                  else if (!strcmp (line, "N") || !strcmp (line, "NO"))
+                  {
+                     sendstring ("SHAME, BYE\n");
+                     cheese ();
+                  } else if (*line)
                   {             // DNS/IP?
-                     doconnect(line);
-                     sendstring(csock < 0 ? "+++ COULD NOT CONNECT +++\n" : "+++ CONNECTED +++\n");
+                     doconnect (line);
+                     sendstring (csock < 0 ? "+++ COULD NOT CONNECT +++\r\n" : "+++ CONNECTED +++\r\n");
+                     if (csock < 0)
+                        cheese ();
+                  } else
+                  {             // Blank input
+                     sendstring ("OK, BYE\r\n");
+                     cheese ();
                   }
                } else if ((b & 0x7f) >= ' ' && rxp < MAXRX)
                {
-                  sendbyte(b);  // echo
+                  sendbyte (b); // echo
                   line[rxp++] = (b & 0x7F);
                }
             } else
             {
                if (!hayes)
                {
-                  if (b == pe('+') && !rxp && gap > 1000000)
+                  if (b == pe ('+') && !rxp && gap > 1000000)
                      hayes++;
                } else
                {
-                  if (b != pe('+') || hayes >= 3 || gap > 1000000)
+                  if (b != pe ('+') || hayes >= 3 || gap > 1000000)
                      hayes = 0;
                   else
                      hayes++;
                }
                if (!suppress)
                {
-                  jo_t j = jo_object_alloc();
-                  jo_int(j, "byte", b);
-                  revk_event("rx", &j);
-                  if (b == pe(EOT))
+                  jo_t j = jo_object_alloc ();
+                  jo_int (j, "byte", b);
+                  revk_event ("rx", &j);
+                  if (b == pe (EOT))
                      power = -1;        // EOT to shut down
                   if ((b & 0x7F) == LF || (b & 0x7F) == CR)
                   {
-                     jo_t j = jo_create_alloc();
-                     jo_stringn(j, NULL, (void *) line, rxp);
-                     revk_event("line", &j);
+                     jo_t j = jo_create_alloc ();
+                     jo_stringn (j, NULL, (void *) line, rxp);
+                     revk_event ("line", &j);
                      rxp = 0;
                   } else if ((b & 0x7f) >= ' ' && rxp < MAXRX)
                      line[rxp++] = (b & 0x7F);
@@ -799,66 +824,66 @@ void asr33_main(void *param)
                   {             // Handling local characters and echoing (maybe, depends on xoff too)
                      if (dobig)
                      {          // Doing large lettering
-                        if (b == pe(DC4))
+                        if (b == pe (DC4))
                         {       // End
                            for (int i = 0; i < 9; i++)
-                              sendbyte(NUL);
-                           sendbyte(pe(DC4));
+                              sendbyte (NUL);
+                           sendbyte (pe (DC4));
                            dobig = 0;
-                        } else if (b == pe(b) && (b & 0x7F) >= 0x20 && queuebig(b & 0x7F))
-                           sendbyte(NUL);
-                     } else if (b == pe(DC2) && doecho && !nobig)
+                        } else if (b == pe (b) && (b & 0x7F) >= 0x20 && queuebig (b & 0x7F))
+                           sendbyte (NUL);
+                     } else if (b == pe (DC2) && doecho && !nobig)
                      {          // Start big lettering
-                        sendbyte(pe(DC2));
+                        sendbyte (pe (DC2));
                         for (int i = 0; i < 10; i++)
-                           sendbyte(NUL);
+                           sendbyte (NUL);
                         dobig = 1;
                      }
                      // else if (b == pe(RU) && !nocave) docave = 1;
-                     else if (b == pe(DC1))
+                     else if (b == pe (DC1))
                         xoff = 0;
-                     else if (b == pe(DC3))
+                     else if (b == pe (DC3))
                         xoff = 1;
-                     else if (b == pe(WRU) && (!nover || *wru))
+                     else if (b == pe (WRU) && (!nover || *wru))
                      {          // WRU
                         // See 3.27 of ISS 8, SECTION 574-122-700TC
-                        sendbyte(pe(CR));       // CR
-                        sendbyte(pe(LF));       // LF
-                        sendbyte(pe(0x7F));     // RO
-                        sendstring(wru);
+                        sendbyte (pe (CR));     // CR
+                        sendbyte (pe (LF));     // LF
+                        sendbyte (pe (0x7F));   // RO
+                        sendstring (wru);
                         if (!nover)
                         {
                            if (*wru)
-                              sendbyte(pe(' '));
-                           sendstring(revk_app);
-                           sendstring(" BUILD ");
-                           sendstring(revk_version);
+                              sendbyte (pe (' '));
+                           sendstring (revk_app);
+                           sendstring (" BUILD ");
+                           sendstring (revk_version);
                         }
-                        sendbyte(pe(CR));       // CR
-                        sendbyte(pe(LF));       // LF
+                        sendbyte (pe (CR));     // CR
+                        sendbyte (pe (LF));     // LF
                         if (ack)
-                           sendbyte(pe(ack));   // ACK
+                           sendbyte (pe (ack)); // ACK
                      } else if (!xoff)
-                        sendbyte(b);
+                        sendbyte (b);
                   }
                }
             }
          }
          lastrx = now;
       }
-      if (!tty_tx_waiting() && csock < 0)
+      if (!tty_tx_waiting () && csock < 0)
       {                         // Nothing to send
          if (docave)
          {                      // Let's play a game
             docave = 0;
-            extern int advent(void);
+            extern int advent (void);
             if (!busy)
             {
                busy = 1;
-               reportstate();
+               reportstate ();
             }
-            revk_blink(1, 0, "B");
-            advent();
+            revk_blink (1, 0, "B");
+            advent ();
             power = -1;
          } else if (on && now > done)
             power = -1;
@@ -867,8 +892,9 @@ void asr33_main(void *param)
    }
 }
 
-void app_main(void)
+void
+app_main (void)
 {
    TaskHandle_t task_id = NULL;
-   xTaskCreatePinnedToCore(asr33_main, "asr33", 20 * 1024, NULL, 2, &task_id, 1);
+   xTaskCreatePinnedToCore (asr33_main, "asr33", 20 * 1024, NULL, 2, &task_id, 1);
 }

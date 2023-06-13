@@ -8,4 +8,5 @@ extern uint8_t gameover;
 
 char *readline(const char *);
 void sendline(const char *, int);
+void cheese(void);
 #define	TAG "advent"
