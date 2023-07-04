@@ -79,6 +79,7 @@ cheese (void)
       "Divide By Cucumber Error. Please Reinstall Universe And Reboot", //
       "Whoops! Here Comes The Cheese!", //
       "Oneoneoneoneoneoneone",  //
+      "error code 746, divergent temporal instability",	// Actually from the disorganiser not HEX but seemed appropriate
    };
    sendline (e[esp_random () % (sizeof (e) / sizeof (*e))], -1);
    sendline ("+++\r\n\r\n\007\007", -1);
