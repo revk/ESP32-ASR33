@@ -679,7 +679,7 @@ asr33_main (void *param)
             char temp[50];
 #ifdef CONFIG_LWIP_IPV6
             esp_ip6_addr_t ip;
-            if (!esp_netif_get_ip6_global (sta_netif, &ip) && ip.addr)
+            if (!esp_netif_get_ip6_global (sta_netif, &ip))
             {
                sprintf (temp, IPV6STR, IPV62STR (ip));
                sendstring (temp);

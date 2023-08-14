@@ -10,7 +10,7 @@ MODELS := ASR33 ASR33h
 all:    
 	@echo Make: $(PROJECT_NAME)$(SUFFIX).bin
 	@idf.py build
-	@cp --remove-destination build/$(PROJECT_NAME).bin $(PROJECT_NAME)$(SUFFIX).bin
+	@cp build/$(PROJECT_NAME).bin $(PROJECT_NAME)$(SUFFIX).bin
 	@echo Done: $(PROJECT_NAME)$(SUFFIX).bin
 
 issue:
@@ -18,13 +18,17 @@ issue:
 	-git submodule update --recursive
 	-git commit -a -m checkpoint
 	@make set
-	cp --remove-destination ASR33*.bin release
+	cp ASR33*.bin release
 	git commit -a -m release
 	git push
 
 tools:	asr33 punch asrtweet
 
-set:    wroom solo pico
+set:    wroom solo pico s3
+
+s3:
+	components/ESP32-RevK/setbuildsuffix -S3-MINI-N4-R2
+	@make
 
 pico:
 	components/ESP32-RevK/setbuildsuffix -S1-PICO
