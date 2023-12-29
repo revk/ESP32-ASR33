@@ -213,6 +213,7 @@ main (int argc, const char *argv[])
    }
    if (mqttcafile && (e = mosquitto_tls_set (mqtt, mqttcafile, NULL, NULL, NULL, NULL)))
       warnx ("MQTT cert failed (%s) %s", mqttcafile, mosquitto_strerror (e));
+   mosquitto_reconnect_delay_set (mqtt, 5, 300, true);
    e = mosquitto_connect (mqtt, mqtthostname ? : "localhost", mqttport ? : mqttcafile ? 8883 : 1883, 60);
    if (e)
       errx (1, "MQTT connect failed %s", mosquitto_strerror (e));
