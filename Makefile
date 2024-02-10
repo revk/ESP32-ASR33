@@ -18,8 +18,8 @@ beta:
 	-git submodule update --recursive
 	-git commit -a -m checkpoint
 	@make set
-	cp ASR33*.bin release
-	git commit -a -m betarelease
+	cp ASR33*.bin betarelease
+	git commit -a -m release
 	git push
 
 issue:
@@ -27,9 +27,9 @@ issue:
 	-git submodule update --recursive
 	-git commit -a -m checkpoint
 	@make set
+	cp ASR33*.bin betarelease
 	cp ASR33*.bin release
-	git commit -a -m betarelease
-	git commit -a -m release
+	git commit -a -m betarelease release
 	git push
 
 tools:	asr33 punch asrtweet
