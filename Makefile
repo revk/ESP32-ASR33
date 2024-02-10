@@ -19,7 +19,7 @@ beta:
 	-git commit -a -m checkpoint
 	@make set
 	cp ASR33*.bin betarelease
-	git commit -a -m release
+	git commit -a -m betarelease
 	git push
 
 issue:
