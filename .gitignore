@@ -6,7 +6,7 @@
 *.old
 */*.old
 */*/*.old
-secure_.pem
+*.pem
 build/*
 sdkconfig
 punch
