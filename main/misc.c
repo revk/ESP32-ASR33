@@ -419,7 +419,7 @@ static bool is_valid_int(const char *str)
    // Check for non-digit chars in the rest of the stirng.
    while (*str)
    {
-      if (!isdigit((int)*str))
+      if (!is_digit(*str))
          return false;
       else
          ++str;
