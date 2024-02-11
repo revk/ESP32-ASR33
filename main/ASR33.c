@@ -20,57 +20,6 @@
 #define	DC4	0x14
 #define	RO	0x7F
 
-#define settings  \
-  io(tx,13)      \
-  io(rx,-14)     \
-  io(run,19)  \
-  io(pwr,21)      \
-  io(mtr,22)  \
-  u1(txod)	\
-  u1(txpu)	\
-  u1t(rxpu)	\
-  t(pwrtopic)	\
-  t(mtrtopic)	\
-  u1(noecho)	\
-  u1(nobig)	\
-  u1(nover)	\
-  t(wru)	\
-  u32(idle,1)	\
-  u32(keyidle,600)	\
-  u8(ack,6)	\
-  u8(think,10)	\
-  u1(nocave)	\
-  u1(autocave)	\
-  u1(autoon)	\
-  u1(autoprompt)	\
-  t(autoconnect)	\
-  u1(nodc4)	\
-  u8(tapelead,15) \
-  u8(tapetail,15) \
-  u16(port,33)	\
-  u16(baudx100,11000)	\
-  u8(databits,8)	\
-  u8(stopx2,4)	\
-  u8(linelen,72)	\
-  u16(crms,200)		\
-
-#define u32(n,d) uint32_t n;
-#define u16(n,d) uint16_t n;
-#define u8(n,d) uint8_t n;
-#define s8(n,d) int8_t n;
-#define io(n,d) uint16_t n;
-#define u1(n) uint8_t n;
-#define u1t(n) uint8_t n;
-#define t(n) const char*n=NULL;
-settings;
-#undef t
-#undef u32
-#undef u16
-#undef u8
-#undef s8
-#undef io
-#undef u1
-#undef u1t
 #define	MAXRX	256             // Line max
 
 volatile int8_t power = 0;      // power request, -1 means want off, 1 means want on, 2 means want on with long timeout
@@ -207,20 +156,18 @@ power_off (void)
    tty_flush ();
    tty_xoff ();
    usleep (100000);
-   if (mtr || *mtrtopic)
+   if (mtr.set || *mtrtopic)
    {                            // Motor direct control, off
       if (*mtrtopic)
          revk_mqtt_send_raw (mtrtopic, 0, "0", 0);
-      if (mtr)
-         gpio_set_level (port_mask (mtr), port_inv (mtr));      // Off
+      revk_gpio_set (mtr, 0);   // Off
       sleep (1);                // Takes time for motor to spin down - ensure this is done before power goes off
    }
-   if (pwr || *pwrtopic)
+   if (pwr.set || *pwrtopic)
    {
       if (*pwrtopic)
          revk_mqtt_send_raw (pwrtopic, 0, "0", 0);
-      if (pwr)
-         gpio_set_level (port_mask (pwr), port_inv (pwr));      // Off
+      revk_gpio_set (pwr, 0);   // Off
    }
    on = 0;
    reportstate ();
@@ -232,20 +179,18 @@ power_on (void)
    done = esp_timer_get_time () + 1000000 * (power > 1 ? keyidle : idle);
    if (on)
       return;                   // Already on
-   if (pwr || *pwrtopic)
+   if (pwr.set || *pwrtopic)
    {                            // Power, direct control, on
       if (*pwrtopic)
          revk_mqtt_send_raw (pwrtopic, 0, "1", 0);
-      if (pwr)
-         gpio_set_level (port_mask (pwr), 1 - port_inv (pwr));  // On
+      revk_gpio_set (pwr, 1);   // On
       usleep (100000);          // Min is 20ms for zero crossing, and 9ms for one bit for solenoid, but can be longer for safety
    }
-   if (mtr || *mtrtopic)
+   if (mtr.set || *mtrtopic)
    {                            // Motor, direct control, on
       if (*mtrtopic)
          revk_mqtt_send_raw (mtrtopic, 0, "1", 0);
-      if (mtr)
-         gpio_set_level (port_mask (mtr), 1 - port_inv (mtr));  // On
+      revk_gpio_set (mtr, 1);   // On
       usleep (250000);          // Min 100ms for a null character from power off, and some for motor to start and get to speed
    }
    on = 1;
@@ -462,44 +407,14 @@ void
 asr33_main (void *param)
 {
    revk_boot (&app_callback);
-#define u32(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
-#define u16(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
-#define u8(n,d) revk_register(#n,0,sizeof(n),&n,#d,0);
-#define s8(n,d) revk_register(#n,0,sizeof(n),&n,#d,SETTING_SIGNED);
-#define io(n,d) revk_register(#n,0,sizeof(n),&n,"- "#d,SETTING_SET|SETTING_BITFIELD|SETTING_FIX);
-#define u1(n) revk_register(#n,0,sizeof(n),&n,NULL,SETTING_BOOLEAN);
-#define u1t(n) revk_register(#n,0,sizeof(n),&n,"1",SETTING_BOOLEAN);
-#define t(n) revk_register(#n,0,0,&n,NULL,0);
-   settings;
-#undef t
-#undef u32
-#undef u16
-#undef u8
-#undef s8
-#undef io
-#undef u1
-#undef u1t
    revk_start ();
    doecho = !noecho;
 
    tty_setup ();
 
-   if (run)
-   {                            // RUN input
-      gpio_set_direction (port_mask (run), GPIO_MODE_INPUT);
-      gpio_set_pull_mode (port_mask (run), GPIO_PULLUP_ONLY);
-      gpio_pullup_en (port_mask (run));
-   }
-   if (pwr)
-   {                            // PWR output
-      gpio_set_level (port_mask (pwr), port_inv (pwr)); // Off
-      gpio_set_direction (port_mask (pwr), GPIO_MODE_OUTPUT);
-   }
-   if (mtr)
-   {                            // MTR output
-      gpio_set_level (port_mask (mtr), port_inv (mtr)); // Off
-      gpio_set_direction (port_mask (mtr), GPIO_MODE_OUTPUT);
-   }
+   revk_gpio_input (run);
+   revk_gpio_output (pwr);
+   revk_gpio_output (mtr);
    if (port)
       lsock = socket (AF_INET6, SOCK_STREAM, 0);        // IPPROTO_IPV6);
    if (lsock >= 0)
@@ -559,7 +474,7 @@ asr33_main (void *param)
          freeaddrinfo (res);
       }
    }
-   if (run && gpio_get_level (port_mask (run)) != port_inv (run))
+   if (revk_gpio_get (run))
       pressed = 1;              // Initial state for RUN/STOP button
    void dorun (void)
    {                            // RUN button manual start
@@ -590,7 +505,7 @@ asr33_main (void *param)
       else
          revk_blink (0, 0, NULL);
       // Handle RUN button
-      if (run && gpio_get_level (port_mask (run)) != port_inv (run))
+      if (revk_gpio_get (run))
       {                         // RUN button
          if (!pressed)
          {                      // Button pressed

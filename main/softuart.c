@@ -6,6 +6,7 @@
 // Receive sample by middle 3 samples majority in each bit
 // Would be nice some time to have some stats for bad start bits, and bad quality bits (e.g. 1 or 2 counts not 0 or 3)
 
+#include "revk.h"
 #include "softuart.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
@@ -216,11 +217,11 @@ bool IRAM_ATTR timer_isr(void *up)
 }
 
    // Set up
-softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uint8_t rxinv, uint16_t baudx100, uint8_t bits, uint8_t stopx2, uint8_t linelen, uint16_t crms)
+softuart_t *softuart_init(int8_t timer, revk_gpio_t tx, revk_gpio_t rx, int16_t baudx100, uint8_t bits, uint8_t stopx2, uint8_t linelen, uint16_t crms)
 {
-   if (timer < 0 || tx < 0 || rx < 0 || tx == rx ||     //
-       !GPIO_IS_VALID_OUTPUT_GPIO(tx)   //
-       || !GPIO_IS_VALID_GPIO(rx)       //
+   if (timer < 0 || !tx.set || !rx.set || tx.num == rx.num ||     //
+       !GPIO_IS_VALID_OUTPUT_GPIO(tx.num)   //
+       || !GPIO_IS_VALID_GPIO(rx.num)       //
        )
       return NULL;
    softuart_t *u = malloc(sizeof(*u));
@@ -231,22 +232,19 @@ softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uin
    u->baudx100 = (baudx100 ? : 11000);
    u->bits = (bits ? : 8);
    u->stops = ((stopx2 ? : 4) * STEPS + 1) / 2;
-   u->tx = tx;
-   u->txinv = txinv;
+   u->tx = tx.num;
+   u->txinv = tx.invert;
    u->txnext = 1;
-   u->rx = rx;
-   u->rxinv = rxinv;
+   u->rx = rx.num;
+   u->rxinv = rx.invert;
    u->rxlast = 1;
    u->timer = timer;
    u->linelen = linelen;
    u->pos = linelen;
    if (crms)
       u->crline = (uint32_t) crms *STEPS * baudx100 / 100000;
-   gpio_reset_pin(u->tx);
-   gpio_set(u->tx);
-   gpio_set_direction(u->tx, GPIO_MODE_OUTPUT);
-   gpio_reset_pin(u->rx);
-   gpio_set_direction(u->rx, GPIO_MODE_INPUT);
+   revk_gpio_output(tx);
+   revk_gpio_input(rx);
    return u;
 }
 

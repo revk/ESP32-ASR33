@@ -23,7 +23,7 @@ struct softuart_stats_s {
 };
 
 // Set up
-softuart_t *softuart_init(int8_t timer, int8_t tx, uint8_t txinv, int8_t rx, uint8_t rxinv, uint16_t baudx100, uint8_t bits, uint8_t stopx2, uint8_t linelen, uint16_t crm);
+softuart_t *softuart_init(int8_t timer, revk_gpio_t tx, revk_gpio_t rx, uint16_t baudx100, uint8_t bits, uint8_t stopx2, uint8_t linelen, uint16_t crm);
 void softuart_start(softuart_t *);
 void *softuart_end(softuart_t *);
 

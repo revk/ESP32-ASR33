@@ -1,0 +1,29 @@
+gpio	tx	13				// Tx
+gpio	rx	-14				// Rx
+gpio	run	19				// Run button input
+gpio	pwr	21				// Power relay control output
+gpio	mtr	22				// Motor relay control output
+s	pwrtopic
+s	mtrtopic
+bit	no.echo
+bit	no.big
+bit	no.ver
+bit	no.cave
+bit	no.dc4
+s	wru
+u32	idle	1
+u32	keyidle	600
+u8	ack	6
+u8	think	10
+bit	auto.cave
+bit	auto.on
+bit	auto.prompt
+s	auto.connect
+u8	tape.lead	15
+u8	tape.tail	15
+u16	port		33
+u16	baud		1100	.decimal=2
+u8	databits	8
+u8	stop		2	.decimal=1
+u8	linelen	72
+u16	crms		200

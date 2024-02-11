@@ -6,43 +6,16 @@
 #include "revk.h"
 #include "softuart.h"
 #include "tty.h"
-extern uint8_t rx;
-extern uint8_t rxpu;
-extern uint8_t tx;
-extern uint8_t txpu;
-extern uint8_t txod;
-extern uint16_t baudx100;
-extern uint8_t databits;
-extern uint8_t stopx2;
-extern uint8_t linelen;
-extern uint16_t crms;
 
 static softuart_t *u = NULL;
 
 void tty_setup(void)
 {                               // Does UART setup, expects uart to be set globally, UART number for hard, or negative for soft
-   u = softuart_init(0, port_mask(tx), port_inv(tx), port_mask(rx), port_inv(rx), baudx100, databits, stopx2, linelen, crms);
+   u = softuart_init(0, tx, rx, baud, databits, stop/5, linelen, crms);
    if (!u)
       ESP_LOGE("TTY", "Failed to init soft uart");
    else
       softuart_start(u);
-
-   if (rx)
-   {
-      if (rxpu)
-         gpio_pullup_en(port_mask(rx));
-      else
-         gpio_pullup_dis(port_mask(rx));
-   }
-   if (tx)
-   {
-      if (txod)
-         gpio_set_direction(tx, GPIO_MODE_DEF_OD);
-      if (txpu)
-         gpio_pullup_en(port_mask(tx));
-      else
-         gpio_pullup_dis(port_mask(tx));
-   }
 }
 
 void tty_flush(void)

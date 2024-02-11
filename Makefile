@@ -7,7 +7,7 @@ PROJECT_NAME := ASR33
 SUFFIX := $(shell components/ESP32-RevK/buildsuffix)
 MODELS := ASR33 ASR33h
 
-all:    
+all:    settings.h
 	@echo Make: $(PROJECT_NAME)$(SUFFIX).bin
 	@idf.py build
 	@cp build/$(PROJECT_NAME).bin $(PROJECT_NAME)$(SUFFIX).bin
@@ -31,6 +31,12 @@ issue:
 	cp ASR33*.bin release
 	git commit -a -m betarelease release
 	git push
+
+settings.h:     components/ESP32-RevK/revk_settings settings.def components/ESP32-RevK/settings.def
+	components/ESP32-RevK/revk_settings $^
+
+components/ESP32-RevK/revk_settings: components/ESP32-RevK/revk_settings.c
+	make -C components/ESP32-RevK
 
 tools:	asr33 punch asrtweet
 
