@@ -51,7 +51,7 @@ pico:
 	@make
 
 wroom:
-	components/ESP32-RevK/setbuildsuffix -S1
+	components/ESP32-RevK/setbuildsuffix -S1-V1
 	@make
 
 solo:  
