@@ -19,7 +19,7 @@ beta:
 	-git commit -a -m checkpoint
 	@make set
 	cp ASR33*.bin betarelease
-	git commit -a -m betarelease
+	git commit -a -m Beta
 	git push
 
 issue:
@@ -29,7 +29,7 @@ issue:
 	@make set
 	cp ASR33*.bin betarelease
 	cp ASR33*.bin release
-	git commit -a -m betarelease release
+	git commit -a -m Release
 	git push
 
 settings.h:     components/ESP32-RevK/revk_settings settings.def components/ESP32-RevK/settings.def
