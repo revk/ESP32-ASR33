@@ -217,7 +217,7 @@ bool IRAM_ATTR timer_isr(void *up)
 }
 
    // Set up
-softuart_t *softuart_init(int8_t timer, revk_gpio_t tx, revk_gpio_t rx, int16_t baudx100, uint8_t bits, uint8_t stopx2, uint8_t linelen, uint16_t crms)
+softuart_t *softuart_init(int8_t timer, revk_gpio_t tx, revk_gpio_t rx, uint16_t baudx100, uint8_t bits, uint8_t stopx2, uint8_t linelen, uint16_t crms)
 {
    if (timer < 0 || !tx.set || !rx.set || tx.num == rx.num ||     //
        !GPIO_IS_VALID_OUTPUT_GPIO(tx.num)   //
