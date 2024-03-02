@@ -10,7 +10,7 @@ bit	no.big					// No big text on paper tap
 bit	no.ver					// No version print
 bit	no.cave					// No colossal cave
 bit	no.dc4					// No DC4 handling (paper tape)
-s	wru					// Who aRe You string
+s	wru					// Who aRe yoU string
 u32	idle	1				// Idle time at end of remote
 u32	keyidle	600				// Key idle time
 u8	ack	6				// ACK
