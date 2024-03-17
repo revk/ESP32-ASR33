@@ -2033,7 +2033,7 @@
 		(sheetname "Root")
 		(sheetfile "ASR33.kicad_sch")
 		(zone_connect 1)
-		(attr through_hole exclude_from_bom)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.45 7.05)
 			(end -4.45 6.05)
@@ -9282,7 +9282,7 @@
 		(sheetname "Root")
 		(sheetfile "ASR33.kicad_sch")
 		(zone_connect 1)
-		(attr through_hole exclude_from_bom)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.45 7.05)
 			(end -4.45 6.05)
@@ -9709,7 +9709,7 @@
 		(sheetname "Root")
 		(sheetfile "ASR33.kicad_sch")
 		(zone_connect 1)
-		(attr through_hole exclude_from_bom)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -3.2 7.05)
 			(end -3.2 6.05)
@@ -11771,7 +11771,7 @@
 		(sheetname "Root")
 		(sheetfile "ASR33.kicad_sch")
 		(zone_connect 1)
-		(attr through_hole exclude_from_bom)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.45 7.05)
 			(end -4.45 6.05)
@@ -12198,7 +12198,7 @@
 		(sheetname "Root")
 		(sheetfile "ASR33.kicad_sch")
 		(zone_connect 1)
-		(attr through_hole exclude_from_bom)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -3.2 7.05)
 			(end -3.2 6.05)
