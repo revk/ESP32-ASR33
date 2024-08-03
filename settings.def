@@ -1,8 +1,8 @@
-gpio	tx	13				// Tx
-gpio	rx	-14				// Rx
-gpio	run	19				// Run button input
+gpio	tx	15				// Tx
+gpio	rx	-16				// Rx
+gpio	run	17				// Run button input
 gpio	pwr	21				// Power relay control output
-gpio	mtr	22				// Motor relay control output
+gpio	mtr	47				// Motor relay control output
 s	pwrtopic				// MQTT topic to control power relay
 s	mtrtopic				// MQTT topic to control motor relay
 bit	no.echo					// No local echo by default

@@ -224,7 +224,7 @@ softuart_t *softuart_init(int8_t timer, revk_gpio_t tx, revk_gpio_t rx, uint16_t
        || !GPIO_IS_VALID_GPIO(rx.num)       //
        )
       return NULL;
-   softuart_t *u = malloc(sizeof(*u));
+   softuart_t *u = heap_caps_malloc(sizeof(*u), MALLOC_CAP_INTERNAL);
    if (!u)
       return u;
    memset(u, 0, sizeof(*u));
@@ -243,7 +243,7 @@ softuart_t *softuart_init(int8_t timer, revk_gpio_t tx, revk_gpio_t rx, uint16_t
    u->pos = linelen;
    if (crms)
       u->crline = (uint32_t) crms *STEPS * baudx100 / 100000;
-   revk_gpio_output(tx);
+   revk_gpio_output(tx,1);
    revk_gpio_input(rx);
    return u;
 }
@@ -285,7 +285,7 @@ void *softuart_end(softuart_t * u)
       timer_disable_intr(0, u->timer);
    if (u->mutex)
       vSemaphoreDelete(u->mutex);
-   free(u);
+   heap_caps_free(u);
    return NULL;
 }
 

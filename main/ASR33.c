@@ -413,8 +413,8 @@ asr33_main (void *param)
    tty_setup ();
 
    revk_gpio_input (run);
-   revk_gpio_output (pwr);
-   revk_gpio_output (mtr);
+   revk_gpio_output (pwr,0);
+   revk_gpio_output (mtr,0);
    if (port)
       lsock = socket (AF_INET6, SOCK_STREAM, 0);        // IPPROTO_IPV6);
    if (lsock >= 0)
