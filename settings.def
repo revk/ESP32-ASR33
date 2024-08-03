@@ -26,4 +26,4 @@ u16	baud		110	.decimal=2	// Baud rate to decimal places
 u8	databits	8			// Data bits
 u8	stop		2	.decimal=1	// Stop bits multiples of 0.5 bits
 u8	linelen	72				// Line length characters
-u16	crms		200			// Time for CR (ms)
+u16	crtime		0.2	.decimal=3	// Time for CR (s)
