@@ -10,7 +10,7 @@ The ASR33 has a Tx and Rx pair that work passively, using 20mA current loop at 1
 
 Note this document describes the new ESP32-PICO-MINI-02 based board.
 
-![ASR33](ASR33.png)
+![324063](https://github.com/user-attachments/assets/efe73864-ae8f-4de6-aef4-12caa92fdde8)
 
 ### USB
 
@@ -36,7 +36,7 @@ In the case of my ASR33 I have two solid state relays in the base of the unit :-
 
 The connections are via PTSM 2.5mm, or 0.1” headers. The pins are marked on the back of the board as follows.
 
-![Back of board](ASR33b.png)
+![324064](https://github.com/user-attachments/assets/95f61004-b72b-4da8-bc19-09cee0e8a25d)
 
 ### Start/stop button
 
@@ -93,6 +93,8 @@ The prompt allows you to start the Colossal Cave game, or make an outgoing TCP c
 
 See [RevK](https://github.com/revk/ESP32-RevK) library for details of how to store settings using MQTT, and for additional settings.
 E.g. sending mqtt message `setting/ASR33/XXXXXXXXXXXX/databits 8` or using JSON, e.g.  `setting/ASR33/XXXXXXXXXXXX {“databits”:8}`
+
+The web interface lists all current settings in the Advanced section, which may be more up to date that this page.
 
 *Note: prefix GPIO with `-` for inverted operation of pin - e.g. `RX` has a FET and so is inverted.*
 
