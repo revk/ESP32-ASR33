@@ -25,10 +25,10 @@ struct softuart_s
 
    uint16_t baudx100;           // Baud rate, x 100
    int8_t timer;                // Which timer
-   uint8_t bits:4;                // Bits
-   int8_t stops:4;                // Stop bits in interrupts
-   uint8_t txinv:1;               // Invert tx
-   uint8_t rxinv:1;               // Invert rx
+   int8_t stops;                // Stop bits in interrupts
+   uint8_t bits:4;              // Bits
+   uint8_t txinv:1;             // Invert tx
+   uint8_t rxinv:1;             // Invert rx
    uint8_t started:1;           // Int handler started
    uint8_t txwait:1;            // Hold off on tx
 
