@@ -33,7 +33,7 @@ struct softuart_s
    uint8_t txwait:1;            // Hold off on tx
 
    int8_t tx;                   // Tx GPIO
-   uint8_t txdata[16384];       // The tx message
+   uint8_t txdata[32768];       // The tx message
    volatile uint16_t txi;       // Next byte to which new tx byte to be written (set by non int)
    volatile uint16_t txo;       // Next byte from which a tx byte will be read (set by int)
    uint16_t crwait;             // Tx waiting for CR (sub bit count down)
