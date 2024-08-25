@@ -51,7 +51,7 @@ struct softuart_s
    volatile uint16_t rxo;       // Next byte from which a rx byte will be read (set by non int)
    uint8_t rxbit;               // Rx bit count, 0 means idle
    uint8_t rxsubbit;            // Rx sub bit count
-   uint8_t rxcount;             // Rx sub bit 1 count for majority check in mid bit
+   uint8_t rxcount;             // Rx sub bit 1 count
    uint8_t rxbyte;              // Rx byte being clocked in
    volatile uint16_t rxbreak;   // Rx break (bit count up to max)
 
@@ -142,8 +142,8 @@ timer_isr (void *up)
    if (!u->rxsubbit)
    {                            // Idle, waiting for start bit
       if (!r && !u->rxlast)
-      {                         // Start bit
-         u->rxsubbit = STEPS - 1;
+      {                         // Start bit (two 0's in a row to avoid glitches)
+         u->rxsubbit = STEPS - 1;       // We ate one bit already
          u->rxbit = u->bits + 1;        // Data and start
          u->rxbyte = 0;
       }
@@ -153,22 +153,23 @@ timer_isr (void *up)
       u->rxsubbit--;
       if (!u->rxsubbit)
       {                         // Bit received
+         uint8_t b = ((u->rxcount > STEPS / 2) ? 1 : 0);
          if (u->rxbit)
          {                      // Clocking in a byte
-            if (u->rxbit == u->bits + 1 && u->rxcount >= (STEPS - 1) / 2)
+            if (u->rxbit == u->bits + 1 && b)
             {
                u->rxbit = 0;    // Bad start bit
                u->stats.rxbadstart++;
             } else
             {
                u->rxbyte >>= 1;
-               if (u->rxcount >= (STEPS - 1) / 2)
+               if (b)
                {
                   u->rxbyte |= (1 << (u->bits - 1));
-                  if (u->rxcount < (STEPS - 2))
-                     u->stats.rxbad1++;
+                  if (u->rxcount < STEPS)
+                     u->stats.rxbad1++; // Should be all bits 1
                } else if (u->rxcount)
-                  u->stats.rxbad0++;
+                  u->stats.rxbad0++;    // Should be non bits 1
                u->rxbit--;
                u->rxsubbit = STEPS;     // Next bit
             }
@@ -176,7 +177,7 @@ timer_isr (void *up)
          {                      // Stop bit
             if (!u->rxbreak)
             {                   // Normal (stop bit now clocked in)
-               if (u->rxcount < (STEPS - 1) / 2)
+               if (!b)
                {                // Bad stop bit, don't clock in byte
                   if (!r)
                   {             // Looks like break
@@ -209,8 +210,8 @@ timer_isr (void *up)
             }
          }
          u->rxcount = 0;
-      } else if (r && u->rxsubbit <= (STEPS - 2))
-         u->rxcount++;
+      } else if (r)
+         u->rxcount++;          // Count 1s
    }
    u->rxlast = r;
    return false;
