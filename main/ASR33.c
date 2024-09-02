@@ -161,13 +161,14 @@ power_off (void)
       if (*mtrtopic)
          revk_mqtt_send_raw (mtrtopic, 0, "0", 0);
       revk_gpio_set (mtr, 0);   // Off
-      sleep (1);                // Takes time for motor to spin down - ensure this is done before power goes off
+      usleep (1000 * timemtroff);
    }
    if (pwr.set || *pwrtopic)
    {
       if (*pwrtopic)
          revk_mqtt_send_raw (pwrtopic, 0, "0", 0);
       revk_gpio_set (pwr, 0);   // Off
+      usleep (1000 * timepwroff);
    }
    on = 0;
    reportstate ();
@@ -176,26 +177,27 @@ power_off (void)
 void
 power_on (void)
 {
-   done = esp_timer_get_time () + 1000000 * (power > 1 ? keyidle : idle);
-   if (on)
-      return;                   // Already on
-   if (pwr.set || *pwrtopic)
-   {                            // Power, direct control, on
-      if (*pwrtopic)
-         revk_mqtt_send_raw (pwrtopic, 0, "1", 0);
-      revk_gpio_set (pwr, 1);   // On
-      usleep (100000);          // Min is 20ms for zero crossing, and 9ms for one bit for solenoid, but can be longer for safety
+   if (!on)
+   {
+      if (pwr.set || *pwrtopic)
+      {                         // Power, direct control, on
+         if (*pwrtopic)
+            revk_mqtt_send_raw (pwrtopic, 0, "1", 0);
+         revk_gpio_set (pwr, 1);        // On
+         usleep (1000 * timepwron);     // Min is 20ms for zero crossing, and 9ms for one bit for solenoid, but can be longer for safety
+      }
+      if (mtr.set || *mtrtopic)
+      {                         // Motor, direct control, on
+         if (*mtrtopic)
+            revk_mqtt_send_raw (mtrtopic, 0, "1", 0);
+         revk_gpio_set (mtr, 1);        // On
+         usleep (1000 * timemtron);     // Min 100ms for a null character from power off, and some for motor to start and get to speed
+      }
+      on = 1;
+      reportstate ();
+      tty_xon ();
    }
-   if (mtr.set || *mtrtopic)
-   {                            // Motor, direct control, on
-      if (*mtrtopic)
-         revk_mqtt_send_raw (mtrtopic, 0, "1", 0);
-      revk_gpio_set (mtr, 1);   // On
-      usleep (250000);          // Min 100ms for a null character from power off, and some for motor to start and get to speed
-   }
-   on = 1;
-   reportstate ();
-   tty_xon ();
+   done = esp_timer_get_time () + 1000 * (power > 1 ? timekeyidle : timeremidle);
 }
 
 const char *
@@ -413,8 +415,8 @@ asr33_main (void *param)
    tty_setup ();
 
    revk_gpio_input (run);
-   revk_gpio_output (pwr,0);
-   revk_gpio_output (mtr,0);
+   revk_gpio_output (pwr, 0);
+   revk_gpio_output (mtr, 0);
    if (port)
       lsock = socket (AF_INET6, SOCK_STREAM, 0);        // IPPROTO_IPV6);
    if (lsock >= 0)
@@ -804,7 +806,7 @@ asr33_main (void *param)
          } else if (on && now > done)
             power = -1;
       } else
-         done = now + 1000000 * (power > 1 ? keyidle : idle);
+         done = now + 1000 * (power > 1 ? timekeyidle : timeremidle);
    }
 }
 

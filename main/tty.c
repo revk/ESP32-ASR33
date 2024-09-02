@@ -11,7 +11,7 @@ static softuart_t *u = NULL;
 
 void tty_setup(void)
 {                               // Does UART setup, expects uart to be set globally, UART number for hard, or negative for soft
-   u = softuart_init(0, tx, rx, baud, databits, stop/5, linelen, crtime);
+   u = softuart_init(0, tx, rx, baud, databits, stop/5, linelen, timecr);
    if (!u)
       ESP_LOGE("TTY", "Failed to init soft uart");
    else

@@ -11,8 +11,6 @@ bit	no.ver					// No version print
 bit	no.cave					// No colossal cave
 bit	no.dc4					// No DC4 handling (paper tape)
 s	wru					// Who aRe yoU string
-u32	idle	1				// Idle time at end of remote
-u32	keyidle	600				// Key idle time
 u8	ack	6				// ACK
 u8	think	10				// Think NULLs
 bit	auto.cave				// Auto start colossal cave
@@ -26,4 +24,10 @@ u16	baud		110	.decimal=2	// Baud rate
 u8	databits	8			// Data bits
 u8	stop		2	.decimal=1	// Stop bits (multiples of 0.5 bits)
 u8	linelen	72				// Line length characters
-u16	crtime		0.2	.decimal=3	// Time for CR (s) for whole line
+u16	time.cr		0.2	.decimal=3	.old="crtime"	// Time for CR (s) for whole line
+u16	time.pwron	0.1	.decimal=3	// Time for power on
+u16	time.mtron	0.25	.decimal=3	// Time for motor on
+u16	time.mtroff	1.25	.decimal=3	// Time for motor off
+u16	time.pwroff	0.2	.decimal=3	// Time for power off
+u32	time.remidle	1	.decimal=3	.old="idle"	// Idle time at end of remote
+u32	time.keyidle	600	.decimal=3	.old="keyidle"	// Idle time at end of manual working
