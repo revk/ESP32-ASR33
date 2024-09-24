@@ -849,7 +849,7 @@ web_root (httpd_req_t * req)
    jo_t j = revk_web_query (req);
    revk_web_head (req, "ASR33");
    revk_web_send (req, "<h1>ASR33 %s</h1>", hostname);
-   revk_web_send (req, "<table><form method=post><tr><td>");
+   revk_web_send (req, "<form method=post>");
    if (j && jo_find (j, "STAT"))
    {
       softuart_stats_t s;
@@ -857,12 +857,10 @@ web_root (httpd_req_t * req)
       revk_web_send (req, "tx=%u rx=%u rxbadstart=%u rxbadstop=%u rxbad0=%u rxbad1=%u rxbadp=%u", s.tx, s.rx, s.rxbadstart,
                      s.rxbadstop, s.rxbad0, s.rxbad1, s.rxbadp);
    }
-   revk_web_send (req, "</td><td><input type=submit name=STAT Value='Stats'></td></tr></form>");
+   revk_web_send (req, "<br><input type=submit name=STAT Value='Stats'></form>");
    revk_web_send (req,
-                  "<form method=post><tr><td><textarea rows=4 cols=80 name=text></textarea></td><td><input type=submit name=TEXT value='Text'></td></tr></form>");
-   revk_web_send (req,
-                  "<form method=post><tr><td><input size=80 name=tape></td><td><input type=submit name=TAPE value='Tape'></td></tr></form>");
-   revk_web_send (req, "</table>");
+                  "<form method=post><textarea rows=4 cols=80 name=text></textarea><br><input type=submit name=TEXT value='Text'></form>");
+   revk_web_send (req, "<form method=post><input size=80 name=tape><br><input type=submit name=TAPE value='Tape'></form>");
    if (j)
    {
       if (jo_find (j, "TEXT") && jo_find (j, "text"))
