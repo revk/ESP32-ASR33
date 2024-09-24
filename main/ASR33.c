@@ -854,10 +854,10 @@ web_root (httpd_req_t * req)
    {
       softuart_stats_t s;
       tty_stats (&s);
-      revk_web_send (req, "tx=%u rx=%u rxbadstart=%u rxbadstop=%u rxbad0=%u rxbad1=%u rxbadp=%u", s.tx, s.rx, s.rxbadstart,
+      revk_web_send (req, "tx=%u rx=%u rxbadstart=%u rxbadstop=%u rxbad0=%u rxbad1=%u rxbadp=%u<br>", s.tx, s.rx, s.rxbadstart,
                      s.rxbadstop, s.rxbad0, s.rxbad1, s.rxbadp);
    }
-   revk_web_send (req, "<br><input type=submit name=STAT Value='Stats'></form>");
+   revk_web_send (req, "<input type=submit name=STAT Value='Stats'></form>");
    revk_web_send (req,
                   "<form method=post><textarea rows=4 cols=80 name=text></textarea><br><input type=submit name=TEXT value='Text'></form>");
    revk_web_send (req, "<form method=post><input size=80 name=tape><br><input type=submit name=TAPE value='Tape'></form>");
