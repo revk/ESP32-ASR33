@@ -64,7 +64,7 @@ advent (void)
    /* show score and exit */
    terminate (quitgame);
    sendline ("\r\n+++ GAME OVER +++\r\n\r\n", -1);
-   cheese();
+   cheese ();
    return 0;
 }
 

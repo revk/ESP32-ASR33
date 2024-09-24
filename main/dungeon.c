@@ -218,47 +218,48 @@ const class_t classes[] = {
    {
     .threshold = 0,
     .message = NULL,
-     },
+    },
    {
     .threshold = 45,
     .message = "You are obviously a rank amateur.  Better luck next time.",
-     },
+    },
    {
     .threshold = 120,
     .message = "Your score qualifies you as a novice class adventurer.",
-     },
+    },
    {
     .threshold = 170,
     .message = "You have achieved the rating: \"Experienced Adventurer\".",
-     },
+    },
    {
     .threshold = 250,
     .message = "You may now consider yourself a \"Seasoned Adventurer\".",
-     },
+    },
    {
     .threshold = 320,
     .message = "You have reached \"Junior Master\" status.",
-     },
+    },
    {
     .threshold = 375,
     .message = "Your score puts you in Master Adventurer Class C.",
-     },
+    },
    {
     .threshold = 410,
     .message = "Your score puts you in Master Adventurer Class B.",
-     },
+    },
    {
     .threshold = 426,
     .message = "Your score puts you in Master Adventurer Class A.",
-     },
+    },
    {
     .threshold = 429,
     .message = "All of Adventuredom gives tribute to you, Adventurer Grandmaster!",
-     },
+    },
    {
     .threshold = 9999,
-    .message = "\'Adventuredom stands in awe -- you have now joined the ranks of the\n       W O R L D   C H A M P I O N   A D V E N T U R E R S !\nIt may interest you to know that the Dungeon-Master himself has, to\nmy knowledge, never achieved this threshold in fewer than 330 turns.\'",
-     },
+    .message =
+    "\'Adventuredom stands in awe -- you have now joined the ranks of the\n       W O R L D   C H A M P I O N   A D V E N T U R E R S !\nIt may interest you to know that the Dungeon-Master himself has, to\nmy knowledge, never achieved this threshold in fewer than 330 turns.\'",
+    },
 };
 
 const turn_threshold_t turn_thresholds[] = {
@@ -266,22 +267,23 @@ const turn_threshold_t turn_thresholds[] = {
     .threshold = 350,
     .point_loss = 2,
     .message = "Tsk!  A wizard wouldn\'t have to take 350 turns.  This is going to cost\nyou a couple of points.",
-     },
+    },
    {
     .threshold = 500,
     .point_loss = 3,
     .message = "500 turns?  That\'s another few points you\'ve lost.",
-     },
+    },
    {
     .threshold = 1000,
     .point_loss = 5,
     .message = "Are you still at it?  Five points off for exceeding 1000 turns!",
-     },
+    },
    {
     .threshold = 2500,
     .point_loss = 10,
-    .message = "Good grief, don\'t you *EVER* give up?  Do you realize you\'ve spent\nover 2500 turns at this?  That\'s another ten points off, a total of\ntwenty points lost for taking so long.",
-     },
+    .message =
+    "Good grief, don\'t you *EVER* give up?  Do you realize you\'ve spent\nover 2500 turns at this?  That\'s another ten points off, a total of\ntwenty points lost for taking so long.",
+    },
 };
 
 const location_t locations[] = {
@@ -292,23 +294,25 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 1: LOC_START
     .description = {
                     .small = "You\'re in front of building.",
-                    .big = "You are standing at the end of a road before a small brick building.\nAround you is a forest.  A small stream flows out of the building and\ndown a gully.",
+                    .big =
+                    "You are standing at the end of a road before a small brick building.\nAround you is a forest.  A small stream flows out of the building and\ndown a gully.",
                     },
     .sound = STREAM_GURGLES,
     .loud = false,
-     },
+    },
    {                            // 2: LOC_HILL
     .description = {
                     .small = "You\'re at hill in road.",
-                    .big = "You have walked up a hill, still in the forest.  The road slopes back\ndown the other side of the hill.  There is a building in the distance.",
+                    .big =
+                    "You have walked up a hill, still in the forest.  The road slopes back\ndown the other side of the hill.  There is a building in the distance.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 3: LOC_BUILDING
     .description = {
                     .small = "You\'re inside building.",
@@ -316,7 +320,7 @@ const location_t locations[] = {
                     },
     .sound = STREAM_GURGLES,
     .loud = false,
-     },
+    },
    {                            // 4: LOC_VALLEY
     .description = {
                     .small = "You\'re in valley.",
@@ -324,7 +328,7 @@ const location_t locations[] = {
                     },
     .sound = STREAM_GURGLES,
     .loud = false,
-     },
+    },
    {                            // 5: LOC_ROADEND
     .description = {
                     .small = "You\'re at end of road.",
@@ -332,39 +336,43 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 6: LOC_CLIFF
     .description = {
                     .small = "You\'re at cliff.",
-                    .big = "The forest thins out here to reveal a steep cliff.  There is no way\ndown, but a small ledge can be seen to the west across the chasm.",
+                    .big =
+                    "The forest thins out here to reveal a steep cliff.  There is no way\ndown, but a small ledge can be seen to the west across the chasm.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 7: LOC_SLIT
     .description = {
                     .small = "You\'re at slit in streambed.",
-                    .big = "At your feet all the water of the stream splashes into a 2-inch slit\nin the rock.  Downstream the streambed is bare rock.",
+                    .big =
+                    "At your feet all the water of the stream splashes into a 2-inch slit\nin the rock.  Downstream the streambed is bare rock.",
                     },
     .sound = STREAM_GURGLES,
     .loud = false,
-     },
+    },
    {                            // 8: LOC_GRATE
     .description = {
                     .small = "You\'re outside grate.",
-                    .big = "You are in a 20-foot depression floored with bare dirt.  Set into the\ndirt is a strong steel grate mounted in concrete.  A dry streambed\nleads into the depression.",
+                    .big =
+                    "You are in a 20-foot depression floored with bare dirt.  Set into the\ndirt is a strong steel grate mounted in concrete.  A dry streambed\nleads into the depression.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 9: LOC_BELOWGRATE
     .description = {
                     .small = "You\'re below the grate.",
-                    .big = "You are in a small chamber beneath a 3x3 steel grate to the surface.\nA low crawl over cobbles leads inward to the west.",
+                    .big =
+                    "You are in a small chamber beneath a 3x3 steel grate to the surface.\nA low crawl over cobbles leads inward to the west.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 10: LOC_COBBLE
     .description = {
                     .small = "You\'re in cobble crawl.",
@@ -372,15 +380,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 11: LOC_DEBRIS
     .description = {
                     .small = "You\'re in debris room.",
-                    .big = "You are in a debris room filled with stuff washed in from the surface.\nA low wide passage with cobbles becomes plugged with mud and debris\nhere, but an awkward canyon leads upward and west.  In the mud someone\nhas scrawled, \"MAGIC WORD XYZZY\".",
+                    .big =
+                    "You are in a debris room filled with stuff washed in from the surface.\nA low wide passage with cobbles becomes plugged with mud and debris\nhere, but an awkward canyon leads upward and west.  In the mud someone\nhas scrawled, \"MAGIC WORD XYZZY\".",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 12: LOC_AWKWARD
     .description = {
                     .small = NULL,
@@ -388,23 +397,25 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 13: LOC_BIRD
     .description = {
                     .small = "You\'re in bird chamber.",
-                    .big = "You are in a splendid chamber thirty feet high.  The walls are frozen\nrivers of orange stone.  An awkward canyon and a good passage exit\nfrom east and west sides of the chamber.",
+                    .big =
+                    "You are in a splendid chamber thirty feet high.  The walls are frozen\nrivers of orange stone.  An awkward canyon and a good passage exit\nfrom east and west sides of the chamber.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 14: LOC_PITTOP
     .description = {
                     .small = "You\'re at top of small pit.",
-                    .big = "At your feet is a small pit breathing traces of white mist.  An east\npassage ends here except for a small crack leading on.",
+                    .big =
+                    "At your feet is a small pit breathing traces of white mist.  An east\npassage ends here except for a small crack leading on.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 15: LOC_MISTHALL
     .description = {
                     .small = "You\'re in Hall of Mists.",
@@ -413,23 +424,25 @@ const location_t locations[] = {
                     },
     .sound = WIND_WHISTLES,
     .loud = false,
-     },
+    },
    {                            // 16: LOC_CRACK
     .description = {
                     .small = NULL,
-                    .big = "The crack is far too small for you to follow.  At its widest it is\nbarely wide enough to admit your foot.",
+                    .big =
+                    "The crack is far too small for you to follow.  At its widest it is\nbarely wide enough to admit your foot.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 17: LOC_EASTBANK
     .description = {
                     .small = "You\'re on east bank of fissure.",
-                    .big = "You are on the east bank of a fissure slicing clear across the hall.\nThe mist is quite thick here, and the fissure is too wide to jump.",
+                    .big =
+                    "You are on the east bank of a fissure slicing clear across the hall.\nThe mist is quite thick here, and the fissure is too wide to jump.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 18: LOC_NUGGET
     .description = {
                     .small = "You\'re in nugget-of-gold room.",
@@ -437,7 +450,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 19: LOC_KINGHALL
     .description = {
                     .small = "You\'re in Hall of Mt King.",
@@ -445,7 +458,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 20: LOC_NECKBROKE
     .description = {
                     .small = NULL,
@@ -453,7 +466,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 21: LOC_NOMAKE
     .description = {
                     .small = NULL,
@@ -461,7 +474,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 22: LOC_DOME
     .description = {
                     .small = NULL,
@@ -469,31 +482,34 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 23: LOC_WESTEND
     .description = {
                     .small = "You\'re at west end of Twopit Room.",
-                    .big = "You are at the west end of the Twopit Room.  There is a large hole in\nthe wall above the pit at this end of the room.",
+                    .big =
+                    "You are at the west end of the Twopit Room.  There is a large hole in\nthe wall above the pit at this end of the room.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 24: LOC_EASTPIT
     .description = {
                     .small = "You\'re in east pit.",
-                    .big = "You are at the bottom of the eastern pit in the Twopit Room.  There is\na small pool of oil in one corner of the pit.",
+                    .big =
+                    "You are at the bottom of the eastern pit in the Twopit Room.  There is\na small pool of oil in one corner of the pit.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 25: LOC_WESTPIT
     .description = {
                     .small = "You\'re in west pit.",
-                    .big = "You are at the bottom of the western pit in the Twopit Room.  There is\na large hole in the wall about 25 feet above you.",
+                    .big =
+                    "You are at the bottom of the western pit in the Twopit Room.  There is\na large hole in the wall about 25 feet above you.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 26: LOC_CLIMBSTALK
     .description = {
                     .small = NULL,
@@ -501,7 +517,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 27: LOC_WESTBANK
     .description = {
                     .small = "You\'re on west bank of fissure.",
@@ -509,7 +525,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 28: LOC_FLOORHOLE
     .description = {
                     .small = "You\'re in n/s passage above e/w passage.",
@@ -517,7 +533,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 29: LOC_SOUTHSIDE
     .description = {
                     .small = NULL,
@@ -525,15 +541,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 30: LOC_WESTSIDE
     .description = {
                     .small = "You\'re in the west side chamber.",
-                    .big = "You are in the west side chamber of the Hall of the Mountain King.\nA passage continues west and up here.",
+                    .big =
+                    "You are in the west side chamber of the Hall of the Mountain King.\nA passage continues west and up here.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 31: LOC_BUILDING1
     .description = {
                     .small = NULL,
@@ -541,7 +558,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 32: LOC_SNAKEBLOCK
     .description = {
                     .small = NULL,
@@ -549,15 +566,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 33: LOC_Y2
     .description = {
                     .small = "You\'re at \"Y2\".",
-                    .big = "You are in a large room, with a passage to the south, a passage to the\nwest, and a wall of broken rock to the east.  There is a large \"Y2\" on\na rock in the room\'s center.",
+                    .big =
+                    "You are in a large room, with a passage to the south, a passage to the\nwest, and a wall of broken rock to the east.  There is a large \"Y2\" on\na rock in the room\'s center.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 34: LOC_JUMBLE
     .description = {
                     .small = NULL,
@@ -565,7 +583,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 35: LOC_WINDOW1
     .description = {
                     .small = "You\'re at window on pit.",
@@ -574,15 +592,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 36: LOC_BROKEN
     .description = {
                     .small = "You\'re in dirty passage.",
-                    .big = "You are in a dirty broken passage.  To the east is a crawl.  To the\nwest is a large passage.  Above you is a hole to another passage.",
+                    .big =
+                    "You are in a dirty broken passage.  To the east is a crawl.  To the\nwest is a large passage.  Above you is a hole to another passage.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 37: LOC_SMALLPITBRINK
     .description = {
                     .small = "You\'re at brink of small pit.",
@@ -590,7 +609,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 38: LOC_SMALLPIT
     .description = {
                     .small = "You\'re at bottom of pit with stream.",
@@ -598,15 +617,16 @@ const location_t locations[] = {
                     },
     .sound = STREAM_GURGLES,
     .loud = false,
-     },
+    },
    {                            // 39: LOC_DUSTY
     .description = {
                     .small = "You\'re in dusty rock room.",
-                    .big = "You are in a large room full of dusty rocks.  There is a big hole in\nthe floor.  There are cracks everywhere, and a passage leading east.",
+                    .big =
+                    "You are in a large room full of dusty rocks.  There is a big hole in\nthe floor.  There are cracks everywhere, and a passage leading east.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 40: LOC_PARALLEL1
     .description = {
                     .small = NULL,
@@ -614,15 +634,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 41: LOC_MISTWEST
     .description = {
                     .small = "You\'re at west end of Hall of Mists.",
-                    .big = "You are at the west end of the Hall of Mists.  A low wide crawl\ncontinues west and another goes north.  To the south is a little\npassage 6 feet off the floor.",
+                    .big =
+                    "You are at the west end of the Hall of Mists.  A low wide crawl\ncontinues west and another goes north.  To the south is a little\npassage 6 feet off the floor.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 42: LOC_ALIKE1
     .description = {
                     .small = NULL,
@@ -630,7 +651,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 43: LOC_ALIKE2
     .description = {
                     .small = NULL,
@@ -638,7 +659,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 44: LOC_ALIKE3
     .description = {
                     .small = NULL,
@@ -646,7 +667,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 45: LOC_ALIKE4
     .description = {
                     .small = NULL,
@@ -654,7 +675,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 46: LOC_DEADEND1
     .description = {
                     .small = NULL,
@@ -662,7 +683,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 47: LOC_DEADEND2
     .description = {
                     .small = NULL,
@@ -670,7 +691,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 48: LOC_DEADEND3
     .description = {
                     .small = NULL,
@@ -678,7 +699,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 49: LOC_ALIKE5
     .description = {
                     .small = NULL,
@@ -686,7 +707,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 50: LOC_ALIKE6
     .description = {
                     .small = NULL,
@@ -694,7 +715,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 51: LOC_ALIKE7
     .description = {
                     .small = NULL,
@@ -702,7 +723,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 52: LOC_ALIKE8
     .description = {
                     .small = NULL,
@@ -710,7 +731,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 53: LOC_ALIKE9
     .description = {
                     .small = NULL,
@@ -718,7 +739,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 54: LOC_DEADEND4
     .description = {
                     .small = NULL,
@@ -726,7 +747,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 55: LOC_ALIKE10
     .description = {
                     .small = NULL,
@@ -734,7 +755,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 56: LOC_DEADEND5
     .description = {
                     .small = NULL,
@@ -742,15 +763,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 57: LOC_PITBRINK
     .description = {
                     .small = "You\'re at brink of pit.",
-                    .big = "You are on the brink of a thirty foot pit with a massive orange column\ndown one wall.  You could climb down here but you could not get back\nup.  The maze continues at this level.",
+                    .big =
+                    "You are on the brink of a thirty foot pit with a massive orange column\ndown one wall.  You could climb down here but you could not get back\nup.  The maze continues at this level.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 58: LOC_DEADEND6
     .description = {
                     .small = NULL,
@@ -758,7 +780,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 59: LOC_PARALLEL2
     .description = {
                     .small = NULL,
@@ -766,23 +788,25 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 60: LOC_LONGEAST
     .description = {
                     .small = "You\'re at east end of long hall.",
-                    .big = "You are at the east end of a very long hall apparently without side\nchambers.  To the east a low wide crawl slants up.  To the north a\nround two foot hole slants down.",
+                    .big =
+                    "You are at the east end of a very long hall apparently without side\nchambers.  To the east a low wide crawl slants up.  To the north a\nround two foot hole slants down.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 61: LOC_LONGWEST
     .description = {
                     .small = "You\'re at west end of long hall.",
-                    .big = "You are at the west end of a very long featureless hall.  The hall\njoins up with a narrow north/south passage.",
+                    .big =
+                    "You are at the west end of a very long featureless hall.  The hall\njoins up with a narrow north/south passage.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 62: LOC_CROSSOVER
     .description = {
                     .small = NULL,
@@ -790,7 +814,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 63: LOC_DEADEND7
     .description = {
                     .small = NULL,
@@ -798,31 +822,34 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 64: LOC_COMPLEX
     .description = {
                     .small = "You\'re at complex junction.",
-                    .big = "You are at a complex junction.  A low hands and knees passage from the\nnorth joins a higher crawl from the east to make a walking passage\ngoing west.  There is also a large room above.  The air is damp here.",
+                    .big =
+                    "You are at a complex junction.  A low hands and knees passage from the\nnorth joins a higher crawl from the east to make a walking passage\ngoing west.  There is also a large room above.  The air is damp here.",
                     },
     .sound = WIND_WHISTLES,
     .loud = false,
-     },
+    },
    {                            // 65: LOC_BEDQUILT
     .description = {
                     .small = "You\'re in Bedquilt.",
-                    .big = "You are in Bedquilt, a long east/west passage with holes everywhere.\nTo explore at random select north, south, up, or down.",
+                    .big =
+                    "You are in Bedquilt, a long east/west passage with holes everywhere.\nTo explore at random select north, south, up, or down.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 66: LOC_SWISSCHEESE
     .description = {
                     .small = "You\'re in Swiss Cheese Room.",
-                    .big = "You are in a room whose walls resemble Swiss cheese.  Obvious passages\ngo west, east, ne, and nw.  Part of the room is occupied by a large\nbedrock block.",
+                    .big =
+                    "You are in a room whose walls resemble Swiss cheese.  Obvious passages\ngo west, east, ne, and nw.  Part of the room is occupied by a large\nbedrock block.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 67: LOC_EASTEND
     .description = {
                     .small = "You\'re at east end of Twopit Room.",
@@ -831,7 +858,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 68: LOC_SLAB
     .description = {
                     .small = "You\'re in Slab Room.",
@@ -840,7 +867,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 69: LOC_SECRET1
     .description = {
                     .small = NULL,
@@ -848,7 +875,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 70: LOC_SECRET2
     .description = {
                     .small = NULL,
@@ -856,15 +883,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 71: LOC_THREEJUNCTION
     .description = {
                     .small = "You\'re at junction of three secret canyons.",
-                    .big = "You are in a secret canyon at a junction of three canyons, bearing\nnorth, south, and se.  The north one is as tall as the other two\ncombined.",
+                    .big =
+                    "You are in a secret canyon at a junction of three canyons, bearing\nnorth, south, and se.  The north one is as tall as the other two\ncombined.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 72: LOC_LOWROOM
     .description = {
                     .small = "You\'re in large low room.",
@@ -872,7 +900,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 73: LOC_DEADCRAWL
     .description = {
                     .small = NULL,
@@ -880,15 +908,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 74: LOC_SECRET3
     .description = {
                     .small = "You\'re in secret e/w canyon above tight canyon.",
-                    .big = "You are in a secret canyon which here runs e/w.  It crosses over a\nvery tight canyon 15 feet below.  If you go down you may not be able\nto get back up.",
+                    .big =
+                    "You are in a secret canyon which here runs e/w.  It crosses over a\nvery tight canyon 15 feet below.  If you go down you may not be able\nto get back up.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 75: LOC_WIDEPLACE
     .description = {
                     .small = NULL,
@@ -896,7 +925,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 76: LOC_TIGHTPLACE
     .description = {
                     .small = NULL,
@@ -904,7 +933,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 77: LOC_TALL
     .description = {
                     .small = NULL,
@@ -912,7 +941,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 78: LOC_BOULDERS1
     .description = {
                     .small = NULL,
@@ -920,15 +949,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 79: LOC_SEWER
     .description = {
                     .small = NULL,
-                    .big = "The stream flows out through a pair of 1 foot diameter sewer pipes.\nIt would be advisable to use the exit.",
+                    .big =
+                    "The stream flows out through a pair of 1 foot diameter sewer pipes.\nIt would be advisable to use the exit.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 80: LOC_ALIKE11
     .description = {
                     .small = NULL,
@@ -936,7 +966,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 81: LOC_DEADEND8
     .description = {
                     .small = NULL,
@@ -944,7 +974,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 82: LOC_DEADEND9
     .description = {
                     .small = NULL,
@@ -952,7 +982,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 83: LOC_ALIKE12
     .description = {
                     .small = NULL,
@@ -960,7 +990,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 84: LOC_ALIKE13
     .description = {
                     .small = NULL,
@@ -968,7 +998,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 85: LOC_DEADEND10
     .description = {
                     .small = NULL,
@@ -976,7 +1006,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 86: LOC_DEADEND11
     .description = {
                     .small = NULL,
@@ -984,7 +1014,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 87: LOC_ALIKE14
     .description = {
                     .small = NULL,
@@ -992,15 +1022,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 88: LOC_NARROW
     .description = {
                     .small = "You\'re in narrow corridor.",
-                    .big = "You are in a long, narrow corridor stretching out of sight to the\nwest.  At the eastern end is a hole through which you can see a\nprofusion of leaves.",
+                    .big =
+                    "You are in a long, narrow corridor stretching out of sight to the\nwest.  At the eastern end is a hole through which you can see a\nprofusion of leaves.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 89: LOC_NOCLIMB
     .description = {
                     .small = NULL,
@@ -1008,7 +1039,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 90: LOC_PLANTTOP
     .description = {
                     .small = NULL,
@@ -1016,23 +1047,25 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 91: LOC_INCLINE
     .description = {
                     .small = "You\'re at steep incline above large room.",
-                    .big = "You are at the top of a steep incline above a large room.  You could\nclimb down here, but you would not be able to climb up.  There is a\npassage leading back to the north.",
+                    .big =
+                    "You are at the top of a steep incline above a large room.  You could\nclimb down here, but you would not be able to climb up.  There is a\npassage leading back to the north.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 92: LOC_GIANTROOM
     .description = {
                     .small = "You\'re in Giant Room.",
-                    .big = "You are in the Giant Room.  The ceiling here is too high up for your\nlamp to show it.  Cavernous passages lead east, north, and south.  On\nthe west wall is scrawled the inscription, \"FEE FIE FOE FOO\" [sic].",
+                    .big =
+                    "You are in the Giant Room.  The ceiling here is too high up for your\nlamp to show it.  Cavernous passages lead east, north, and south.  On\nthe west wall is scrawled the inscription, \"FEE FIE FOE FOO\" [sic].",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 93: LOC_CAVEIN
     .description = {
                     .small = NULL,
@@ -1040,7 +1073,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 94: LOC_IMMENSE
     .description = {
                     .small = NULL,
@@ -1048,55 +1081,61 @@ const location_t locations[] = {
                     },
     .sound = WIND_WHISTLES,
     .loud = false,
-     },
+    },
    {                            // 95: LOC_WATERFALL
     .description = {
                     .small = "You\'re in cavern with waterfall.",
-                    .big = "You are in a magnificent cavern with a rushing stream, which cascades\nover a sparkling waterfall into a roaring whirlpool which disappears\nthrough a hole in the floor.  Passages exit to the south and west.",
+                    .big =
+                    "You are in a magnificent cavern with a rushing stream, which cascades\nover a sparkling waterfall into a roaring whirlpool which disappears\nthrough a hole in the floor.  Passages exit to the south and west.",
                     },
     .sound = STREAM_SPLASHES,
     .loud = false,
-     },
+    },
    {                            // 96: LOC_SOFTROOM
     .description = {
                     .small = "You\'re in Soft Room.",
-                    .big = "You are in the Soft Room.  The walls are covered with heavy curtains,\nthe floor with a thick pile carpet.  Moss covers the ceiling.",
+                    .big =
+                    "You are in the Soft Room.  The walls are covered with heavy curtains,\nthe floor with a thick pile carpet.  Moss covers the ceiling.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 97: LOC_ORIENTAL
     .description = {
                     .small = "You\'re in Oriental Room.",
-                    .big = "This is the Oriental Room.  Ancient oriental cave drawings cover the\nwalls.  A gently sloping passage leads upward to the north, another\npassage leads se, and a hands and knees crawl leads west.",
+                    .big =
+                    "This is the Oriental Room.  Ancient oriental cave drawings cover the\nwalls.  A gently sloping passage leads upward to the north, another\npassage leads se, and a hands and knees crawl leads west.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 98: LOC_MISTY
     .description = {
                     .small = "You\'re in misty cavern.",
-                    .big = "You are following a wide path around the outer edge of a large cavern.\nFar below, through a heavy white mist, strange splashing noises can be\nheard.  The mist rises up through a fissure in the ceiling.  The path\nexits to the south and west.",
+                    .big =
+                    "You are following a wide path around the outer edge of a large cavern.\nFar below, through a heavy white mist, strange splashing noises can be\nheard.  The mist rises up through a fissure in the ceiling.  The path\nexits to the south and west.",
                     },
     .sound = NO_MEANING,
     .loud = false,
-     },
+    },
    {                            // 99: LOC_ALCOVE
     .description = {
                     .small = "You\'re in alcove.",
-                    .big = "You are in an alcove.  A small nw path seems to widen after a short\ndistance.  An extremely tight tunnel leads east.  It looks like a very\ntight squeeze.  An eerie light can be seen at the other end.",
+                    .big =
+                    "You are in an alcove.  A small nw path seems to widen after a short\ndistance.  An extremely tight tunnel leads east.  It looks like a very\ntight squeeze.  An eerie light can be seen at the other end.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 100: LOC_PLOVER
     .description = {
                     .small = "You\'re in Plover Room.",
-                    .big = "You\'re in a small chamber lit by an eerie green light.  An extremely\nnarrow tunnel exits to the west.  A dark corridor leads ne.",
+                    .big =
+                    "You\'re in a small chamber lit by an eerie green light.  An extremely\nnarrow tunnel exits to the west.  A dark corridor leads ne.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 101: LOC_DARKROOM
     .description = {
                     .small = "You\'re in dark-room.",
@@ -1104,23 +1143,25 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 102: LOC_ARCHED
     .description = {
                     .small = "You\'re in arched hall.",
-                    .big = "You are in an arched hall.  A coral passage once continued up and east\nfrom here, but is now blocked by debris.  The air smells of sea water.",
+                    .big =
+                    "You are in an arched hall.  A coral passage once continued up and east\nfrom here, but is now blocked by debris.  The air smells of sea water.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 103: LOC_SHELLROOM
     .description = {
                     .small = "You\'re in Shell Room.",
-                    .big = "You\'re in a large room carved out of sedimentary rock.  The floor and\nwalls are littered with bits of shells embedded in the stone.  A\nshallow passage proceeds downward, and a somewhat steeper one leads\nup.  A low hands and knees passage enters from the south.",
+                    .big =
+                    "You\'re in a large room carved out of sedimentary rock.  The floor and\nwalls are littered with bits of shells embedded in the stone.  A\nshallow passage proceeds downward, and a somewhat steeper one leads\nup.  A low hands and knees passage enters from the south.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 104: LOC_SLOPING1
     .description = {
                     .small = NULL,
@@ -1128,7 +1169,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 105: LOC_CULDESAC
     .description = {
                     .small = NULL,
@@ -1136,15 +1177,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 106: LOC_ANTEROOM
     .description = {
                     .small = "You\'re in anteroom.",
-                    .big = "You are in an anteroom leading to a large passage to the east.  Small\npassages go west and up.  The remnants of recent digging are evident.\nA sign in midair here says \"Cave under construction beyond this point.\nProceed at own risk.  [Witt Construction Company]\"",
+                    .big =
+                    "You are in an anteroom leading to a large passage to the east.  Small\npassages go west and up.  The remnants of recent digging are evident.\nA sign in midair here says \"Cave under construction beyond this point.\nProceed at own risk.  [Witt Construction Company]\"",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 107: LOC_DIFFERENT1
     .description = {
                     .small = NULL,
@@ -1152,7 +1194,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 108: LOC_WITTSEND
     .description = {
                     .small = "You\'re at Witt\'s End.",
@@ -1160,7 +1202,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 109: LOC_MIRRORCANYON
     .description = {
                     .small = "You\'re in Mirror Canyon.",
@@ -1169,7 +1211,7 @@ const location_t locations[] = {
                     },
     .sound = WIND_WHISTLES,
     .loud = false,
-     },
+    },
    {                            // 110: LOC_WINDOW2
     .description = {
                     .small = "You\'re at window on pit.",
@@ -1178,15 +1220,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 111: LOC_TOPSTALACTITE
     .description = {
                     .small = "You\'re at top of stalactite.",
-                    .big = "A large stalactite extends from the roof and almost reaches the floor\nbelow.  You could climb down it, and jump from it to the floor, but\nhaving done so you would be unable to reach it to climb back up.",
+                    .big =
+                    "A large stalactite extends from the roof and almost reaches the floor\nbelow.  You could climb down it, and jump from it to the floor, but\nhaving done so you would be unable to reach it to climb back up.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 112: LOC_DIFFERENT2
     .description = {
                     .small = NULL,
@@ -1194,7 +1237,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 113: LOC_RESERVOIR
     .description = {
                     .small = "You\'re at reservoir.",
@@ -1203,7 +1246,7 @@ const location_t locations[] = {
                     },
     .sound = STREAM_SPLASHES,
     .loud = false,
-     },
+    },
    {                            // 114: LOC_DEADEND12
     .description = {
                     .small = NULL,
@@ -1211,7 +1254,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 115: LOC_NE
     .description = {
                     .small = "You\'re at ne end.",
@@ -1220,7 +1263,7 @@ const location_t locations[] = {
                     },
     .sound = MURMURING_SNORING,
     .loud = false,
-     },
+    },
    {                            // 116: LOC_SW
     .description = {
                     .small = "You\'re at sw end.",
@@ -1229,15 +1272,16 @@ const location_t locations[] = {
                     },
     .sound = SNAKES_HISSING,
     .loud = false,
-     },
+    },
    {                            // 117: LOC_SWCHASM
     .description = {
                     .small = "You\'re on sw side of chasm.",
-                    .big = "You are on one side of a large, deep chasm.  A heavy white mist rising\nup from below obscures all view of the far side.  A sw path leads away\nfrom the chasm into a winding corridor.",
+                    .big =
+                    "You are on one side of a large, deep chasm.  A heavy white mist rising\nup from below obscures all view of the far side.  A sw path leads away\nfrom the chasm into a winding corridor.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 118: LOC_WINDING
     .description = {
                     .small = "You\'re in sloping corridor.",
@@ -1245,7 +1289,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 119: LOC_SECRET4
     .description = {
                     .small = NULL,
@@ -1253,7 +1297,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 120: LOC_SECRET5
     .description = {
                     .small = NULL,
@@ -1261,7 +1305,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 121: LOC_SECRET6
     .description = {
                     .small = NULL,
@@ -1269,7 +1313,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 122: LOC_NECHASM
     .description = {
                     .small = "You\'re on ne side of chasm.",
@@ -1277,7 +1321,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 123: LOC_CORRIDOR
     .description = {
                     .small = "You\'re in corridor.",
@@ -1285,23 +1329,25 @@ const location_t locations[] = {
                     },
     .sound = DULL_RUMBLING,
     .loud = false,
-     },
+    },
    {                            // 124: LOC_FORK
     .description = {
                     .small = "You\'re at fork in path.",
-                    .big = "The path forks here.  The left fork leads northeast.  A dull rumbling\nseems to get louder in that direction.  The right fork leads southeast\ndown a gentle slope.  The main corridor enters from the west.",
+                    .big =
+                    "The path forks here.  The left fork leads northeast.  A dull rumbling\nseems to get louder in that direction.  The right fork leads southeast\ndown a gentle slope.  The main corridor enters from the west.",
                     },
     .sound = DULL_RUMBLING,
     .loud = false,
-     },
+    },
    {                            // 125: LOC_WARMWALLS
     .description = {
                     .small = "You\'re at junction with warm walls.",
-                    .big = "The walls are quite warm here.  From the north can be heard a steady\nroar, so loud that the entire cave seems to be trembling.  Another\npassage leads south, and a low crawl goes east.",
+                    .big =
+                    "The walls are quite warm here.  From the north can be heard a steady\nroar, so loud that the entire cave seems to be trembling.  Another\npassage leads south, and a low crawl goes east.",
                     },
     .sound = LOUD_ROAR,
     .loud = false,
-     },
+    },
    {                            // 126: LOC_BREATHTAKING
     .description = {
                     .small = "You\'re at breath-taking view.",
@@ -1310,39 +1356,43 @@ const location_t locations[] = {
                     },
     .sound = TOTAL_ROAR,
     .loud = true,
-     },
+    },
    {                            // 127: LOC_BOULDERS2
     .description = {
                     .small = "You\'re in Chamber of Boulders.",
-                    .big = "You are in a small chamber filled with large boulders.  The walls are\nvery warm, causing the air in the room to be almost stifling from the\nheat.  The only exit is a crawl heading west, through which is coming\na low rumbling.",
+                    .big =
+                    "You are in a small chamber filled with large boulders.  The walls are\nvery warm, causing the air in the room to be almost stifling from the\nheat.  The only exit is a crawl heading west, through which is coming\na low rumbling.",
                     },
     .sound = DULL_RUMBLING,
     .loud = false,
-     },
+    },
    {                            // 128: LOC_LIMESTONE
     .description = {
                     .small = "You\'re in limestone passage.",
-                    .big = "You are walking along a gently sloping north/south passage lined with oddly shaped limestone formations.",
+                    .big =
+                    "You are walking along a gently sloping north/south passage lined with oddly shaped limestone formations.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 129: LOC_BARRENFRONT
     .description = {
                     .small = "You\'re in front of Barren Room.",
-                    .big = "You are standing at the entrance to a large, barren room.  A notice\nabove the entrance reads:  \"Caution!  Bear in room!\"",
+                    .big =
+                    "You are standing at the entrance to a large, barren room.  A notice\nabove the entrance reads:  \"Caution!  Bear in room!\"",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 130: LOC_BARRENROOM
     .description = {
                     .small = "You\'re in Barren Room.",
-                    .big = "You are inside a barren room.  The center of the room is completely\nempty except for some dust.  Marks in the dust lead away toward the\nfar end of the room.  The only exit is the way you came in.",
+                    .big =
+                    "You are inside a barren room.  The center of the room is completely\nempty except for some dust.  Marks in the dust lead away toward the\nfar end of the room.  The only exit is the way you came in.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 131: LOC_DIFFERENT3
     .description = {
                     .small = NULL,
@@ -1350,7 +1400,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 132: LOC_DIFFERENT4
     .description = {
                     .small = NULL,
@@ -1358,7 +1408,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 133: LOC_DIFFERENT5
     .description = {
                     .small = NULL,
@@ -1366,7 +1416,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 134: LOC_DIFFERENT6
     .description = {
                     .small = NULL,
@@ -1374,7 +1424,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 135: LOC_DIFFERENT7
     .description = {
                     .small = NULL,
@@ -1382,7 +1432,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 136: LOC_DIFFERENT8
     .description = {
                     .small = NULL,
@@ -1390,7 +1440,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 137: LOC_DIFFERENT9
     .description = {
                     .small = NULL,
@@ -1398,7 +1448,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 138: LOC_DIFFERENT10
     .description = {
                     .small = NULL,
@@ -1406,7 +1456,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 139: LOC_DIFFERENT11
     .description = {
                     .small = NULL,
@@ -1414,7 +1464,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 140: LOC_DEADEND13
     .description = {
                     .small = NULL,
@@ -1422,7 +1472,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 141: LOC_ROUGHHEWN
     .description = {
                     .small = NULL,
@@ -1430,7 +1480,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 142: LOC_BADDIRECTION
     .description = {
                     .small = NULL,
@@ -1438,7 +1488,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 143: LOC_LARGE
     .description = {
                     .small = NULL,
@@ -1446,7 +1496,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 144: LOC_STOREROOM
     .description = {
                     .small = NULL,
@@ -1454,7 +1504,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 145: LOC_FOREST1
     .description = {
                     .small = NULL,
@@ -1462,7 +1512,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 146: LOC_FOREST2
     .description = {
                     .small = NULL,
@@ -1470,7 +1520,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 147: LOC_FOREST3
     .description = {
                     .small = NULL,
@@ -1478,7 +1528,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 148: LOC_FOREST4
     .description = {
                     .small = NULL,
@@ -1486,7 +1536,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 149: LOC_FOREST5
     .description = {
                     .small = NULL,
@@ -1494,7 +1544,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 150: LOC_FOREST6
     .description = {
                     .small = NULL,
@@ -1502,7 +1552,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 151: LOC_FOREST7
     .description = {
                     .small = NULL,
@@ -1510,7 +1560,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 152: LOC_FOREST8
     .description = {
                     .small = NULL,
@@ -1518,7 +1568,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 153: LOC_FOREST9
     .description = {
                     .small = NULL,
@@ -1526,7 +1576,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 154: LOC_FOREST10
     .description = {
                     .small = NULL,
@@ -1534,7 +1584,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 155: LOC_FOREST11
     .description = {
                     .small = NULL,
@@ -1542,7 +1592,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 156: LOC_FOREST12
     .description = {
                     .small = NULL,
@@ -1550,7 +1600,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 157: LOC_FOREST13
     .description = {
                     .small = NULL,
@@ -1558,7 +1608,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 158: LOC_FOREST14
     .description = {
                     .small = NULL,
@@ -1566,7 +1616,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 159: LOC_FOREST15
     .description = {
                     .small = NULL,
@@ -1574,7 +1624,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 160: LOC_FOREST16
     .description = {
                     .small = NULL,
@@ -1582,7 +1632,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 161: LOC_FOREST17
     .description = {
                     .small = NULL,
@@ -1590,7 +1640,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 162: LOC_FOREST18
     .description = {
                     .small = NULL,
@@ -1598,7 +1648,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 163: LOC_FOREST19
     .description = {
                     .small = NULL,
@@ -1606,7 +1656,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 164: LOC_FOREST20
     .description = {
                     .small = NULL,
@@ -1614,7 +1664,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 165: LOC_FOREST21
     .description = {
                     .small = NULL,
@@ -1622,7 +1672,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 166: LOC_FOREST22
     .description = {
                     .small = NULL,
@@ -1630,23 +1680,25 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 167: LOC_LEDGE
     .description = {
                     .small = "You\'re on ledge.",
-                    .big = "You are on a small ledge on one face of a sheer cliff.  There are no\npaths away from the ledge.  Across the chasm is a small clearing\nsurrounded by forest.",
+                    .big =
+                    "You are on a small ledge on one face of a sheer cliff.  There are no\npaths away from the ledge.  Across the chasm is a small clearing\nsurrounded by forest.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 168: LOC_RESBOTTOM
     .description = {
                     .small = "You\'re at bottom of reservoir.",
-                    .big = "You are walking across the bottom of the reservoir.  Walls of water\nrear up on either side.  The roar of the water cascading past is\nnearly deafening, and the mist is so thick you can barely see.",
+                    .big =
+                    "You are walking across the bottom of the reservoir.  Walls of water\nrear up on either side.  The roar of the water cascading past is\nnearly deafening, and the mist is so thick you can barely see.",
                     },
     .sound = TOTAL_ROAR,
     .loud = true,
-     },
+    },
    {                            // 169: LOC_RESNORTH
     .description = {
                     .small = "You\'re north of reservoir.",
@@ -1654,7 +1706,7 @@ const location_t locations[] = {
                     },
     .sound = WATERS_CRASHING,
     .loud = false,
-     },
+    },
    {                            // 170: LOC_TREACHEROUS
     .description = {
                     .small = NULL,
@@ -1662,7 +1714,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 171: LOC_STEEP
     .description = {
                     .small = NULL,
@@ -1670,15 +1722,16 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 172: LOC_CLIFFBASE
     .description = {
                     .small = "You\'re at base of cliff.",
-                    .big = "You are at the base of a nearly vertical cliff.  There are some\nslim footholds which would enable you to climb up, but it looks\nextremely dangerous.  Here at the base of the cliff lie the remains\nof several earlier adventurers who apparently failed to make it.",
+                    .big =
+                    "You are at the base of a nearly vertical cliff.  There are some\nslim footholds which would enable you to climb up, but it looks\nextremely dangerous.  Here at the base of the cliff lie the remains\nof several earlier adventurers who apparently failed to make it.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 173: LOC_CLIFFACE
     .description = {
                     .small = NULL,
@@ -1686,31 +1739,34 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 174: LOC_FOOTSLIP
     .description = {
                     .small = NULL,
-                    .big = "Just as you reach the top, your foot slips on a loose rock and you\ntumble several hundred feet to join the other unlucky adventurers.",
+                    .big =
+                    "Just as you reach the top, your foot slips on a loose rock and you\ntumble several hundred feet to join the other unlucky adventurers.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 175: LOC_CLIFFTOP
     .description = {
                     .small = NULL,
-                    .big = "Just as you reach the top, your foot slips on a loose rock and you\nmake one last desperate grab.  Your luck holds, as does your grip.\nWith an enormous heave, you lift yourself to the ledge above.",
+                    .big =
+                    "Just as you reach the top, your foot slips on a loose rock and you\nmake one last desperate grab.  Your luck holds, as does your grip.\nWith an enormous heave, you lift yourself to the ledge above.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 176: LOC_CLIFFLEDGE
     .description = {
                     .small = "You\'re at top of cliff.",
-                    .big = "You are on a small ledge at the top of a nearly vertical cliff.\nThere is a low crawl leading off to the northeast.",
+                    .big =
+                    "You are on a small ledge at the top of a nearly vertical cliff.\nThere is a low crawl leading off to the northeast.",
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 177: LOC_REACHDEAD
     .description = {
                     .small = NULL,
@@ -1718,7 +1774,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 178: LOC_GRUESOME
     .description = {
                     .small = NULL,
@@ -1726,7 +1782,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 179: LOC_FOOF1
     .description = {
                     .small = NULL,
@@ -1734,7 +1790,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 180: LOC_FOOF2
     .description = {
                     .small = NULL,
@@ -1742,7 +1798,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 181: LOC_FOOF3
     .description = {
                     .small = NULL,
@@ -1750,7 +1806,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 182: LOC_FOOF4
     .description = {
                     .small = NULL,
@@ -1758,7 +1814,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 183: LOC_FOOF5
     .description = {
                     .small = NULL,
@@ -1766,7 +1822,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
    {                            // 184: LOC_FOOF6
     .description = {
                     .small = NULL,
@@ -1774,7 +1830,7 @@ const location_t locations[] = {
                     },
     .sound = SILENT,
     .loud = false,
-     },
+    },
 };
 
 const object_t objects[] = {
@@ -1803,11 +1859,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 1: KEYS
     .words = {
               .strs = (const char *[])
-              { "keys", "key"},
+              {"keys", "key"},
               .n = 2,
               },
     .inventory = "Set of keys",
@@ -1830,11 +1886,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 2: LAMP
     .words = {
               .strs = (const char *[])
-              { "lamp", "lante"},
+              {"lamp", "lante"},
               .n = 2,
               },
     .inventory = "Brass lantern",
@@ -1859,11 +1915,11 @@ const object_t objects[] = {
      "Your lamp is now off.",
      "Your lamp is now on.",
      },
-     },
+    },
    {                            // 3: GRATE
     .words = {
               .strs = (const char *[])
-              { "grate"},
+              {"grate"},
               .n = 1,
               },
     .inventory = "*grate",
@@ -1888,11 +1944,11 @@ const object_t objects[] = {
      "The grate is now locked.",
      "The grate is now unlocked.",
      },
-     },
+    },
    {                            // 4: CAGE
     .words = {
               .strs = (const char *[])
-              { "cage"},
+              {"cage"},
               .n = 1,
               },
     .inventory = "Wicker cage",
@@ -1915,11 +1971,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 5: ROD
     .words = {
               .strs = (const char *[])
-              { "rod"},
+              {"rod"},
               .n = 1,
               },
     .inventory = "Black rod",
@@ -1942,11 +1998,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 6: ROD2
     .words = {
               .strs = (const char *[])
-              { "rod"},
+              {"rod"},
               .n = 1,
               },
     .inventory = "Black rod",
@@ -1969,11 +2025,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 7: STEPS
     .words = {
               .strs = (const char *[])
-              { "steps"},
+              {"steps"},
               .n = 1,
               },
     .inventory = "*steps",
@@ -1997,11 +2053,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 8: BIRD
     .words = {
               .strs = (const char *[])
-              { "bird"},
+              {"bird"},
               .n = 1,
               },
     .inventory = "Little bird in cage",
@@ -2031,11 +2087,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 9: DOOR
     .words = {
               .strs = (const char *[])
-              { "door"},
+              {"door"},
               .n = 1,
               },
     .inventory = "*rusty door",
@@ -2060,11 +2116,11 @@ const object_t objects[] = {
      "The hinges are quite thoroughly rusted now and won\'t budge.",
      "The oil has freed up the hinges so that the door will now move,\nalthough it requires some effort.",
      },
-     },
+    },
    {                            // 10: PILLOW
     .words = {
               .strs = (const char *[])
-              { "pillo", "velve"},
+              {"pillo", "velve"},
               .n = 2,
               },
     .inventory = "Velvet pillow",
@@ -2087,11 +2143,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 11: SNAKE
     .words = {
               .strs = (const char *[])
-              { "snake"},
+              {"snake"},
               .n = 1,
               },
     .inventory = "*snake",
@@ -2116,11 +2172,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 12: FISSURE
     .words = {
               .strs = (const char *[])
-              { "fissu"},
+              {"fissu"},
               .n = 1,
               },
     .inventory = "*fissure",
@@ -2145,11 +2201,11 @@ const object_t objects[] = {
      "The crystal bridge has vanished!",
      "A crystal bridge now spans the fissure.",
      },
-     },
+    },
    {                            // 13: OBJ_13
     .words = {
               .strs = (const char *[])
-              { "table"},
+              {"table"},
               .n = 1,
               },
     .inventory = "*stone tablet",
@@ -2172,11 +2228,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 14: CLAM
     .words = {
               .strs = (const char *[])
-              { "clam"},
+              {"clam"},
               .n = 1,
               },
     .inventory = "Giant clam  >GRUNT!<",
@@ -2199,11 +2255,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 15: OYSTER
     .words = {
               .strs = (const char *[])
-              { "oyste"},
+              {"oyste"},
               .n = 1,
               },
     .inventory = "Giant oyster  >GROAN!<",
@@ -2228,11 +2284,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 16: MAGAZINE
     .words = {
               .strs = (const char *[])
-              { "magaz", "issue", "spelu", "\"spel"},
+              {"magaz", "issue", "spelu", "\"spel"},
               .n = 4,
               },
     .inventory = "\"Spelunker Today\"",
@@ -2255,11 +2311,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 17: DWARF
     .words = {
               .strs = (const char *[])
-              { "dwarf", "dwarv"},
+              {"dwarf", "dwarv"},
               .n = 2,
               },
     .inventory = NULL,
@@ -2282,11 +2338,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 18: KNIFE
     .words = {
               .strs = (const char *[])
-              { "knife", "knive"},
+              {"knife", "knive"},
               .n = 2,
               },
     .inventory = NULL,
@@ -2309,11 +2365,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 19: FOOD
     .words = {
               .strs = (const char *[])
-              { "food", "ratio"},
+              {"food", "ratio"},
               .n = 2,
               },
     .inventory = "Tasty food",
@@ -2336,11 +2392,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 20: BOTTLE
     .words = {
               .strs = (const char *[])
-              { "bottl", "jar"},
+              {"bottl", "jar"},
               .n = 2,
               },
     .inventory = "Small bottle",
@@ -2367,11 +2423,11 @@ const object_t objects[] = {
      "The bottle of water is now empty.",
      "Your bottle is now full of oil.",
      },
-     },
+    },
    {                            // 21: WATER
     .words = {
               .strs = (const char *[])
-              { "water", "h2o"},
+              {"water", "h2o"},
               .n = 2,
               },
     .inventory = "Water in the bottle",
@@ -2394,11 +2450,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 22: OIL
     .words = {
               .strs = (const char *[])
-              { "oil"},
+              {"oil"},
               .n = 1,
               },
     .inventory = "Oil in the bottle",
@@ -2421,11 +2477,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 23: MIRROR
     .words = {
               .strs = (const char *[])
-              { "mirro"},
+              {"mirro"},
               .n = 1,
               },
     .inventory = "*mirror",
@@ -2450,11 +2506,11 @@ const object_t objects[] = {
      "",
      "You strike the mirror a resounding blow, whereupon it shatters into a\nmyriad tiny fragments.",
      },
-     },
+    },
    {                            // 24: PLANT
     .words = {
               .strs = (const char *[])
-              { "plant", "beans"},
+              {"plant", "beans"},
               .n = 2,
               },
     .inventory = "*plant",
@@ -2483,11 +2539,11 @@ const object_t objects[] = {
      "The plant spurts into furious growth for a few seconds.",
      "The plant grows explosively, almost filling the bottom of the pit.",
      },
-     },
+    },
    {                            // 25: PLANT2
     .words = {
               .strs = (const char *[])
-              { "plant"},
+              {"plant"},
               .n = 1,
               },
     .inventory = "*phony plant",
@@ -2512,11 +2568,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 26: OBJ_26
     .words = {
               .strs = (const char *[])
-              { "stala"},
+              {"stala"},
               .n = 1,
               },
     .inventory = "*stalactite",
@@ -2539,11 +2595,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 27: OBJ_27
     .words = {
               .strs = (const char *[])
-              { "shado", "figur", "windo"},
+              {"shado", "figur", "windo"},
               .n = 3,
               },
     .inventory = "*shadowy figure and/or window",
@@ -2566,11 +2622,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 28: AXE
     .words = {
               .strs = (const char *[])
-              { "axe"},
+              {"axe"},
               .n = 1,
               },
     .inventory = "Dwarf\'s axe",
@@ -2595,11 +2651,11 @@ const object_t objects[] = {
      "",
      "The axe misses and lands near the bear where you can\'t get at it.",
      },
-     },
+    },
    {                            // 29: OBJ_29
     .words = {
               .strs = (const char *[])
-              { "drawi"},
+              {"drawi"},
               .n = 1,
               },
     .inventory = "*cave drawings",
@@ -2622,11 +2678,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 30: OBJ_30
     .words = {
               .strs = (const char *[])
-              { "pirat", "genie", "djinn"},
+              {"pirat", "genie", "djinn"},
               .n = 3,
               },
     .inventory = "*pirate/genie",
@@ -2649,11 +2705,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 31: DRAGON
     .words = {
               .strs = (const char *[])
-              { "drago"},
+              {"drago"},
               .n = 1,
               },
     .inventory = "*dragon",
@@ -2682,11 +2738,11 @@ const object_t objects[] = {
      "Congratulations!  You have just vanquished a dragon with your bare\nhands!  (Unbelievable, isn\'t it?)",
      "Your head buzzes strangely for a moment.",
      },
-     },
+    },
    {                            // 32: CHASM
     .words = {
               .strs = (const char *[])
-              { "chasm"},
+              {"chasm"},
               .n = 1,
               },
     .inventory = "*chasm",
@@ -2711,11 +2767,11 @@ const object_t objects[] = {
      "",
      "Just as you reach the other side, the bridge buckles beneath the\nweight of the bear, which was still following you around.  You\nscrabble desperately for support, but as the bridge collapses you\nstumble back and fall into the chasm.",
      },
-     },
+    },
    {                            // 33: TROLL
     .words = {
               .strs = (const char *[])
-              { "troll"},
+              {"troll"},
               .n = 1,
               },
     .inventory = "*troll",
@@ -2744,11 +2800,11 @@ const object_t objects[] = {
      "",
      "The bear lumbers toward the troll, who lets out a startled shriek and\nscurries away.  The bear soon gives up the pursuit and wanders back.",
      },
-     },
+    },
    {                            // 34: TROLL2
     .words = {
               .strs = (const char *[])
-              { "troll"},
+              {"troll"},
               .n = 1,
               },
     .inventory = "*phony troll",
@@ -2771,11 +2827,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 35: BEAR
     .words = {
               .strs = (const char *[])
-              { "bear"},
+              {"bear"},
               .n = 1,
               },
     .inventory = NULL,
@@ -2804,11 +2860,11 @@ const object_t objects[] = {
      "",
      "",
      },
-     },
+    },
    {                            // 36: MESSAG
     .words = {
               .strs = (const char *[])
-              { "messa"},
+              {"messa"},
               .n = 1,
               },
     .inventory = "*message in second maze",
@@ -2831,11 +2887,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 37: VOLCANO
     .words = {
               .strs = (const char *[])
-              { "volca", "geyse"},
+              {"volca", "geyse"},
               .n = 2,
               },
     .inventory = "*volcano and/or geyser",
@@ -2858,11 +2914,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 38: VEND
     .words = {
               .strs = (const char *[])
-              { "machi", "vendi"},
+              {"machi", "vendi"},
               .n = 2,
               },
     .inventory = "*vending machine",
@@ -2888,11 +2944,11 @@ const object_t objects[] = {
      "The vending machine swings back to block the passage.",
      "As you strike the vending machine, it pivots backward along with a\nsection of wall, revealing a dark passage leading south.",
      },
-     },
+    },
    {                            // 39: BATTERY
     .words = {
               .strs = (const char *[])
-              { "batte"},
+              {"batte"},
               .n = 1,
               },
     .inventory = "Batteries",
@@ -2916,11 +2972,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 40: OBJ_40
     .words = {
               .strs = (const char *[])
-              { "carpe", "moss"},
+              {"carpe", "moss"},
               .n = 2,
               },
     .inventory = "*carpet and/or moss and/or curtains",
@@ -2943,11 +2999,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 41: OGRE
     .words = {
               .strs = (const char *[])
-              { "ogre"},
+              {"ogre"},
               .n = 1,
               },
     .inventory = "*ogre",
@@ -2970,11 +3026,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 42: URN
     .words = {
               .strs = (const char *[])
-              { "urn"},
+              {"urn"},
               .n = 1,
               },
     .inventory = "*urn",
@@ -3001,11 +3057,11 @@ const object_t objects[] = {
      "The urn is now dark.",
      "The urn is now lit.",
      },
-     },
+    },
    {                            // 43: CAVITY
     .words = {
               .strs = (const char *[])
-              { "cavit"},
+              {"cavit"},
               .n = 1,
               },
     .inventory = "*cavity",
@@ -3029,11 +3085,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 44: BLOOD
     .words = {
               .strs = (const char *[])
-              { "blood"},
+              {"blood"},
               .n = 1,
               },
     .inventory = "*blood",
@@ -3056,11 +3112,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 45: RESER
     .words = {
               .strs = (const char *[])
-              { "reser"},
+              {"reser"},
               .n = 1,
               },
     .inventory = "*reservoir",
@@ -3085,11 +3141,11 @@ const object_t objects[] = {
      "The waters crash together again.",
      "The waters have parted to form a narrow path across the reservoir.",
      },
-     },
+    },
    {                            // 46: OBJ_46
     .words = {
               .strs = (const char *[])
-              { "appen", "lepor"},
+              {"appen", "lepor"},
               .n = 2,
               },
     .inventory = "Leporine appendage",
@@ -3112,11 +3168,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 47: OBJ_47
     .words = {
               .strs = (const char *[])
-              { "mud"},
+              {"mud"},
               .n = 1,
               },
     .inventory = "*mud",
@@ -3139,11 +3195,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 48: OBJ_48
     .words = {
               .strs = (const char *[])
-              { "note"},
+              {"note"},
               .n = 1,
               },
     .inventory = "*note",
@@ -3166,11 +3222,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 49: SIGN
     .words = {
               .strs = (const char *[])
-              { "sign"},
+              {"sign"},
               .n = 1,
               },
     .inventory = "*sign",
@@ -3195,11 +3251,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 50: NUGGET
     .words = {
               .strs = (const char *[])
-              { "gold", "nugge"},
+              {"gold", "nugge"},
               .n = 2,
               },
     .inventory = "Large gold nugget",
@@ -3222,11 +3278,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 51: OBJ_51
     .words = {
               .strs = (const char *[])
-              { "diamo"},
+              {"diamo"},
               .n = 1,
               },
     .inventory = "Several diamonds",
@@ -3249,11 +3305,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 52: OBJ_52
     .words = {
               .strs = (const char *[])
-              { "silve", "bars"},
+              {"silve", "bars"},
               .n = 2,
               },
     .inventory = "Bars of silver",
@@ -3276,11 +3332,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 53: OBJ_53
     .words = {
               .strs = (const char *[])
-              { "jewel"},
+              {"jewel"},
               .n = 1,
               },
     .inventory = "Precious jewelry",
@@ -3303,11 +3359,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 54: COINS
     .words = {
               .strs = (const char *[])
-              { "coins"},
+              {"coins"},
               .n = 1,
               },
     .inventory = "Rare coins",
@@ -3330,11 +3386,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 55: CHEST
     .words = {
               .strs = (const char *[])
-              { "chest", "box", "treas"},
+              {"chest", "box", "treas"},
               .n = 3,
               },
     .inventory = "Treasure chest",
@@ -3357,11 +3413,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 56: EGGS
     .words = {
               .strs = (const char *[])
-              { "eggs", "egg", "nest"},
+              {"eggs", "egg", "nest"},
               .n = 3,
               },
     .inventory = "Golden eggs",
@@ -3386,11 +3442,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 57: TRIDENT
     .words = {
               .strs = (const char *[])
-              { "tride"},
+              {"tride"},
               .n = 1,
               },
     .inventory = "Jeweled trident",
@@ -3413,11 +3469,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 58: VASE
     .words = {
               .strs = (const char *[])
-              { "vase", "ming", "shard", "potte"},
+              {"vase", "ming", "shard", "potte"},
               .n = 4,
               },
     .inventory = "Ming vase",
@@ -3444,11 +3500,11 @@ const object_t objects[] = {
      "The ming vase drops with a delicate crash.",
      "You have taken the vase and hurled it delicately to the ground.",
      },
-     },
+    },
    {                            // 59: EMERALD
     .words = {
               .strs = (const char *[])
-              { "emera"},
+              {"emera"},
               .n = 1,
               },
     .inventory = "Egg-sized emerald",
@@ -3472,11 +3528,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 60: PYRAMID
     .words = {
               .strs = (const char *[])
-              { "plati", "pyram"},
+              {"plati", "pyram"},
               .n = 2,
               },
     .inventory = "Platinum pyramid",
@@ -3499,11 +3555,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 61: PEARL
     .words = {
               .strs = (const char *[])
-              { "pearl"},
+              {"pearl"},
               .n = 1,
               },
     .inventory = "Glistening pearl",
@@ -3526,11 +3582,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 62: RUG
     .words = {
               .strs = (const char *[])
-              { "rug", "persi"},
+              {"rug", "persi"},
               .n = 2,
               },
     .inventory = "Persian rug",
@@ -3555,11 +3611,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 63: OBJ_63
     .words = {
               .strs = (const char *[])
-              { "spice"},
+              {"spice"},
               .n = 1,
               },
     .inventory = "Rare spices",
@@ -3582,11 +3638,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 64: CHAIN
     .words = {
               .strs = (const char *[])
-              { "chain"},
+              {"chain"},
               .n = 1,
               },
     .inventory = "Golden chain",
@@ -3611,11 +3667,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 65: RUBY
     .words = {
               .strs = (const char *[])
-              { "ruby"},
+              {"ruby"},
               .n = 1,
               },
     .inventory = "Giant ruby",
@@ -3639,11 +3695,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 66: JADE
     .words = {
               .strs = (const char *[])
-              { "jade", "neckl"},
+              {"jade", "neckl"},
               .n = 2,
               },
     .inventory = "Jade necklace",
@@ -3666,11 +3722,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 67: AMBER
     .words = {
               .strs = (const char *[])
-              { "amber", "gemst"},
+              {"amber", "gemst"},
               .n = 2,
               },
     .inventory = "Amber gemstone",
@@ -3694,11 +3750,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 68: SAPPH
     .words = {
               .strs = (const char *[])
-              { "sapph"},
+              {"sapph"},
               .n = 1,
               },
     .inventory = "Star sapphire",
@@ -3722,11 +3778,11 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
    {                            // 69: OBJ_69
     .words = {
               .strs = (const char *[])
-              { "ebony", "statu"},
+              {"ebony", "statu"},
               .n = 2,
               },
     .inventory = "Ebony statuette",
@@ -3749,22 +3805,27 @@ const object_t objects[] = {
     {
      NULL,
      },
-     },
+    },
 };
 
 const obituary_t obituaries[] = {
    {
-    .query = "Oh dear, you seem to have gotten yourself killed.  I might be able to\nhelp you out, but I\'ve never really done this before.  Do you want me\nto try to reincarnate you?",
-    .yes_response = "All right.  But don\'t blame me if something goes wr......\n                    --- POOF!! ---\nYou are engulfed in a cloud of orange smoke.  Coughing and gasping,\nyou emerge from the smoke and find....",
-     },
+    .query =
+    "Oh dear, you seem to have gotten yourself killed.  I might be able to\nhelp you out, but I\'ve never really done this before.  Do you want me\nto try to reincarnate you?",
+    .yes_response =
+    "All right.  But don\'t blame me if something goes wr......\n                    --- POOF!! ---\nYou are engulfed in a cloud of orange smoke.  Coughing and gasping,\nyou emerge from the smoke and find....",
+    },
    {
-    .query = "You clumsy oaf, you\'ve done it again!  I don\'t know how long I can\nkeep this up.  Do you want me to try reincarnating you again?",
-    .yes_response = "Okay, now where did I put my orange smoke?....  >POOF!<\nEverything disappears in a dense cloud of orange smoke.",
-     },
+    .query =
+    "You clumsy oaf, you\'ve done it again!  I don\'t know how long I can\nkeep this up.  Do you want me to try reincarnating you again?",
+    .yes_response =
+    "Okay, now where did I put my orange smoke?....  >POOF!<\nEverything disappears in a dense cloud of orange smoke.",
+    },
    {
-    .query = "Now you\'ve really done it!  I\'m out of orange smoke!  You don\'t expect\nme to do a decent reincarnation without any orange smoke, do you?",
+    .query =
+    "Now you\'ve really done it!  I\'m out of orange smoke!  You don\'t expect\nme to do a decent reincarnation without any orange smoke, do you?",
     .yes_response = "Okay, if you\'re so smart, do it yourself!  I\'m leaving!",
-     },
+    },
 };
 
 const hint_t hints[] = {
@@ -3773,71 +3834,75 @@ const hint_t hints[] = {
     .penalty = 2,
     .turns = 4,
     .question = "Are you trying to get into the cave?",
-    .hint = "The grate is very solid and has a hardened steel lock.  You cannot\nenter without a key, and there are no keys nearby.  I would recommend\nlooking elsewhere for the keys.",
-     },
+    .hint =
+    "The grate is very solid and has a hardened steel lock.  You cannot\nenter without a key, and there are no keys nearby.  I would recommend\nlooking elsewhere for the keys.",
+    },
    {
     .number = 2,
     .penalty = 2,
     .turns = 5,
     .question = "Are you trying to catch the bird?",
     .hint = "Something about you seems to be frightening the bird.  Perhaps you\nmight figure out what it is.",
-     },
+    },
    {
     .number = 3,
     .penalty = 2,
     .turns = 8,
     .question = "Are you trying to somehow deal with the snake?",
-    .hint = "You can\'t kill the snake, or drive it away, or avoid it, or anything\nlike that.  There is a way to get by, but you don\'t have the necessary\nresources right now.",
-     },
+    .hint =
+    "You can\'t kill the snake, or drive it away, or avoid it, or anything\nlike that.  There is a way to get by, but you don\'t have the necessary\nresources right now.",
+    },
    {
     .number = 4,
     .penalty = 4,
     .turns = 75,
     .question = "Do you need help getting out of the maze?",
     .hint = "You can make the passages look less alike by dropping things.",
-     },
+    },
    {
     .number = 5,
     .penalty = 5,
     .turns = 25,
     .question = "Are you trying to explore beyond the plover room?",
-    .hint = "There is a way to explore that region without having to worry about\nfalling into a pit.  None of the objects available is immediately\nuseful in discovering the secret.",
-     },
+    .hint =
+    "There is a way to explore that region without having to worry about\nfalling into a pit.  None of the objects available is immediately\nuseful in discovering the secret.",
+    },
    {
     .number = 6,
     .penalty = 3,
     .turns = 20,
     .question = "Do you need help getting out of here?",
     .hint = "Don\'t go west.\n",
-     },
+    },
    {
     .number = 7,
     .penalty = 2,
     .turns = 8,
     .question = "Are you wondering what to do here?",
     .hint = "This section is quite advanced.  Find the cave first.\n",
-     },
+    },
    {
     .number = 8,
     .penalty = 2,
     .turns = 25,
     .question = "Would you like to be shown out of the forest?",
     .hint = "Go east ten times.  If that doesn\'t get you out, then go south, then\nwest twice, then south.",
-     },
+    },
    {
     .number = 9,
     .penalty = 4,
     .turns = 10,
     .question = "Do you need help dealing with the ogre?",
-    .hint = "There is nothing the presence of which will prevent you from defeating\nhim; thus it can\'t hurt to fetch everything you possibly can.",
-     },
+    .hint =
+    "There is nothing the presence of which will prevent you from defeating\nhim; thus it can\'t hurt to fetch everything you possibly can.",
+    },
    {
     .number = 10,
     .penalty = 4,
     .turns = 1,
     .question = "You\'re missing only one other treasure.  Do you need help finding it?",
     .hint = "Once you\'ve found all the other treasures, it is no longer possible to\nlocate the one you\'re now missing.",
-     },
+    },
 };
 
 long conditions[] = {
@@ -4035,531 +4100,531 @@ const motion_t motions[] = {
               .strs = NULL,
               .n = 0,
               },
-     },
+    },
    {
     .words = {
               .strs = NULL,
               .n = 0,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "road", "hill"},
+              {"road", "hill"},
               .n = 2,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "enter"},
+              {"enter"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "upstr"},
+              {"upstr"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "downs"},
+              {"downs"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "fores"},
+              {"fores"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "forwa", "conti", "onwar"},
+              {"forwa", "conti", "onwar"},
               .n = 3,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "back", "retur", "retre"},
+              {"back", "retur", "retre"},
               .n = 3,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "valle"},
+              {"valle"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "stair"},
+              {"stair"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "out", "outsi", "exit", "leave"},
+              {"out", "outsi", "exit", "leave"},
               .n = 4,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "build", "house"},
+              {"build", "house"},
               .n = 2,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "gully"},
+              {"gully"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "strea"},
+              {"strea"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "fork"},
+              {"fork"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "bed"},
+              {"bed"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "crawl"},
+              {"crawl"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "cobbl"},
+              {"cobbl"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "inwar", "insid", "in"},
+              {"inwar", "insid", "in"},
               .n = 3,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "surfa"},
+              {"surfa"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "null", "nowhe"},
+              {"null", "nowhe"},
               .n = 2,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "dark"},
+              {"dark"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "passa", "tunne"},
+              {"passa", "tunne"},
               .n = 2,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "low"},
+              {"low"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "canyo"},
+              {"canyo"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "awkwa"},
+              {"awkwa"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "giant"},
+              {"giant"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "view"},
+              {"view"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "upwar", "up", "u", "above", "ascen"},
+              {"upwar", "up", "u", "above", "ascen"},
               .n = 5,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "d", "downw", "down", "desce"},
+              {"d", "downw", "down", "desce"},
               .n = 4,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "pit"},
+              {"pit"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "outdo"},
+              {"outdo"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "crack"},
+              {"crack"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "steps"},
+              {"steps"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "dome"},
+              {"dome"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "left"},
+              {"left"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "right"},
+              {"right"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "hall"},
+              {"hall"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "jump"},
+              {"jump"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "barre"},
+              {"barre"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "over"},
+              {"over"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "acros"},
+              {"acros"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "east", "e"},
+              {"east", "e"},
               .n = 2,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "west", "w"},
+              {"west", "w"},
               .n = 2,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "north", "n"},
+              {"north", "n"},
               .n = 2,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "south", "s"},
+              {"south", "s"},
               .n = 2,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "ne"},
+              {"ne"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "se"},
+              {"se"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "sw"},
+              {"sw"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "nw"},
+              {"nw"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "debri"},
+              {"debri"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "hole"},
+              {"hole"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "wall"},
+              {"wall"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "broke"},
+              {"broke"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "y2"},
+              {"y2"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "climb"},
+              {"climb"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "l", "x", "look", "exami", "touch", "descr"},
+              {"l", "x", "look", "exami", "touch", "descr"},
               .n = 6,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "floor"},
+              {"floor"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "room"},
+              {"room"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "slit"},
+              {"slit"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "slab", "slabr"},
+              {"slab", "slabr"},
               .n = 2,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "xyzzy"},
+              {"xyzzy"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "depre"},
+              {"depre"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "entra"},
+              {"entra"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "plugh"},
+              {"plugh"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "secre"},
+              {"secre"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "cave"},
+              {"cave"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "cross"},
+              {"cross"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "bedqu"},
+              {"bedqu"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "plove"},
+              {"plove"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "orien"},
+              {"orien"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "caver"},
+              {"caver"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "shell"},
+              {"shell"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "reser"},
+              {"reser"},
               .n = 1,
               },
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "main", "offic"},
+              {"main", "offic"},
               .n = 2,
               },
-     },
+    },
 
 };
 
@@ -4571,367 +4636,370 @@ const action_t actions[] = {
               },
     .message = NULL,
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "g", "carry", "take", "keep", "catch", "steal", "captu", "get", "tote", "snarf"},
+              {"g", "carry", "take", "keep", "catch", "steal", "captu", "get", "tote", "snarf"},
               .n = 10,
               },
     .message = "You are already carrying it!",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "drop", "relea", "free", "disca", "dump"},
+              {"drop", "relea", "free", "disca", "dump"},
               .n = 5,
               },
     .message = "You aren\'t carrying it!",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "say", "chant", "sing", "utter", "mumbl"},
+              {"say", "chant", "sing", "utter", "mumbl"},
               .n = 5,
               },
     .message = "NO_MESSAGE",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "unloc", "open"},
+              {"unloc", "open"},
               .n = 2,
               },
     .message = "I don\'t know how to lock or unlock such a thing.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "z", "nothi"},
+              {"z", "nothi"},
               .n = 2,
               },
     .message = "NO_MESSAGE",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "lock", "close"},
+              {"lock", "close"},
               .n = 2,
               },
     .message = "I don\'t know how to lock or unlock such a thing.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "light", "on"},
+              {"light", "on"},
               .n = 2,
               },
     .message = "I\'m afraid I don\'t understand.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "extin", "off"},
+              {"extin", "off"},
               .n = 2,
               },
     .message = "I\'m afraid I don\'t understand.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "wave", "shake", "swing"},
+              {"wave", "shake", "swing"},
               .n = 3,
               },
     .message = "Nothing happens.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "calm", "placa", "tame"},
+              {"calm", "placa", "tame"},
               .n = 3,
               },
     .message = "I\'m game.  Would you care to explain how?",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "walk", "run", "trave", "go", "proce", "conti", "explo", "follo", "turn"},
+              {"walk", "run", "trave", "go", "proce", "conti", "explo", "follo", "turn"},
               .n = 9,
               },
     .message = "Where?",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "attac", "kill", "fight", "hit", "strik", "slay"},
+              {"attac", "kill", "fight", "hit", "strik", "slay"},
               .n = 6,
               },
     .message = "Don\'t be ridiculous!",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "pour"},
+              {"pour"},
               .n = 1,
               },
     .message = "You aren\'t carrying it!",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "eat", "devou"},
+              {"eat", "devou"},
               .n = 2,
               },
     .message = "Don\'t be ridiculous!",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "drink"},
+              {"drink"},
               .n = 1,
               },
-    .message = "You have taken a drink from the stream.  The water tastes strongly of\nminerals, but is not unpleasant.  It is extremely cold.",
+    .message =
+    "You have taken a drink from the stream.  The water tastes strongly of\nminerals, but is not unpleasant.  It is extremely cold.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "rub"},
+              {"rub"},
               .n = 1,
               },
     .message = "Rubbing the electric lamp is not particularly rewarding.  Anyway,\nnothing exciting happens.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "throw", "toss"},
+              {"throw", "toss"},
               .n = 2,
               },
     .message = "You aren\'t carrying it!",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "quit"},
+              {"quit"},
               .n = 1,
               },
     .message = "Huh?",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "find", "where"},
+              {"find", "where"},
               .n = 2,
               },
-    .message = "I can only tell you what you see as you move about and manipulate\nthings.  I cannot tell you where remote things are.",
+    .message =
+    "I can only tell you what you see as you move about and manipulate\nthings.  I cannot tell you where remote things are.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "i", "inven"},
+              {"i", "inven"},
               .n = 2,
               },
-    .message = "I can only tell you what you see as you move about and manipulate\nthings.  I cannot tell you where remote things are.",
+    .message =
+    "I can only tell you what you see as you move about and manipulate\nthings.  I cannot tell you where remote things are.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "feed"},
+              {"feed"},
               .n = 1,
               },
     .message = "There is nothing here to eat.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "fill"},
+              {"fill"},
               .n = 1,
               },
     .message = "You can\'t fill that.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "blast", "deton", "ignit", "blowu"},
+              {"blast", "deton", "ignit", "blowu"},
               .n = 4,
               },
     .message = "Blasting requires dynamite.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "score"},
+              {"score"},
               .n = 1,
               },
     .message = "Huh?",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "fee"},
+              {"fee"},
               .n = 1,
               },
     .message = "I don\'t know how.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "fie"},
+              {"fie"},
               .n = 1,
               },
     .message = "I don\'t know how.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "foe"},
+              {"foe"},
               .n = 1,
               },
     .message = "I don\'t know how.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "foo"},
+              {"foo"},
               .n = 1,
               },
     .message = "I don\'t know how.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "fum"},
+              {"fum"},
               .n = 1,
               },
     .message = "I don\'t know how.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "brief"},
+              {"brief"},
               .n = 1,
               },
     .message = "On what?",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "read", "perus"},
+              {"read", "perus"},
               .n = 2,
               },
     .message = "I\'m afraid I don\'t understand.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "break", "shatt", "smash"},
+              {"break", "shatt", "smash"},
               .n = 3,
               },
     .message = "It is beyond your power to do that.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "wake", "distu"},
+              {"wake", "distu"},
               .n = 2,
               },
     .message = "Don\'t be ridiculous!",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "suspe", "pause", "save"},
+              {"suspe", "pause", "save"},
               .n = 3,
               },
     .message = "Huh?",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "resum", "resta"},
+              {"resum", "resta"},
               .n = 2,
               },
     .message = "Huh?",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "fly"},
+              {"fly"},
               .n = 1,
               },
     .message = "I\'m game.  Would you care to explain how?",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "liste"},
+              {"liste"},
               .n = 1,
               },
     .message = "I\'m afraid I don\'t understand.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "z\'zzz"},
+              {"z\'zzz"},
               .n = 1,
               },
     .message = "Nothing happens.",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "seed"},
+              {"seed"},
               .n = 1,
               },
     .message = "Seed set to %d",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "waste"},
+              {"waste"},
               .n = 1,
               },
     .message = "Game limit is now %d",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = NULL,
@@ -4939,155 +5007,157 @@ const action_t actions[] = {
               },
     .message = "Huh?",
     .noaction = false,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "thank"},
+              {"thank"},
               .n = 1,
               },
     .message = "You\'re quite welcome.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "sesam", "opens", "abra", "abrac", "shaza", "hocus", "pocus"},
+              {"sesam", "opens", "abra", "abrac", "shaza", "hocus", "pocus"},
               .n = 7,
               },
     .message = "Good try, but that is an old worn-out magic word.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "help", "?"},
+              {"help", "?"},
               .n = 2,
               },
     .message =
     "I know of places, actions, and things.  Most of my vocabulary\ndescribes places and is used to move you there.  To move, try words\nlike forest, building, downstream, enter, east, west, north, south,\nup, or down.  I know about a few special objects, like a black rod\nhidden in the cave.  These objects can be manipulated using some of\nthe action words that I know.  Usually you will need to give both the\nobject and action words (in either order), but sometimes I can infer\nthe object from the verb alone.  Some objects also imply verbs; in\nparticular, \"inventory\" implies \"take inventory\", which causes me to\ngive you a list of what you\'re carrying.  Some objects have unexpected\neffects; the effects are not always desirable!  Usually people having\ntrouble moving just need to try a few more words.  Usually people\ntrying unsuccessfully to manipulate an object are attempting something\nbeyond their (or my!) capabilities and should try a completely\ndifferent tack.  One point often confusing to beginners is that, when\nthere are several ways to go in a certain direction (e.g., if there\nare several holes in a wall), choosing that direction in effect\nchooses one of the ways at random; often, though, by specifying the\nplace you want to reach you can guarantee choosing the right path.\nAlso, to speed the game you can sometimes move long distances with a\nsingle word.  For example, \"building\" usually gets you to the building\nfrom anywhere above ground except when lost in the forest.  Also, note\nthat cave passages and forest paths turn a lot, so leaving one place\nheading north doesn\'t guarantee entering the next from the south.\nHowever (another important point), except when you\'ve used a \"long\ndistance\" word such as \"building\", there is always a way to go back\nwhere you just came from unless I warn you to the contrary, even\nthough the direction that takes you back might not be the reverse of\nwhat got you here.  Good luck, and have fun!",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "no"},
+              {"no"},
               .n = 1,
               },
     .message = "OK",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "tree", "trees"},
+              {"tree", "trees"},
               .n = 2,
               },
     .message =
     "The trees of the forest are large hardwood oak and maple, with an\noccasional grove of pine or spruce.  There is quite a bit of under-\ngrowth, largely birch and ash saplings plus nondescript bushes of\nvarious sorts.  This time of year visibility is quite restricted by\nall the leaves, but travel is quite easy if you detour around the\nspruce and berry bushes.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "dig", "excav"},
+              {"dig", "excav"},
               .n = 2,
               },
     .message = "Digging without a shovel is quite impractical.  Even with a shovel\nprogress is unlikely.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "lost"},
+              {"lost"},
               .n = 1,
               },
     .message = "I\'m as confused as you are.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "mist"},
+              {"mist"},
               .n = 1,
               },
-    .message = "Mist is a white vapor, usually water, seen from time to time in\ncaverns.  It can be found anywhere but is frequently a sign of a deep\npit leading down to water.\'",
+    .message =
+    "Mist is a white vapor, usually water, seen from time to time in\ncaverns.  It can be found anywhere but is frequently a sign of a deep\npit leading down to water.\'",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "fuck"},
+              {"fuck"},
               .n = 1,
               },
     .message = "Watch it!",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "stop"},
+              {"stop"},
               .n = 1,
               },
     .message = "I don\'t know the word \"stop\".  Use \"quit\" if you want to give up.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "info", "infor"},
+              {"info", "infor"},
               .n = 2,
               },
     .message =
     "For a summary of the most recent changes to the game, say \"news\".\nIf you want to end your adventure early, say \"quit\".  To suspend your\nadventure such that you can continue later, say \"suspend\" (or \"pause\"\nor \"save\").  To see how well you\'re doing, say \"score\".  To get full\ncredit for a treasure, you must have left it safely in the building,\nthough you get partial credit just for locating it.  You lose points\nfor getting killed, or for quitting, though the former costs you more.\nThere are also points based on how much (if any) of the cave you\'ve\nmanaged to explore; in particular, there is a large bonus just for\ngetting in (to distinguish the beginners from the rest of the pack),\nand there are other ways to determine whether you\'ve been through some\nof the more harrowing sections.  If you think you\'ve found all the\ntreasures, just keep exploring for a while.  If nothing interesting\nhappens, you haven\'t found them all yet.  If something interesting\n*DOES* happen (incidentally, there *ARE* ways to hasten things along),\nit means you\'re getting a bonus and have an opportunity to garner many\nmore points in the Master\'s section.  I may occasionally offer hints\nif you seem to be having trouble.  If I do, I\'ll warn you in advance\nhow much it will affect your score to accept the hints.  Finally, to\nsave time, you may specify \"brief\", which tells me never to repeat the\nfull description of a place unless you explicitly ask me to.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "swim"},
+              {"swim"},
               .n = 1,
               },
     .message = "I don\'t know how.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "wizar"},
+              {"wizar"},
               .n = 1,
               },
     .message = "Wizards are not to be disturbed by such as you.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "yes"},
+              {"yes"},
               .n = 1,
               },
     .message = "Guess again.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "news"},
+              {"news"},
               .n = 1,
               },
     .message =
     "Open Adventure is an author-approved open-source release of\nVersion 2.5 with, as yet, no gameplay changes.\nVersion 2.5 was essentially the same as Version II; the cave and the\nhazards therein are unchanged, and top score is still 430 points.\nThere are a few more hints, especially for some of the more obscure\npuzzles.  There are a few minor bugfixes and cosmetic changes.  You\ncan now save a game and resume it at once (formerly you had to wait a\nwhile first), but it now costs you a few points each time you save the\ngame.  Saved games are now stored in much smaller files than before.",
     .noaction = true,
-     },
+    },
    {
     .words = {
               .strs = (const char *[])
-              { "versi"},
+              {"versi"},
               .n = 1,
               },
-    .message = "There is a puff of orange smoke; within it, fiery runes spell out:\n\n\tOpen Adventure %V - http://www.catb.org/esr/open-adventure/",
+    .message =
+    "There is a puff of orange smoke; within it, fiery runes spell out:\n\n\tOpen Adventure %V - http://www.catb.org/esr/open-adventure/",
     .noaction = true,
-     },
+    },
 };
 
 const long tkey[] = {
@@ -5122,7 +5192,7 @@ const travelop_t travel[] = {
     .destval = 0,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = MOT_2,
     .condtype = cond_goto,
@@ -5132,7 +5202,7 @@ const travelop_t travel[] = {
     .destval = LOC_HILL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = WEST,
     .condtype = cond_goto,
@@ -5142,7 +5212,7 @@ const travelop_t travel[] = {
     .destval = LOC_HILL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = UP,
     .condtype = cond_goto,
@@ -5152,7 +5222,7 @@ const travelop_t travel[] = {
     .destval = LOC_HILL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = ENTER,
     .condtype = cond_goto,
@@ -5162,7 +5232,7 @@ const travelop_t travel[] = {
     .destval = LOC_BUILDING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = MOT_12,
     .condtype = cond_goto,
@@ -5172,7 +5242,7 @@ const travelop_t travel[] = {
     .destval = LOC_BUILDING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = INSIDE,
     .condtype = cond_goto,
@@ -5182,7 +5252,7 @@ const travelop_t travel[] = {
     .destval = LOC_BUILDING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = EAST,
     .condtype = cond_goto,
@@ -5192,7 +5262,7 @@ const travelop_t travel[] = {
     .destval = LOC_BUILDING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = MOT_5,
     .condtype = cond_goto,
@@ -5202,7 +5272,7 @@ const travelop_t travel[] = {
     .destval = LOC_VALLEY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = MOT_13,
     .condtype = cond_goto,
@@ -5212,7 +5282,7 @@ const travelop_t travel[] = {
     .destval = LOC_VALLEY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = STREAM,
     .condtype = cond_goto,
@@ -5222,7 +5292,7 @@ const travelop_t travel[] = {
     .destval = LOC_VALLEY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -5232,7 +5302,7 @@ const travelop_t travel[] = {
     .destval = LOC_VALLEY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = DOWN,
     .condtype = cond_goto,
@@ -5242,7 +5312,7 @@ const travelop_t travel[] = {
     .destval = LOC_VALLEY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = MOT_6,
     .condtype = cond_goto,
@@ -5252,7 +5322,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = NORTH,
     .condtype = cond_goto,
@@ -5262,7 +5332,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 1: LOC_START
     .motion = DEPRESSION,
     .condtype = cond_goto,
@@ -5272,7 +5342,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 2: LOC_HILL
     .motion = MOT_12,
     .condtype = cond_goto,
@@ -5282,7 +5352,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 2: LOC_HILL
     .motion = EAST,
     .condtype = cond_goto,
@@ -5292,7 +5362,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 2: LOC_HILL
     .motion = WEST,
     .condtype = cond_goto,
@@ -5302,7 +5372,7 @@ const travelop_t travel[] = {
     .destval = LOC_ROADEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 2: LOC_HILL
     .motion = NORTH,
     .condtype = cond_goto,
@@ -5312,7 +5382,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST20,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 2: LOC_HILL
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -5322,7 +5392,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST13,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 2: LOC_HILL
     .motion = MOT_6,
     .condtype = cond_goto,
@@ -5332,7 +5402,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST13,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 2: LOC_HILL
     .motion = DOWN,
     .condtype = cond_goto,
@@ -5342,7 +5412,7 @@ const travelop_t travel[] = {
     .destval = WHICH_WAY,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 3: LOC_BUILDING
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -5352,7 +5422,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 3: LOC_BUILDING
     .motion = MOT_32,
     .condtype = cond_goto,
@@ -5362,7 +5432,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 3: LOC_BUILDING
     .motion = WEST,
     .condtype = cond_goto,
@@ -5372,7 +5442,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 3: LOC_BUILDING
     .motion = XYZZY,
     .condtype = cond_goto,
@@ -5382,7 +5452,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOOF1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 3: LOC_BUILDING
     .motion = PLUGH,
     .condtype = cond_goto,
@@ -5392,7 +5462,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOOF3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 3: LOC_BUILDING
     .motion = MOT_5,
     .condtype = cond_goto,
@@ -5402,7 +5472,7 @@ const travelop_t travel[] = {
     .destval = LOC_SEWER,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 3: LOC_BUILDING
     .motion = STREAM,
     .condtype = cond_goto,
@@ -5412,7 +5482,7 @@ const travelop_t travel[] = {
     .destval = LOC_SEWER,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = MOT_4,
     .condtype = cond_goto,
@@ -5422,7 +5492,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = MOT_12,
     .condtype = cond_goto,
@@ -5432,7 +5502,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = NORTH,
     .condtype = cond_goto,
@@ -5442,7 +5512,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = EAST,
     .condtype = cond_goto,
@@ -5452,7 +5522,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = MOT_6,
     .condtype = cond_goto,
@@ -5462,7 +5532,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = WEST,
     .condtype = cond_goto,
@@ -5472,7 +5542,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST12,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = MOT_5,
     .condtype = cond_goto,
@@ -5482,7 +5552,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -5492,7 +5562,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = DOWN,
     .condtype = cond_goto,
@@ -5502,7 +5572,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = DEPRESSION,
     .condtype = cond_goto,
@@ -5512,7 +5582,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 4: LOC_VALLEY
     .motion = STREAM,
     .condtype = cond_goto,
@@ -5522,7 +5592,7 @@ const travelop_t travel[] = {
     .destval = UPSTREAM_DOWNSTREAM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 5: LOC_ROADEND
     .motion = MOT_2,
     .condtype = cond_goto,
@@ -5532,7 +5602,7 @@ const travelop_t travel[] = {
     .destval = LOC_HILL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 5: LOC_ROADEND
     .motion = EAST,
     .condtype = cond_goto,
@@ -5542,7 +5612,7 @@ const travelop_t travel[] = {
     .destval = LOC_HILL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 5: LOC_ROADEND
     .motion = UP,
     .condtype = cond_goto,
@@ -5552,7 +5622,7 @@ const travelop_t travel[] = {
     .destval = LOC_HILL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 5: LOC_ROADEND
     .motion = MOT_12,
     .condtype = cond_goto,
@@ -5562,7 +5632,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 5: LOC_ROADEND
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -5572,7 +5642,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST14,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 5: LOC_ROADEND
     .motion = MOT_6,
     .condtype = cond_goto,
@@ -5582,7 +5652,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST14,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 5: LOC_ROADEND
     .motion = WEST,
     .condtype = cond_goto,
@@ -5592,7 +5662,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST15,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 5: LOC_ROADEND
     .motion = NORTH,
     .condtype = cond_goto,
@@ -5602,7 +5672,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST21,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 6: LOC_CLIFF
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -5612,7 +5682,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST17,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 6: LOC_CLIFF
     .motion = MOT_6,
     .condtype = cond_goto,
@@ -5622,7 +5692,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST17,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 6: LOC_CLIFF
     .motion = EAST,
     .condtype = cond_goto,
@@ -5632,7 +5702,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST19,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 6: LOC_CLIFF
     .motion = MOT_39,
     .condtype = cond_goto,
@@ -5642,7 +5712,7 @@ const travelop_t travel[] = {
     .destval = LOC_NOMAKE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = MOT_12,
     .condtype = cond_goto,
@@ -5652,7 +5722,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = MOT_4,
     .condtype = cond_goto,
@@ -5662,7 +5732,7 @@ const travelop_t travel[] = {
     .destval = LOC_VALLEY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = NORTH,
     .condtype = cond_goto,
@@ -5672,7 +5742,7 @@ const travelop_t travel[] = {
     .destval = LOC_VALLEY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = EAST,
     .condtype = cond_goto,
@@ -5682,7 +5752,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = MOT_6,
     .condtype = cond_goto,
@@ -5692,7 +5762,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = WEST,
     .condtype = cond_goto,
@@ -5702,7 +5772,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = MOT_5,
     .condtype = cond_goto,
@@ -5712,7 +5782,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = MOT_16,
     .condtype = cond_goto,
@@ -5722,7 +5792,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -5732,7 +5802,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = DEPRESSION,
     .condtype = cond_goto,
@@ -5742,7 +5812,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = MOT_60,
     .condtype = cond_goto,
@@ -5752,7 +5822,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = STREAM,
     .condtype = cond_goto,
@@ -5762,7 +5832,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = DOWN,
     .condtype = cond_goto,
@@ -5772,7 +5842,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = INSIDE,
     .condtype = cond_goto,
@@ -5782,7 +5852,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 7: LOC_SLIT
     .motion = ENTER,
     .condtype = cond_goto,
@@ -5792,7 +5862,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = EAST,
     .condtype = cond_goto,
@@ -5802,7 +5872,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = MOT_6,
     .condtype = cond_goto,
@@ -5812,7 +5882,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -5822,7 +5892,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = WEST,
     .condtype = cond_goto,
@@ -5832,7 +5902,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = MOT_12,
     .condtype = cond_goto,
@@ -5842,7 +5912,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = MOT_4,
     .condtype = cond_goto,
@@ -5852,7 +5922,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = MOT_13,
     .condtype = cond_goto,
@@ -5862,7 +5932,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = NORTH,
     .condtype = cond_goto,
@@ -5872,7 +5942,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = ENTER,
     .condtype = cond_not,
@@ -5882,7 +5952,7 @@ const travelop_t travel[] = {
     .destval = LOC_BELOWGRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = INSIDE,
     .condtype = cond_not,
@@ -5892,7 +5962,7 @@ const travelop_t travel[] = {
     .destval = LOC_BELOWGRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = DOWN,
     .condtype = cond_not,
@@ -5902,7 +5972,7 @@ const travelop_t travel[] = {
     .destval = LOC_BELOWGRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 8: LOC_GRATE
     .motion = ENTER,
     .condtype = cond_goto,
@@ -5912,7 +5982,7 @@ const travelop_t travel[] = {
     .destval = GRATE_NOWAY,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 9: LOC_BELOWGRATE
     .motion = OUTSIDE,
     .condtype = cond_not,
@@ -5922,7 +5992,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 9: LOC_BELOWGRATE
     .motion = UP,
     .condtype = cond_not,
@@ -5932,7 +6002,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 9: LOC_BELOWGRATE
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -5942,7 +6012,7 @@ const travelop_t travel[] = {
     .destval = GRATE_NOWAY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 9: LOC_BELOWGRATE
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -5952,7 +6022,7 @@ const travelop_t travel[] = {
     .destval = LOC_COBBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 9: LOC_BELOWGRATE
     .motion = MOT_18,
     .condtype = cond_goto,
@@ -5962,7 +6032,7 @@ const travelop_t travel[] = {
     .destval = LOC_COBBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 9: LOC_BELOWGRATE
     .motion = INSIDE,
     .condtype = cond_goto,
@@ -5972,7 +6042,7 @@ const travelop_t travel[] = {
     .destval = LOC_COBBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 9: LOC_BELOWGRATE
     .motion = WEST,
     .condtype = cond_goto,
@@ -5982,7 +6052,7 @@ const travelop_t travel[] = {
     .destval = LOC_COBBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 9: LOC_BELOWGRATE
     .motion = MOT_31,
     .condtype = cond_goto,
@@ -5992,7 +6062,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITTOP,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 9: LOC_BELOWGRATE
     .motion = MOT_51,
     .condtype = cond_goto,
@@ -6002,7 +6072,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 10: LOC_COBBLE
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -6012,7 +6082,7 @@ const travelop_t travel[] = {
     .destval = LOC_BELOWGRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 10: LOC_COBBLE
     .motion = MOT_20,
     .condtype = cond_goto,
@@ -6022,7 +6092,7 @@ const travelop_t travel[] = {
     .destval = LOC_BELOWGRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 10: LOC_COBBLE
     .motion = EAST,
     .condtype = cond_goto,
@@ -6032,7 +6102,7 @@ const travelop_t travel[] = {
     .destval = LOC_BELOWGRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 10: LOC_COBBLE
     .motion = INSIDE,
     .condtype = cond_goto,
@@ -6042,7 +6112,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 10: LOC_COBBLE
     .motion = MOT_22,
     .condtype = cond_goto,
@@ -6052,7 +6122,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 10: LOC_COBBLE
     .motion = WEST,
     .condtype = cond_goto,
@@ -6062,7 +6132,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 10: LOC_COBBLE
     .motion = MOT_51,
     .condtype = cond_goto,
@@ -6072,7 +6142,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 10: LOC_COBBLE
     .motion = MOT_31,
     .condtype = cond_goto,
@@ -6082,7 +6152,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITTOP,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = DEPRESSION,
     .condtype = cond_not,
@@ -6092,7 +6162,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = ENTRANCE,
     .condtype = cond_goto,
@@ -6102,7 +6172,7 @@ const travelop_t travel[] = {
     .destval = LOC_BELOWGRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -6112,7 +6182,7 @@ const travelop_t travel[] = {
     .destval = LOC_COBBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = MOT_18,
     .condtype = cond_goto,
@@ -6122,7 +6192,7 @@ const travelop_t travel[] = {
     .destval = LOC_COBBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -6132,7 +6202,7 @@ const travelop_t travel[] = {
     .destval = LOC_COBBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = MOT_24,
     .condtype = cond_goto,
@@ -6142,7 +6212,7 @@ const travelop_t travel[] = {
     .destval = LOC_COBBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = EAST,
     .condtype = cond_goto,
@@ -6152,7 +6222,7 @@ const travelop_t travel[] = {
     .destval = LOC_COBBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = MOT_25,
     .condtype = cond_goto,
@@ -6162,7 +6232,7 @@ const travelop_t travel[] = {
     .destval = LOC_AWKWARD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = INSIDE,
     .condtype = cond_goto,
@@ -6172,7 +6242,7 @@ const travelop_t travel[] = {
     .destval = LOC_AWKWARD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = UP,
     .condtype = cond_goto,
@@ -6182,7 +6252,7 @@ const travelop_t travel[] = {
     .destval = LOC_AWKWARD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = WEST,
     .condtype = cond_goto,
@@ -6192,7 +6262,7 @@ const travelop_t travel[] = {
     .destval = LOC_AWKWARD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = XYZZY,
     .condtype = cond_goto,
@@ -6202,7 +6272,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOOF2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 11: LOC_DEBRIS
     .motion = MOT_31,
     .condtype = cond_goto,
@@ -6212,7 +6282,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITTOP,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 12: LOC_AWKWARD
     .motion = DEPRESSION,
     .condtype = cond_not,
@@ -6222,7 +6292,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 12: LOC_AWKWARD
     .motion = ENTRANCE,
     .condtype = cond_goto,
@@ -6232,7 +6302,7 @@ const travelop_t travel[] = {
     .destval = LOC_BELOWGRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 12: LOC_AWKWARD
     .motion = DOWN,
     .condtype = cond_goto,
@@ -6242,7 +6312,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 12: LOC_AWKWARD
     .motion = EAST,
     .condtype = cond_goto,
@@ -6252,7 +6322,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 12: LOC_AWKWARD
     .motion = MOT_51,
     .condtype = cond_goto,
@@ -6262,7 +6332,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 12: LOC_AWKWARD
     .motion = INSIDE,
     .condtype = cond_goto,
@@ -6272,7 +6342,7 @@ const travelop_t travel[] = {
     .destval = LOC_BIRD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 12: LOC_AWKWARD
     .motion = UP,
     .condtype = cond_goto,
@@ -6282,7 +6352,7 @@ const travelop_t travel[] = {
     .destval = LOC_BIRD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 12: LOC_AWKWARD
     .motion = WEST,
     .condtype = cond_goto,
@@ -6292,7 +6362,7 @@ const travelop_t travel[] = {
     .destval = LOC_BIRD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 12: LOC_AWKWARD
     .motion = MOT_31,
     .condtype = cond_goto,
@@ -6302,7 +6372,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITTOP,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 13: LOC_BIRD
     .motion = DEPRESSION,
     .condtype = cond_not,
@@ -6312,7 +6382,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 13: LOC_BIRD
     .motion = ENTRANCE,
     .condtype = cond_goto,
@@ -6322,7 +6392,7 @@ const travelop_t travel[] = {
     .destval = LOC_BELOWGRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 13: LOC_BIRD
     .motion = MOT_51,
     .condtype = cond_goto,
@@ -6332,7 +6402,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 13: LOC_BIRD
     .motion = MOT_25,
     .condtype = cond_goto,
@@ -6342,7 +6412,7 @@ const travelop_t travel[] = {
     .destval = LOC_AWKWARD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 13: LOC_BIRD
     .motion = EAST,
     .condtype = cond_goto,
@@ -6352,7 +6422,7 @@ const travelop_t travel[] = {
     .destval = LOC_AWKWARD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 13: LOC_BIRD
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -6362,7 +6432,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITTOP,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 13: LOC_BIRD
     .motion = MOT_31,
     .condtype = cond_goto,
@@ -6372,7 +6442,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITTOP,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 13: LOC_BIRD
     .motion = WEST,
     .condtype = cond_goto,
@@ -6382,7 +6452,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITTOP,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = DEPRESSION,
     .condtype = cond_not,
@@ -6392,7 +6462,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = ENTRANCE,
     .condtype = cond_goto,
@@ -6402,7 +6472,7 @@ const travelop_t travel[] = {
     .destval = LOC_BELOWGRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = MOT_51,
     .condtype = cond_goto,
@@ -6412,7 +6482,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -6422,7 +6492,7 @@ const travelop_t travel[] = {
     .destval = LOC_BIRD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = EAST,
     .condtype = cond_goto,
@@ -6432,7 +6502,7 @@ const travelop_t travel[] = {
     .destval = LOC_BIRD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = DOWN,
     .condtype = cond_carry,
@@ -6442,7 +6512,7 @@ const travelop_t travel[] = {
     .destval = LOC_NECKBROKE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = MOT_31,
     .condtype = cond_carry,
@@ -6452,7 +6522,7 @@ const travelop_t travel[] = {
     .destval = LOC_NECKBROKE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = MOT_34,
     .condtype = cond_carry,
@@ -6462,7 +6532,7 @@ const travelop_t travel[] = {
     .destval = LOC_NECKBROKE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = DOWN,
     .condtype = cond_goto,
@@ -6472,7 +6542,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = MOT_33,
     .condtype = cond_goto,
@@ -6482,7 +6552,7 @@ const travelop_t travel[] = {
     .destval = LOC_CRACK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 14: LOC_PITTOP
     .motion = WEST,
     .condtype = cond_goto,
@@ -6492,7 +6562,7 @@ const travelop_t travel[] = {
     .destval = LOC_CRACK,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = LEFT,
     .condtype = cond_goto,
@@ -6502,7 +6572,7 @@ const travelop_t travel[] = {
     .destval = LOC_NUGGET,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -6512,7 +6582,7 @@ const travelop_t travel[] = {
     .destval = LOC_NUGGET,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = FORWARD,
     .condtype = cond_goto,
@@ -6522,7 +6592,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTBANK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = MOT_38,
     .condtype = cond_goto,
@@ -6532,7 +6602,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTBANK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = WEST,
     .condtype = cond_goto,
@@ -6542,7 +6612,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTBANK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = MOT_10,
     .condtype = cond_goto,
@@ -6552,7 +6622,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = DOWN,
     .condtype = cond_goto,
@@ -6562,7 +6632,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = NORTH,
     .condtype = cond_goto,
@@ -6572,7 +6642,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = UP,
     .condtype = cond_carry,
@@ -6582,7 +6652,7 @@ const travelop_t travel[] = {
     .destval = LOC_DOME,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = MOT_31,
     .condtype = cond_carry,
@@ -6592,7 +6662,7 @@ const travelop_t travel[] = {
     .destval = LOC_DOME,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = MOT_34,
     .condtype = cond_carry,
@@ -6602,7 +6672,7 @@ const travelop_t travel[] = {
     .destval = LOC_DOME,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = MOT_35,
     .condtype = cond_carry,
@@ -6612,7 +6682,7 @@ const travelop_t travel[] = {
     .destval = LOC_DOME,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = MOT_23,
     .condtype = cond_carry,
@@ -6622,7 +6692,7 @@ const travelop_t travel[] = {
     .destval = LOC_DOME,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = EAST,
     .condtype = cond_carry,
@@ -6632,7 +6702,7 @@ const travelop_t travel[] = {
     .destval = LOC_DOME,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = UP,
     .condtype = cond_goto,
@@ -6642,7 +6712,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITTOP,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 15: LOC_MISTHALL
     .motion = MOT_55,
     .condtype = cond_goto,
@@ -6652,7 +6722,7 @@ const travelop_t travel[] = {
     .destval = LOC_JUMBLE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 16: LOC_CRACK
     .motion = 1,
     .condtype = cond_goto,
@@ -6662,7 +6732,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITTOP,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 17: LOC_EASTBANK
     .motion = MOT_38,
     .condtype = cond_goto,
@@ -6672,7 +6742,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 17: LOC_EASTBANK
     .motion = EAST,
     .condtype = cond_goto,
@@ -6682,7 +6752,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 17: LOC_EASTBANK
     .motion = MOT_39,
     .condtype = cond_not,
@@ -6692,7 +6762,7 @@ const travelop_t travel[] = {
     .destval = CROSS_BRIDGE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 17: LOC_EASTBANK
     .motion = FORWARD,
     .condtype = cond_not,
@@ -6702,7 +6772,7 @@ const travelop_t travel[] = {
     .destval = LOC_NOMAKE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 17: LOC_EASTBANK
     .motion = MOT_41,
     .condtype = cond_not,
@@ -6712,7 +6782,7 @@ const travelop_t travel[] = {
     .destval = NO_CROSS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 17: LOC_EASTBANK
     .motion = MOT_42,
     .condtype = cond_not,
@@ -6722,7 +6792,7 @@ const travelop_t travel[] = {
     .destval = NO_CROSS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 17: LOC_EASTBANK
     .motion = WEST,
     .condtype = cond_not,
@@ -6732,7 +6802,7 @@ const travelop_t travel[] = {
     .destval = NO_CROSS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 17: LOC_EASTBANK
     .motion = CROSS,
     .condtype = cond_not,
@@ -6742,7 +6812,7 @@ const travelop_t travel[] = {
     .destval = NO_CROSS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 17: LOC_EASTBANK
     .motion = MOT_41,
     .condtype = cond_goto,
@@ -6752,7 +6822,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTBANK,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 18: LOC_NUGGET
     .motion = MOT_38,
     .condtype = cond_goto,
@@ -6762,7 +6832,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 18: LOC_NUGGET
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -6772,7 +6842,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 18: LOC_NUGGET
     .motion = NORTH,
     .condtype = cond_goto,
@@ -6782,7 +6852,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = MOT_10,
     .condtype = cond_goto,
@@ -6792,7 +6862,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = UP,
     .condtype = cond_goto,
@@ -6802,7 +6872,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = EAST,
     .condtype = cond_goto,
@@ -6812,7 +6882,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = NORTH,
     .condtype = cond_not,
@@ -6822,7 +6892,7 @@ const travelop_t travel[] = {
     .destval = LOC_FLOORHOLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = RIGHT,
     .condtype = cond_not,
@@ -6832,7 +6902,7 @@ const travelop_t travel[] = {
     .destval = LOC_FLOORHOLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = SOUTH,
     .condtype = cond_not,
@@ -6842,7 +6912,7 @@ const travelop_t travel[] = {
     .destval = LOC_SOUTHSIDE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = LEFT,
     .condtype = cond_not,
@@ -6852,7 +6922,7 @@ const travelop_t travel[] = {
     .destval = LOC_SOUTHSIDE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = WEST,
     .condtype = cond_not,
@@ -6862,7 +6932,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTSIDE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = FORWARD,
     .condtype = cond_not,
@@ -6872,7 +6942,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTSIDE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = NORTH,
     .condtype = cond_goto,
@@ -6882,7 +6952,7 @@ const travelop_t travel[] = {
     .destval = LOC_SNAKEBLOCK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = SW,
     .condtype = cond_pct,
@@ -6892,7 +6962,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = SW,
     .condtype = cond_with,
@@ -6902,7 +6972,7 @@ const travelop_t travel[] = {
     .destval = LOC_SNAKEBLOCK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 19: LOC_KINGHALL
     .motion = MOT_66,
     .condtype = cond_goto,
@@ -6912,7 +6982,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET3,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 20: LOC_NECKBROKE
     .motion = 1,
     .condtype = cond_goto,
@@ -6922,7 +6992,7 @@ const travelop_t travel[] = {
     .destval = LOC_NOWHERE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 21: LOC_NOMAKE
     .motion = 1,
     .condtype = cond_goto,
@@ -6932,7 +7002,7 @@ const travelop_t travel[] = {
     .destval = LOC_NOWHERE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 22: LOC_DOME
     .motion = 1,
     .condtype = cond_goto,
@@ -6942,7 +7012,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 23: LOC_WESTEND
     .motion = EAST,
     .condtype = cond_goto,
@@ -6952,7 +7022,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 23: LOC_WESTEND
     .motion = MOT_42,
     .condtype = cond_goto,
@@ -6962,7 +7032,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 23: LOC_WESTEND
     .motion = WEST,
     .condtype = cond_goto,
@@ -6972,7 +7042,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLAB,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 23: LOC_WESTEND
     .motion = MOT_61,
     .condtype = cond_goto,
@@ -6982,7 +7052,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLAB,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 23: LOC_WESTEND
     .motion = DOWN,
     .condtype = cond_goto,
@@ -6992,7 +7062,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTPIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 23: LOC_WESTEND
     .motion = MOT_31,
     .condtype = cond_goto,
@@ -7002,7 +7072,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTPIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 23: LOC_WESTEND
     .motion = MOT_52,
     .condtype = cond_goto,
@@ -7012,7 +7082,7 @@ const travelop_t travel[] = {
     .destval = TOO_FAR,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 24: LOC_EASTPIT
     .motion = UP,
     .condtype = cond_goto,
@@ -7022,7 +7092,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 24: LOC_EASTPIT
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -7032,7 +7102,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTEND,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 25: LOC_WESTPIT
     .motion = UP,
     .condtype = cond_goto,
@@ -7042,7 +7112,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 25: LOC_WESTPIT
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -7052,7 +7122,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 25: LOC_WESTPIT
     .motion = MOT_56,
     .condtype = cond_not,
@@ -7062,7 +7132,7 @@ const travelop_t travel[] = {
     .destval = LOC_BUILDING1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 25: LOC_WESTPIT
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -7072,7 +7142,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIMBSTALK,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 26: LOC_CLIMBSTALK
     .motion = 1,
     .condtype = cond_goto,
@@ -7082,7 +7152,7 @@ const travelop_t travel[] = {
     .destval = LOC_NARROW,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 27: LOC_WESTBANK
     .motion = MOT_39,
     .condtype = cond_not,
@@ -7092,7 +7162,7 @@ const travelop_t travel[] = {
     .destval = CROSS_BRIDGE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 27: LOC_WESTBANK
     .motion = FORWARD,
     .condtype = cond_not,
@@ -7102,7 +7172,7 @@ const travelop_t travel[] = {
     .destval = LOC_NOMAKE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 27: LOC_WESTBANK
     .motion = MOT_41,
     .condtype = cond_not,
@@ -7112,7 +7182,7 @@ const travelop_t travel[] = {
     .destval = NO_CROSS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 27: LOC_WESTBANK
     .motion = MOT_42,
     .condtype = cond_not,
@@ -7122,7 +7192,7 @@ const travelop_t travel[] = {
     .destval = NO_CROSS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 27: LOC_WESTBANK
     .motion = EAST,
     .condtype = cond_not,
@@ -7132,7 +7202,7 @@ const travelop_t travel[] = {
     .destval = NO_CROSS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 27: LOC_WESTBANK
     .motion = CROSS,
     .condtype = cond_not,
@@ -7142,7 +7212,7 @@ const travelop_t travel[] = {
     .destval = NO_CROSS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 27: LOC_WESTBANK
     .motion = MOT_41,
     .condtype = cond_goto,
@@ -7152,7 +7222,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTBANK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 27: LOC_WESTBANK
     .motion = NORTH,
     .condtype = cond_goto,
@@ -7162,7 +7232,7 @@ const travelop_t travel[] = {
     .destval = LOC_PARALLEL1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 27: LOC_WESTBANK
     .motion = WEST,
     .condtype = cond_goto,
@@ -7172,7 +7242,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTWEST,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 28: LOC_FLOORHOLE
     .motion = MOT_38,
     .condtype = cond_goto,
@@ -7182,7 +7252,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 28: LOC_FLOORHOLE
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -7192,7 +7262,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 28: LOC_FLOORHOLE
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -7202,7 +7272,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 28: LOC_FLOORHOLE
     .motion = NORTH,
     .condtype = cond_goto,
@@ -7212,7 +7282,7 @@ const travelop_t travel[] = {
     .destval = LOC_Y2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 28: LOC_FLOORHOLE
     .motion = MOT_55,
     .condtype = cond_goto,
@@ -7222,7 +7292,7 @@ const travelop_t travel[] = {
     .destval = LOC_Y2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 28: LOC_FLOORHOLE
     .motion = DOWN,
     .condtype = cond_goto,
@@ -7232,7 +7302,7 @@ const travelop_t travel[] = {
     .destval = LOC_BROKEN,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 28: LOC_FLOORHOLE
     .motion = MOT_52,
     .condtype = cond_goto,
@@ -7242,7 +7312,7 @@ const travelop_t travel[] = {
     .destval = LOC_BROKEN,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 29: LOC_SOUTHSIDE
     .motion = MOT_38,
     .condtype = cond_goto,
@@ -7252,7 +7322,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 29: LOC_SOUTHSIDE
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -7262,7 +7332,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 29: LOC_SOUTHSIDE
     .motion = NORTH,
     .condtype = cond_goto,
@@ -7272,7 +7342,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 30: LOC_WESTSIDE
     .motion = MOT_38,
     .condtype = cond_goto,
@@ -7282,7 +7352,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 30: LOC_WESTSIDE
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -7292,7 +7362,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 30: LOC_WESTSIDE
     .motion = EAST,
     .condtype = cond_goto,
@@ -7302,7 +7372,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 30: LOC_WESTSIDE
     .motion = WEST,
     .condtype = cond_goto,
@@ -7312,7 +7382,7 @@ const travelop_t travel[] = {
     .destval = LOC_CROSSOVER,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 30: LOC_WESTSIDE
     .motion = UP,
     .condtype = cond_goto,
@@ -7322,7 +7392,7 @@ const travelop_t travel[] = {
     .destval = LOC_CROSSOVER,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 31: LOC_BUILDING1
     .motion = 1,
     .condtype = cond_not,
@@ -7332,7 +7402,7 @@ const travelop_t travel[] = {
     .destval = LOC_NOCLIMB,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 31: LOC_BUILDING1
     .motion = 1,
     .condtype = cond_goto,
@@ -7342,7 +7412,7 @@ const travelop_t travel[] = {
     .destval = LOC_PLANTTOP,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 32: LOC_SNAKEBLOCK
     .motion = 1,
     .condtype = cond_goto,
@@ -7352,7 +7422,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 33: LOC_Y2
     .motion = PLUGH,
     .condtype = cond_goto,
@@ -7362,7 +7432,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOOF4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 33: LOC_Y2
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -7372,7 +7442,7 @@ const travelop_t travel[] = {
     .destval = LOC_FLOORHOLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 33: LOC_Y2
     .motion = EAST,
     .condtype = cond_goto,
@@ -7382,7 +7452,7 @@ const travelop_t travel[] = {
     .destval = LOC_JUMBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 33: LOC_Y2
     .motion = MOT_53,
     .condtype = cond_goto,
@@ -7392,7 +7462,7 @@ const travelop_t travel[] = {
     .destval = LOC_JUMBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 33: LOC_Y2
     .motion = MOT_54,
     .condtype = cond_goto,
@@ -7402,7 +7472,7 @@ const travelop_t travel[] = {
     .destval = LOC_JUMBLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 33: LOC_Y2
     .motion = WEST,
     .condtype = cond_goto,
@@ -7412,7 +7482,7 @@ const travelop_t travel[] = {
     .destval = LOC_WINDOW1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 33: LOC_Y2
     .motion = PLOVER,
     .condtype = cond_carry,
@@ -7422,7 +7492,7 @@ const travelop_t travel[] = {
     .destval = LOC_HILL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 33: LOC_Y2
     .motion = PLOVER,
     .condtype = cond_goto,
@@ -7432,7 +7502,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOOF5,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 34: LOC_JUMBLE
     .motion = DOWN,
     .condtype = cond_goto,
@@ -7442,7 +7512,7 @@ const travelop_t travel[] = {
     .destval = LOC_Y2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 34: LOC_JUMBLE
     .motion = MOT_55,
     .condtype = cond_goto,
@@ -7452,7 +7522,7 @@ const travelop_t travel[] = {
     .destval = LOC_Y2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 34: LOC_JUMBLE
     .motion = UP,
     .condtype = cond_goto,
@@ -7462,7 +7532,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTHALL,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 35: LOC_WINDOW1
     .motion = EAST,
     .condtype = cond_goto,
@@ -7472,7 +7542,7 @@ const travelop_t travel[] = {
     .destval = LOC_Y2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 35: LOC_WINDOW1
     .motion = MOT_55,
     .condtype = cond_goto,
@@ -7482,7 +7552,7 @@ const travelop_t travel[] = {
     .destval = LOC_Y2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 35: LOC_WINDOW1
     .motion = MOT_39,
     .condtype = cond_goto,
@@ -7492,7 +7562,7 @@ const travelop_t travel[] = {
     .destval = LOC_NECKBROKE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 36: LOC_BROKEN
     .motion = EAST,
     .condtype = cond_goto,
@@ -7502,7 +7572,7 @@ const travelop_t travel[] = {
     .destval = LOC_SMALLPITBRINK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 36: LOC_BROKEN
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -7512,7 +7582,7 @@ const travelop_t travel[] = {
     .destval = LOC_SMALLPITBRINK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 36: LOC_BROKEN
     .motion = UP,
     .condtype = cond_goto,
@@ -7522,7 +7592,7 @@ const travelop_t travel[] = {
     .destval = LOC_FLOORHOLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 36: LOC_BROKEN
     .motion = MOT_52,
     .condtype = cond_goto,
@@ -7532,7 +7602,7 @@ const travelop_t travel[] = {
     .destval = LOC_FLOORHOLE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 36: LOC_BROKEN
     .motion = WEST,
     .condtype = cond_goto,
@@ -7542,7 +7612,7 @@ const travelop_t travel[] = {
     .destval = LOC_DUSTY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 36: LOC_BROKEN
     .motion = BEDQUILT,
     .condtype = cond_goto,
@@ -7552,7 +7622,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 37: LOC_SMALLPITBRINK
     .motion = WEST,
     .condtype = cond_goto,
@@ -7562,7 +7632,7 @@ const travelop_t travel[] = {
     .destval = LOC_BROKEN,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 37: LOC_SMALLPITBRINK
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -7572,7 +7642,7 @@ const travelop_t travel[] = {
     .destval = LOC_BROKEN,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 37: LOC_SMALLPITBRINK
     .motion = DOWN,
     .condtype = cond_goto,
@@ -7582,7 +7652,7 @@ const travelop_t travel[] = {
     .destval = LOC_SMALLPIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 37: LOC_SMALLPITBRINK
     .motion = MOT_31,
     .condtype = cond_goto,
@@ -7592,7 +7662,7 @@ const travelop_t travel[] = {
     .destval = LOC_SMALLPIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 37: LOC_SMALLPITBRINK
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -7602,7 +7672,7 @@ const travelop_t travel[] = {
     .destval = LOC_SMALLPIT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 38: LOC_SMALLPIT
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -7612,7 +7682,7 @@ const travelop_t travel[] = {
     .destval = LOC_SMALLPITBRINK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 38: LOC_SMALLPIT
     .motion = UP,
     .condtype = cond_goto,
@@ -7622,7 +7692,7 @@ const travelop_t travel[] = {
     .destval = LOC_SMALLPITBRINK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 38: LOC_SMALLPIT
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -7632,7 +7702,7 @@ const travelop_t travel[] = {
     .destval = LOC_SMALLPITBRINK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 38: LOC_SMALLPIT
     .motion = MOT_60,
     .condtype = cond_goto,
@@ -7642,7 +7712,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 38: LOC_SMALLPIT
     .motion = STREAM,
     .condtype = cond_goto,
@@ -7652,7 +7722,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 38: LOC_SMALLPIT
     .motion = DOWN,
     .condtype = cond_goto,
@@ -7662,7 +7732,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 38: LOC_SMALLPIT
     .motion = MOT_4,
     .condtype = cond_goto,
@@ -7672,7 +7742,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 38: LOC_SMALLPIT
     .motion = MOT_5,
     .condtype = cond_goto,
@@ -7682,7 +7752,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 38: LOC_SMALLPIT
     .motion = ENTER,
     .condtype = cond_goto,
@@ -7692,7 +7762,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 38: LOC_SMALLPIT
     .motion = INSIDE,
     .condtype = cond_goto,
@@ -7702,7 +7772,7 @@ const travelop_t travel[] = {
     .destval = DONT_FIT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 39: LOC_DUSTY
     .motion = EAST,
     .condtype = cond_goto,
@@ -7712,7 +7782,7 @@ const travelop_t travel[] = {
     .destval = LOC_BROKEN,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 39: LOC_DUSTY
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -7722,7 +7792,7 @@ const travelop_t travel[] = {
     .destval = LOC_BROKEN,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 39: LOC_DUSTY
     .motion = DOWN,
     .condtype = cond_goto,
@@ -7732,7 +7802,7 @@ const travelop_t travel[] = {
     .destval = LOC_COMPLEX,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 39: LOC_DUSTY
     .motion = MOT_52,
     .condtype = cond_goto,
@@ -7742,7 +7812,7 @@ const travelop_t travel[] = {
     .destval = LOC_COMPLEX,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 39: LOC_DUSTY
     .motion = MOT_58,
     .condtype = cond_goto,
@@ -7752,7 +7822,7 @@ const travelop_t travel[] = {
     .destval = LOC_COMPLEX,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 39: LOC_DUSTY
     .motion = BEDQUILT,
     .condtype = cond_goto,
@@ -7762,7 +7832,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 40: LOC_PARALLEL1
     .motion = 1,
     .condtype = cond_goto,
@@ -7772,7 +7842,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTWEST,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 41: LOC_MISTWEST
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -7782,7 +7852,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 41: LOC_MISTWEST
     .motion = UP,
     .condtype = cond_goto,
@@ -7792,7 +7862,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 41: LOC_MISTWEST
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -7802,7 +7872,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 41: LOC_MISTWEST
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -7812,7 +7882,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 41: LOC_MISTWEST
     .motion = EAST,
     .condtype = cond_goto,
@@ -7822,7 +7892,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTBANK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 41: LOC_MISTWEST
     .motion = NORTH,
     .condtype = cond_goto,
@@ -7832,7 +7902,7 @@ const travelop_t travel[] = {
     .destval = LOC_PARALLEL2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 41: LOC_MISTWEST
     .motion = WEST,
     .condtype = cond_goto,
@@ -7842,7 +7912,7 @@ const travelop_t travel[] = {
     .destval = LOC_LONGEAST,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 41: LOC_MISTWEST
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -7852,7 +7922,7 @@ const travelop_t travel[] = {
     .destval = LOC_LONGEAST,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 42: LOC_ALIKE1
     .motion = UP,
     .condtype = cond_goto,
@@ -7862,7 +7932,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTWEST,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 42: LOC_ALIKE1
     .motion = NORTH,
     .condtype = cond_goto,
@@ -7872,7 +7942,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 42: LOC_ALIKE1
     .motion = EAST,
     .condtype = cond_goto,
@@ -7882,7 +7952,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 42: LOC_ALIKE1
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -7892,7 +7962,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 42: LOC_ALIKE1
     .motion = WEST,
     .condtype = cond_goto,
@@ -7902,7 +7972,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE11,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 43: LOC_ALIKE2
     .motion = WEST,
     .condtype = cond_goto,
@@ -7912,7 +7982,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 43: LOC_ALIKE2
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -7922,7 +7992,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 43: LOC_ALIKE2
     .motion = EAST,
     .condtype = cond_goto,
@@ -7932,7 +8002,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE4,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 44: LOC_ALIKE3
     .motion = EAST,
     .condtype = cond_goto,
@@ -7942,7 +8012,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 44: LOC_ALIKE3
     .motion = DOWN,
     .condtype = cond_goto,
@@ -7952,7 +8022,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 44: LOC_ALIKE3
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -7962,7 +8032,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 44: LOC_ALIKE3
     .motion = NORTH,
     .condtype = cond_goto,
@@ -7972,7 +8042,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND9,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 45: LOC_ALIKE4
     .motion = WEST,
     .condtype = cond_goto,
@@ -7982,7 +8052,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 45: LOC_ALIKE4
     .motion = NORTH,
     .condtype = cond_goto,
@@ -7992,7 +8062,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 45: LOC_ALIKE4
     .motion = EAST,
     .condtype = cond_goto,
@@ -8002,7 +8072,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 45: LOC_ALIKE4
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -8012,7 +8082,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 45: LOC_ALIKE4
     .motion = UP,
     .condtype = cond_goto,
@@ -8022,7 +8092,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE14,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 45: LOC_ALIKE4
     .motion = DOWN,
     .condtype = cond_goto,
@@ -8032,7 +8102,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE14,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 46: LOC_DEADEND1
     .motion = WEST,
     .condtype = cond_goto,
@@ -8042,7 +8112,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 46: LOC_DEADEND1
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -8052,7 +8122,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE4,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 47: LOC_DEADEND2
     .motion = EAST,
     .condtype = cond_goto,
@@ -8062,7 +8132,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 47: LOC_DEADEND2
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -8072,7 +8142,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE4,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 48: LOC_DEADEND3
     .motion = UP,
     .condtype = cond_goto,
@@ -8082,7 +8152,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 48: LOC_DEADEND3
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -8092,7 +8162,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE3,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 49: LOC_ALIKE5
     .motion = EAST,
     .condtype = cond_goto,
@@ -8102,7 +8172,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 49: LOC_ALIKE5
     .motion = WEST,
     .condtype = cond_goto,
@@ -8112,7 +8182,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE7,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 50: LOC_ALIKE6
     .motion = EAST,
     .condtype = cond_goto,
@@ -8122,7 +8192,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 50: LOC_ALIKE6
     .motion = WEST,
     .condtype = cond_goto,
@@ -8132,7 +8202,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 50: LOC_ALIKE6
     .motion = DOWN,
     .condtype = cond_goto,
@@ -8142,7 +8212,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 50: LOC_ALIKE6
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -8152,7 +8222,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE8,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 51: LOC_ALIKE7
     .motion = WEST,
     .condtype = cond_goto,
@@ -8162,7 +8232,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 51: LOC_ALIKE7
     .motion = UP,
     .condtype = cond_goto,
@@ -8172,7 +8242,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 51: LOC_ALIKE7
     .motion = EAST,
     .condtype = cond_goto,
@@ -8182,7 +8252,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 51: LOC_ALIKE7
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -8192,7 +8262,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE9,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 52: LOC_ALIKE8
     .motion = WEST,
     .condtype = cond_goto,
@@ -8202,7 +8272,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 52: LOC_ALIKE8
     .motion = EAST,
     .condtype = cond_goto,
@@ -8212,7 +8282,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 52: LOC_ALIKE8
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -8222,7 +8292,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 52: LOC_ALIKE8
     .motion = UP,
     .condtype = cond_goto,
@@ -8232,7 +8302,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 52: LOC_ALIKE8
     .motion = NORTH,
     .condtype = cond_goto,
@@ -8242,7 +8312,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 52: LOC_ALIKE8
     .motion = DOWN,
     .condtype = cond_goto,
@@ -8252,7 +8322,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND11,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 53: LOC_ALIKE9
     .motion = WEST,
     .condtype = cond_goto,
@@ -8262,7 +8332,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 53: LOC_ALIKE9
     .motion = NORTH,
     .condtype = cond_goto,
@@ -8272,7 +8342,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 53: LOC_ALIKE9
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -8282,7 +8352,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND4,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 54: LOC_DEADEND4
     .motion = WEST,
     .condtype = cond_goto,
@@ -8292,7 +8362,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 54: LOC_DEADEND4
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -8302,7 +8372,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE9,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 55: LOC_ALIKE10
     .motion = WEST,
     .condtype = cond_goto,
@@ -8312,7 +8382,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 55: LOC_ALIKE10
     .motion = NORTH,
     .condtype = cond_goto,
@@ -8322,7 +8392,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 55: LOC_ALIKE10
     .motion = DOWN,
     .condtype = cond_goto,
@@ -8332,7 +8402,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 55: LOC_ALIKE10
     .motion = EAST,
     .condtype = cond_goto,
@@ -8342,7 +8412,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITBRINK,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 56: LOC_DEADEND5
     .motion = UP,
     .condtype = cond_goto,
@@ -8352,7 +8422,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 56: LOC_DEADEND5
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -8362,7 +8432,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE10,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 57: LOC_PITBRINK
     .motion = DOWN,
     .condtype = cond_goto,
@@ -8372,7 +8442,7 @@ const travelop_t travel[] = {
     .destval = LOC_BIRD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 57: LOC_PITBRINK
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -8382,7 +8452,7 @@ const travelop_t travel[] = {
     .destval = LOC_BIRD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 57: LOC_PITBRINK
     .motion = WEST,
     .condtype = cond_goto,
@@ -8392,7 +8462,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 57: LOC_PITBRINK
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -8402,7 +8472,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 57: LOC_PITBRINK
     .motion = NORTH,
     .condtype = cond_goto,
@@ -8412,7 +8482,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE12,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 57: LOC_PITBRINK
     .motion = EAST,
     .condtype = cond_goto,
@@ -8422,7 +8492,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE13,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 58: LOC_DEADEND6
     .motion = EAST,
     .condtype = cond_goto,
@@ -8432,7 +8502,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITBRINK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 58: LOC_DEADEND6
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -8442,7 +8512,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITBRINK,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 59: LOC_PARALLEL2
     .motion = 1,
     .condtype = cond_goto,
@@ -8452,7 +8522,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTBANK,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 60: LOC_LONGEAST
     .motion = EAST,
     .condtype = cond_goto,
@@ -8462,7 +8532,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTWEST,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 60: LOC_LONGEAST
     .motion = UP,
     .condtype = cond_goto,
@@ -8472,7 +8542,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTWEST,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 60: LOC_LONGEAST
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -8482,7 +8552,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTWEST,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 60: LOC_LONGEAST
     .motion = WEST,
     .condtype = cond_goto,
@@ -8492,7 +8562,7 @@ const travelop_t travel[] = {
     .destval = LOC_LONGWEST,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 60: LOC_LONGEAST
     .motion = NORTH,
     .condtype = cond_goto,
@@ -8502,7 +8572,7 @@ const travelop_t travel[] = {
     .destval = LOC_CROSSOVER,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 60: LOC_LONGEAST
     .motion = DOWN,
     .condtype = cond_goto,
@@ -8512,7 +8582,7 @@ const travelop_t travel[] = {
     .destval = LOC_CROSSOVER,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 60: LOC_LONGEAST
     .motion = MOT_52,
     .condtype = cond_goto,
@@ -8522,7 +8592,7 @@ const travelop_t travel[] = {
     .destval = LOC_CROSSOVER,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 61: LOC_LONGWEST
     .motion = EAST,
     .condtype = cond_goto,
@@ -8532,7 +8602,7 @@ const travelop_t travel[] = {
     .destval = LOC_LONGEAST,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 61: LOC_LONGWEST
     .motion = NORTH,
     .condtype = cond_goto,
@@ -8542,7 +8612,7 @@ const travelop_t travel[] = {
     .destval = LOC_CROSSOVER,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 61: LOC_LONGWEST
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -8552,7 +8622,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT1,
     .nodwarves = true,
     .stop = true,
-     },
+    },
    {                            // from 62: LOC_CROSSOVER
     .motion = WEST,
     .condtype = cond_goto,
@@ -8562,7 +8632,7 @@ const travelop_t travel[] = {
     .destval = LOC_LONGEAST,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 62: LOC_CROSSOVER
     .motion = NORTH,
     .condtype = cond_goto,
@@ -8572,7 +8642,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 62: LOC_CROSSOVER
     .motion = EAST,
     .condtype = cond_goto,
@@ -8582,7 +8652,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTSIDE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 62: LOC_CROSSOVER
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -8592,7 +8662,7 @@ const travelop_t travel[] = {
     .destval = LOC_LONGWEST,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 63: LOC_DEADEND7
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -8602,7 +8672,7 @@ const travelop_t travel[] = {
     .destval = LOC_CROSSOVER,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 63: LOC_DEADEND7
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -8612,7 +8682,7 @@ const travelop_t travel[] = {
     .destval = LOC_CROSSOVER,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 64: LOC_COMPLEX
     .motion = UP,
     .condtype = cond_goto,
@@ -8622,7 +8692,7 @@ const travelop_t travel[] = {
     .destval = LOC_DUSTY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 64: LOC_COMPLEX
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -8632,7 +8702,7 @@ const travelop_t travel[] = {
     .destval = LOC_DUSTY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 64: LOC_COMPLEX
     .motion = MOT_59,
     .condtype = cond_goto,
@@ -8642,7 +8712,7 @@ const travelop_t travel[] = {
     .destval = LOC_DUSTY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 64: LOC_COMPLEX
     .motion = WEST,
     .condtype = cond_goto,
@@ -8652,7 +8722,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 64: LOC_COMPLEX
     .motion = BEDQUILT,
     .condtype = cond_goto,
@@ -8662,7 +8732,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 64: LOC_COMPLEX
     .motion = NORTH,
     .condtype = cond_goto,
@@ -8672,7 +8742,7 @@ const travelop_t travel[] = {
     .destval = LOC_SHELLROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 64: LOC_COMPLEX
     .motion = SHELLROOM,
     .condtype = cond_goto,
@@ -8682,7 +8752,7 @@ const travelop_t travel[] = {
     .destval = LOC_SHELLROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 64: LOC_COMPLEX
     .motion = EAST,
     .condtype = cond_goto,
@@ -8692,7 +8762,7 @@ const travelop_t travel[] = {
     .destval = LOC_ANTEROOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = EAST,
     .condtype = cond_goto,
@@ -8702,7 +8772,7 @@ const travelop_t travel[] = {
     .destval = LOC_COMPLEX,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = WEST,
     .condtype = cond_goto,
@@ -8712,7 +8782,7 @@ const travelop_t travel[] = {
     .destval = LOC_SWISSCHEESE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = SOUTH,
     .condtype = cond_pct,
@@ -8722,7 +8792,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = MOT_61,
     .condtype = cond_goto,
@@ -8732,7 +8802,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLAB,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = UP,
     .condtype = cond_pct,
@@ -8742,7 +8812,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = UP,
     .condtype = cond_pct,
@@ -8752,7 +8822,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = UP,
     .condtype = cond_goto,
@@ -8762,7 +8832,7 @@ const travelop_t travel[] = {
     .destval = LOC_DUSTY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = NORTH,
     .condtype = cond_pct,
@@ -8772,7 +8842,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = NORTH,
     .condtype = cond_pct,
@@ -8782,7 +8852,7 @@ const travelop_t travel[] = {
     .destval = LOC_LOWROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = NORTH,
     .condtype = cond_goto,
@@ -8792,7 +8862,7 @@ const travelop_t travel[] = {
     .destval = LOC_THREEJUNCTION,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = DOWN,
     .condtype = cond_pct,
@@ -8802,7 +8872,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 65: LOC_BEDQUILT
     .motion = DOWN,
     .condtype = cond_goto,
@@ -8812,7 +8882,7 @@ const travelop_t travel[] = {
     .destval = LOC_ANTEROOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 66: LOC_SWISSCHEESE
     .motion = NE,
     .condtype = cond_goto,
@@ -8822,7 +8892,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 66: LOC_SWISSCHEESE
     .motion = WEST,
     .condtype = cond_goto,
@@ -8832,7 +8902,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 66: LOC_SWISSCHEESE
     .motion = SOUTH,
     .condtype = cond_pct,
@@ -8842,7 +8912,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 66: LOC_SWISSCHEESE
     .motion = MOT_25,
     .condtype = cond_goto,
@@ -8852,7 +8922,7 @@ const travelop_t travel[] = {
     .destval = LOC_TALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 66: LOC_SWISSCHEESE
     .motion = EAST,
     .condtype = cond_goto,
@@ -8862,7 +8932,7 @@ const travelop_t travel[] = {
     .destval = LOC_SOFTROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 66: LOC_SWISSCHEESE
     .motion = NW,
     .condtype = cond_pct,
@@ -8872,7 +8942,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 66: LOC_SWISSCHEESE
     .motion = ORIENTAL,
     .condtype = cond_goto,
@@ -8882,7 +8952,7 @@ const travelop_t travel[] = {
     .destval = LOC_ORIENTAL,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 67: LOC_EASTEND
     .motion = EAST,
     .condtype = cond_goto,
@@ -8892,7 +8962,7 @@ const travelop_t travel[] = {
     .destval = LOC_SWISSCHEESE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 67: LOC_EASTEND
     .motion = WEST,
     .condtype = cond_goto,
@@ -8902,7 +8972,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 67: LOC_EASTEND
     .motion = MOT_42,
     .condtype = cond_goto,
@@ -8912,7 +8982,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 67: LOC_EASTEND
     .motion = DOWN,
     .condtype = cond_goto,
@@ -8922,7 +8992,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTPIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 67: LOC_EASTEND
     .motion = MOT_31,
     .condtype = cond_goto,
@@ -8932,7 +9002,7 @@ const travelop_t travel[] = {
     .destval = LOC_EASTPIT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 68: LOC_SLAB
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -8942,7 +9012,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 68: LOC_SLAB
     .motion = UP,
     .condtype = cond_goto,
@@ -8952,7 +9022,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 68: LOC_SLAB
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -8962,7 +9032,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 68: LOC_SLAB
     .motion = NORTH,
     .condtype = cond_goto,
@@ -8972,7 +9042,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 69: LOC_SECRET1
     .motion = DOWN,
     .condtype = cond_goto,
@@ -8982,7 +9052,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLAB,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 69: LOC_SECRET1
     .motion = MOT_61,
     .condtype = cond_goto,
@@ -8992,7 +9062,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLAB,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 69: LOC_SECRET1
     .motion = SOUTH,
     .condtype = cond_not,
@@ -9002,7 +9072,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 69: LOC_SECRET1
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9012,7 +9082,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 69: LOC_SECRET1
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9022,7 +9092,7 @@ const travelop_t travel[] = {
     .destval = LOC_MIRRORCANYON,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 69: LOC_SECRET1
     .motion = RESERVOIR,
     .condtype = cond_goto,
@@ -9032,7 +9102,7 @@ const travelop_t travel[] = {
     .destval = LOC_RESERVOIR,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 70: LOC_SECRET2
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9042,7 +9112,7 @@ const travelop_t travel[] = {
     .destval = LOC_THREEJUNCTION,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 70: LOC_SECRET2
     .motion = DOWN,
     .condtype = cond_goto,
@@ -9052,7 +9122,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 70: LOC_SECRET2
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -9062,7 +9132,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 70: LOC_SECRET2
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9072,7 +9142,7 @@ const travelop_t travel[] = {
     .destval = LOC_TOPSTALACTITE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 71: LOC_THREEJUNCTION
     .motion = SE,
     .condtype = cond_goto,
@@ -9082,7 +9152,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 71: LOC_THREEJUNCTION
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9092,7 +9162,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 71: LOC_THREEJUNCTION
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9102,7 +9172,7 @@ const travelop_t travel[] = {
     .destval = LOC_WINDOW2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 72: LOC_LOWROOM
     .motion = BEDQUILT,
     .condtype = cond_goto,
@@ -9112,7 +9182,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 72: LOC_LOWROOM
     .motion = SW,
     .condtype = cond_goto,
@@ -9122,7 +9192,7 @@ const travelop_t travel[] = {
     .destval = LOC_WINDING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 72: LOC_LOWROOM
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9132,7 +9202,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADCRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 72: LOC_LOWROOM
     .motion = SE,
     .condtype = cond_goto,
@@ -9142,7 +9212,7 @@ const travelop_t travel[] = {
     .destval = LOC_ORIENTAL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 72: LOC_LOWROOM
     .motion = ORIENTAL,
     .condtype = cond_goto,
@@ -9152,7 +9222,7 @@ const travelop_t travel[] = {
     .destval = LOC_ORIENTAL,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 73: LOC_DEADCRAWL
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9162,7 +9232,7 @@ const travelop_t travel[] = {
     .destval = LOC_LOWROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 73: LOC_DEADCRAWL
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -9172,7 +9242,7 @@ const travelop_t travel[] = {
     .destval = LOC_LOWROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 73: LOC_DEADCRAWL
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -9182,7 +9252,7 @@ const travelop_t travel[] = {
     .destval = LOC_LOWROOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 74: LOC_SECRET3
     .motion = EAST,
     .condtype = cond_goto,
@@ -9192,7 +9262,7 @@ const travelop_t travel[] = {
     .destval = LOC_KINGHALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 74: LOC_SECRET3
     .motion = WEST,
     .condtype = cond_not,
@@ -9202,7 +9272,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 74: LOC_SECRET3
     .motion = WEST,
     .condtype = cond_goto,
@@ -9212,7 +9282,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 74: LOC_SECRET3
     .motion = DOWN,
     .condtype = cond_goto,
@@ -9222,7 +9292,7 @@ const travelop_t travel[] = {
     .destval = LOC_WIDEPLACE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 75: LOC_WIDEPLACE
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9232,7 +9302,7 @@ const travelop_t travel[] = {
     .destval = LOC_TIGHTPLACE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 75: LOC_WIDEPLACE
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9242,7 +9312,7 @@ const travelop_t travel[] = {
     .destval = LOC_TALL,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 76: LOC_TIGHTPLACE
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9252,7 +9322,7 @@ const travelop_t travel[] = {
     .destval = LOC_WIDEPLACE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 77: LOC_TALL
     .motion = EAST,
     .condtype = cond_goto,
@@ -9262,7 +9332,7 @@ const travelop_t travel[] = {
     .destval = LOC_WIDEPLACE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 77: LOC_TALL
     .motion = WEST,
     .condtype = cond_goto,
@@ -9272,7 +9342,7 @@ const travelop_t travel[] = {
     .destval = LOC_BOULDERS1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 77: LOC_TALL
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9282,7 +9352,7 @@ const travelop_t travel[] = {
     .destval = LOC_SWISSCHEESE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 77: LOC_TALL
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -9292,7 +9362,7 @@ const travelop_t travel[] = {
     .destval = LOC_SWISSCHEESE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 78: LOC_BOULDERS1
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9302,7 +9372,7 @@ const travelop_t travel[] = {
     .destval = LOC_TALL,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 79: LOC_SEWER
     .motion = 1,
     .condtype = cond_goto,
@@ -9312,7 +9382,7 @@ const travelop_t travel[] = {
     .destval = LOC_BUILDING,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 80: LOC_ALIKE11
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9322,7 +9392,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 80: LOC_ALIKE11
     .motion = WEST,
     .condtype = cond_goto,
@@ -9332,7 +9402,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 80: LOC_ALIKE11
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9342,7 +9412,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 80: LOC_ALIKE11
     .motion = EAST,
     .condtype = cond_goto,
@@ -9352,7 +9422,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND8,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 81: LOC_DEADEND8
     .motion = WEST,
     .condtype = cond_goto,
@@ -9362,7 +9432,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 81: LOC_DEADEND8
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -9372,7 +9442,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE11,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 82: LOC_DEADEND9
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9382,7 +9452,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 82: LOC_DEADEND9
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -9392,7 +9462,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE3,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 83: LOC_ALIKE12
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9402,7 +9472,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITBRINK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 83: LOC_ALIKE12
     .motion = EAST,
     .condtype = cond_goto,
@@ -9412,7 +9482,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE13,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 83: LOC_ALIKE12
     .motion = WEST,
     .condtype = cond_goto,
@@ -9422,7 +9492,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND10,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 84: LOC_ALIKE13
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9432,7 +9502,7 @@ const travelop_t travel[] = {
     .destval = LOC_PITBRINK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 84: LOC_ALIKE13
     .motion = WEST,
     .condtype = cond_goto,
@@ -9442,7 +9512,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE12,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 84: LOC_ALIKE13
     .motion = NW,
     .condtype = cond_goto,
@@ -9452,7 +9522,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND12,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 85: LOC_DEADEND10
     .motion = EAST,
     .condtype = cond_goto,
@@ -9462,7 +9532,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE12,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 85: LOC_DEADEND10
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -9472,7 +9542,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE12,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 86: LOC_DEADEND11
     .motion = UP,
     .condtype = cond_goto,
@@ -9482,7 +9552,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 86: LOC_DEADEND11
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -9492,7 +9562,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE8,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 87: LOC_ALIKE14
     .motion = UP,
     .condtype = cond_goto,
@@ -9502,7 +9572,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 87: LOC_ALIKE14
     .motion = DOWN,
     .condtype = cond_goto,
@@ -9512,7 +9582,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE4,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 88: LOC_NARROW
     .motion = DOWN,
     .condtype = cond_goto,
@@ -9522,7 +9592,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTPIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 88: LOC_NARROW
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -9532,7 +9602,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTPIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 88: LOC_NARROW
     .motion = EAST,
     .condtype = cond_goto,
@@ -9542,7 +9612,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTPIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 88: LOC_NARROW
     .motion = MOT_39,
     .condtype = cond_goto,
@@ -9552,7 +9622,7 @@ const travelop_t travel[] = {
     .destval = LOC_NECKBROKE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 88: LOC_NARROW
     .motion = WEST,
     .condtype = cond_goto,
@@ -9562,7 +9632,7 @@ const travelop_t travel[] = {
     .destval = LOC_GIANTROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 88: LOC_NARROW
     .motion = MOT_27,
     .condtype = cond_goto,
@@ -9572,7 +9642,7 @@ const travelop_t travel[] = {
     .destval = LOC_GIANTROOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 89: LOC_NOCLIMB
     .motion = 1,
     .condtype = cond_goto,
@@ -9582,7 +9652,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTPIT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 90: LOC_PLANTTOP
     .motion = 1,
     .condtype = cond_goto,
@@ -9592,7 +9662,7 @@ const travelop_t travel[] = {
     .destval = LOC_WESTEND,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 91: LOC_INCLINE
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9602,7 +9672,7 @@ const travelop_t travel[] = {
     .destval = LOC_WATERFALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 91: LOC_INCLINE
     .motion = CAVERN,
     .condtype = cond_goto,
@@ -9612,7 +9682,7 @@ const travelop_t travel[] = {
     .destval = LOC_WATERFALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 91: LOC_INCLINE
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -9622,7 +9692,7 @@ const travelop_t travel[] = {
     .destval = LOC_WATERFALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 91: LOC_INCLINE
     .motion = DOWN,
     .condtype = cond_goto,
@@ -9632,7 +9702,7 @@ const travelop_t travel[] = {
     .destval = LOC_LOWROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 91: LOC_INCLINE
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -9642,7 +9712,7 @@ const travelop_t travel[] = {
     .destval = LOC_LOWROOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 92: LOC_GIANTROOM
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9652,7 +9722,7 @@ const travelop_t travel[] = {
     .destval = LOC_NARROW,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 92: LOC_GIANTROOM
     .motion = EAST,
     .condtype = cond_goto,
@@ -9662,7 +9732,7 @@ const travelop_t travel[] = {
     .destval = LOC_CAVEIN,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 92: LOC_GIANTROOM
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9672,7 +9742,7 @@ const travelop_t travel[] = {
     .destval = LOC_IMMENSE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 93: LOC_CAVEIN
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9682,7 +9752,7 @@ const travelop_t travel[] = {
     .destval = LOC_GIANTROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 93: LOC_CAVEIN
     .motion = MOT_27,
     .condtype = cond_goto,
@@ -9692,7 +9762,7 @@ const travelop_t travel[] = {
     .destval = LOC_GIANTROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 93: LOC_CAVEIN
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -9702,7 +9772,7 @@ const travelop_t travel[] = {
     .destval = LOC_GIANTROOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 94: LOC_IMMENSE
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9712,7 +9782,7 @@ const travelop_t travel[] = {
     .destval = LOC_GIANTROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 94: LOC_IMMENSE
     .motion = MOT_27,
     .condtype = cond_goto,
@@ -9722,7 +9792,7 @@ const travelop_t travel[] = {
     .destval = LOC_GIANTROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 94: LOC_IMMENSE
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -9732,7 +9802,7 @@ const travelop_t travel[] = {
     .destval = LOC_GIANTROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 94: LOC_IMMENSE
     .motion = NORTH,
     .condtype = cond_not,
@@ -9742,7 +9812,7 @@ const travelop_t travel[] = {
     .destval = LOC_WATERFALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 94: LOC_IMMENSE
     .motion = ENTER,
     .condtype = cond_not,
@@ -9752,7 +9822,7 @@ const travelop_t travel[] = {
     .destval = LOC_WATERFALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 94: LOC_IMMENSE
     .motion = CAVERN,
     .condtype = cond_not,
@@ -9762,7 +9832,7 @@ const travelop_t travel[] = {
     .destval = LOC_WATERFALL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 94: LOC_IMMENSE
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9772,7 +9842,7 @@ const travelop_t travel[] = {
     .destval = RUSTY_DOOR,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 95: LOC_WATERFALL
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9782,7 +9852,7 @@ const travelop_t travel[] = {
     .destval = LOC_IMMENSE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 95: LOC_WATERFALL
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -9792,7 +9862,7 @@ const travelop_t travel[] = {
     .destval = LOC_IMMENSE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 95: LOC_WATERFALL
     .motion = MOT_27,
     .condtype = cond_goto,
@@ -9802,7 +9872,7 @@ const travelop_t travel[] = {
     .destval = LOC_GIANTROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 95: LOC_WATERFALL
     .motion = WEST,
     .condtype = cond_goto,
@@ -9812,7 +9882,7 @@ const travelop_t travel[] = {
     .destval = LOC_INCLINE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 96: LOC_SOFTROOM
     .motion = WEST,
     .condtype = cond_goto,
@@ -9822,7 +9892,7 @@ const travelop_t travel[] = {
     .destval = LOC_SWISSCHEESE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 96: LOC_SOFTROOM
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -9832,7 +9902,7 @@ const travelop_t travel[] = {
     .destval = LOC_SWISSCHEESE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 97: LOC_ORIENTAL
     .motion = SE,
     .condtype = cond_goto,
@@ -9842,7 +9912,7 @@ const travelop_t travel[] = {
     .destval = LOC_SWISSCHEESE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 97: LOC_ORIENTAL
     .motion = WEST,
     .condtype = cond_goto,
@@ -9852,7 +9922,7 @@ const travelop_t travel[] = {
     .destval = LOC_LOWROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 97: LOC_ORIENTAL
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -9862,7 +9932,7 @@ const travelop_t travel[] = {
     .destval = LOC_LOWROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 97: LOC_ORIENTAL
     .motion = UP,
     .condtype = cond_goto,
@@ -9872,7 +9942,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 97: LOC_ORIENTAL
     .motion = NORTH,
     .condtype = cond_goto,
@@ -9882,7 +9952,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 97: LOC_ORIENTAL
     .motion = CAVERN,
     .condtype = cond_goto,
@@ -9892,7 +9962,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTY,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 98: LOC_MISTY
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -9902,7 +9972,7 @@ const travelop_t travel[] = {
     .destval = LOC_ORIENTAL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 98: LOC_MISTY
     .motion = ORIENTAL,
     .condtype = cond_goto,
@@ -9912,7 +9982,7 @@ const travelop_t travel[] = {
     .destval = LOC_ORIENTAL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 98: LOC_MISTY
     .motion = WEST,
     .condtype = cond_goto,
@@ -9922,7 +9992,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALCOVE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 99: LOC_ALCOVE
     .motion = NW,
     .condtype = cond_goto,
@@ -9932,7 +10002,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 99: LOC_ALCOVE
     .motion = CAVERN,
     .condtype = cond_goto,
@@ -9942,7 +10012,7 @@ const travelop_t travel[] = {
     .destval = LOC_MISTY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 99: LOC_ALCOVE
     .motion = EAST,
     .condtype = cond_goto,
@@ -9952,7 +10022,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 99: LOC_ALCOVE
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -9962,7 +10032,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 99: LOC_ALCOVE
     .motion = EAST,
     .condtype = cond_goto,
@@ -9972,7 +10042,7 @@ const travelop_t travel[] = {
     .destval = LOC_PLOVER,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 100: LOC_PLOVER
     .motion = WEST,
     .condtype = cond_goto,
@@ -9982,7 +10052,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 100: LOC_PLOVER
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -9992,7 +10062,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 100: LOC_PLOVER
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -10002,7 +10072,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 100: LOC_PLOVER
     .motion = WEST,
     .condtype = cond_goto,
@@ -10012,7 +10082,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALCOVE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 100: LOC_PLOVER
     .motion = PLOVER,
     .condtype = cond_carry,
@@ -10022,7 +10092,7 @@ const travelop_t travel[] = {
     .destval = LOC_HILL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 100: LOC_PLOVER
     .motion = PLOVER,
     .condtype = cond_goto,
@@ -10032,7 +10102,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOOF6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 100: LOC_PLOVER
     .motion = NE,
     .condtype = cond_goto,
@@ -10042,7 +10112,7 @@ const travelop_t travel[] = {
     .destval = LOC_DARKROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 100: LOC_PLOVER
     .motion = MOT_22,
     .condtype = cond_goto,
@@ -10052,7 +10122,7 @@ const travelop_t travel[] = {
     .destval = LOC_DARKROOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 101: LOC_DARKROOM
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -10062,7 +10132,7 @@ const travelop_t travel[] = {
     .destval = LOC_PLOVER,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 101: LOC_DARKROOM
     .motion = PLOVER,
     .condtype = cond_goto,
@@ -10072,7 +10142,7 @@ const travelop_t travel[] = {
     .destval = LOC_PLOVER,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 101: LOC_DARKROOM
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -10082,7 +10152,7 @@ const travelop_t travel[] = {
     .destval = LOC_PLOVER,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 102: LOC_ARCHED
     .motion = DOWN,
     .condtype = cond_goto,
@@ -10092,7 +10162,7 @@ const travelop_t travel[] = {
     .destval = LOC_SHELLROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 102: LOC_ARCHED
     .motion = SHELLROOM,
     .condtype = cond_goto,
@@ -10102,7 +10172,7 @@ const travelop_t travel[] = {
     .destval = LOC_SHELLROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 102: LOC_ARCHED
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -10112,7 +10182,7 @@ const travelop_t travel[] = {
     .destval = LOC_SHELLROOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 103: LOC_SHELLROOM
     .motion = UP,
     .condtype = cond_goto,
@@ -10122,7 +10192,7 @@ const travelop_t travel[] = {
     .destval = LOC_ARCHED,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 103: LOC_SHELLROOM
     .motion = MOT_38,
     .condtype = cond_goto,
@@ -10132,7 +10202,7 @@ const travelop_t travel[] = {
     .destval = LOC_ARCHED,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 103: LOC_SHELLROOM
     .motion = DOWN,
     .condtype = cond_goto,
@@ -10142,7 +10212,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLOPING1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 103: LOC_SHELLROOM
     .motion = SOUTH,
     .condtype = cond_carry,
@@ -10152,7 +10222,7 @@ const travelop_t travel[] = {
     .destval = CLAM_BLOCKER,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 103: LOC_SHELLROOM
     .motion = SOUTH,
     .condtype = cond_carry,
@@ -10162,7 +10232,7 @@ const travelop_t travel[] = {
     .destval = OYSTER_BLOCKER,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 103: LOC_SHELLROOM
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -10172,7 +10242,7 @@ const travelop_t travel[] = {
     .destval = LOC_COMPLEX,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 104: LOC_SLOPING1
     .motion = UP,
     .condtype = cond_goto,
@@ -10182,7 +10252,7 @@ const travelop_t travel[] = {
     .destval = LOC_SHELLROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 104: LOC_SLOPING1
     .motion = SHELLROOM,
     .condtype = cond_goto,
@@ -10192,7 +10262,7 @@ const travelop_t travel[] = {
     .destval = LOC_SHELLROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 104: LOC_SLOPING1
     .motion = DOWN,
     .condtype = cond_goto,
@@ -10202,7 +10272,7 @@ const travelop_t travel[] = {
     .destval = LOC_CULDESAC,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 105: LOC_CULDESAC
     .motion = UP,
     .condtype = cond_goto,
@@ -10212,7 +10282,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLOPING1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 105: LOC_CULDESAC
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -10222,7 +10292,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLOPING1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 105: LOC_CULDESAC
     .motion = SHELLROOM,
     .condtype = cond_goto,
@@ -10232,7 +10302,7 @@ const travelop_t travel[] = {
     .destval = LOC_SHELLROOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 106: LOC_ANTEROOM
     .motion = UP,
     .condtype = cond_goto,
@@ -10242,7 +10312,7 @@ const travelop_t travel[] = {
     .destval = LOC_COMPLEX,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 106: LOC_ANTEROOM
     .motion = WEST,
     .condtype = cond_goto,
@@ -10252,7 +10322,7 @@ const travelop_t travel[] = {
     .destval = LOC_BEDQUILT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 106: LOC_ANTEROOM
     .motion = EAST,
     .condtype = cond_goto,
@@ -10262,7 +10332,7 @@ const travelop_t travel[] = {
     .destval = LOC_WITTSEND,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 107: LOC_DIFFERENT1
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -10272,7 +10342,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 107: LOC_DIFFERENT1
     .motion = SW,
     .condtype = cond_goto,
@@ -10282,7 +10352,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 107: LOC_DIFFERENT1
     .motion = NE,
     .condtype = cond_goto,
@@ -10292,7 +10362,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 107: LOC_DIFFERENT1
     .motion = SE,
     .condtype = cond_goto,
@@ -10302,7 +10372,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 107: LOC_DIFFERENT1
     .motion = UP,
     .condtype = cond_goto,
@@ -10312,7 +10382,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 107: LOC_DIFFERENT1
     .motion = NW,
     .condtype = cond_goto,
@@ -10322,7 +10392,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 107: LOC_DIFFERENT1
     .motion = EAST,
     .condtype = cond_goto,
@@ -10332,7 +10402,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 107: LOC_DIFFERENT1
     .motion = WEST,
     .condtype = cond_goto,
@@ -10342,7 +10412,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 107: LOC_DIFFERENT1
     .motion = NORTH,
     .condtype = cond_goto,
@@ -10352,7 +10422,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 107: LOC_DIFFERENT1
     .motion = DOWN,
     .condtype = cond_goto,
@@ -10362,7 +10432,7 @@ const travelop_t travel[] = {
     .destval = LOC_LONGWEST,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = EAST,
     .condtype = cond_pct,
@@ -10372,7 +10442,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = NORTH,
     .condtype = cond_pct,
@@ -10382,7 +10452,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = SOUTH,
     .condtype = cond_pct,
@@ -10392,7 +10462,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = NE,
     .condtype = cond_pct,
@@ -10402,7 +10472,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = SE,
     .condtype = cond_pct,
@@ -10412,7 +10482,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = SW,
     .condtype = cond_pct,
@@ -10422,7 +10492,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = NW,
     .condtype = cond_pct,
@@ -10432,7 +10502,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = UP,
     .condtype = cond_pct,
@@ -10442,7 +10512,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = DOWN,
     .condtype = cond_pct,
@@ -10452,7 +10522,7 @@ const travelop_t travel[] = {
     .destval = FUTILE_CRAWL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = EAST,
     .condtype = cond_goto,
@@ -10462,7 +10532,7 @@ const travelop_t travel[] = {
     .destval = LOC_ANTEROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 108: LOC_WITTSEND
     .motion = WEST,
     .condtype = cond_goto,
@@ -10472,7 +10542,7 @@ const travelop_t travel[] = {
     .destval = WAY_BLOCKED,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 109: LOC_MIRRORCANYON
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -10482,7 +10552,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 109: LOC_MIRRORCANYON
     .motion = NORTH,
     .condtype = cond_goto,
@@ -10492,7 +10562,7 @@ const travelop_t travel[] = {
     .destval = LOC_RESERVOIR,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 109: LOC_MIRRORCANYON
     .motion = RESERVOIR,
     .condtype = cond_goto,
@@ -10502,7 +10572,7 @@ const travelop_t travel[] = {
     .destval = LOC_RESERVOIR,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 110: LOC_WINDOW2
     .motion = WEST,
     .condtype = cond_goto,
@@ -10512,7 +10582,7 @@ const travelop_t travel[] = {
     .destval = LOC_THREEJUNCTION,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 110: LOC_WINDOW2
     .motion = MOT_39,
     .condtype = cond_goto,
@@ -10522,7 +10592,7 @@ const travelop_t travel[] = {
     .destval = LOC_NECKBROKE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 111: LOC_TOPSTALACTITE
     .motion = NORTH,
     .condtype = cond_goto,
@@ -10532,7 +10602,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 111: LOC_TOPSTALACTITE
     .motion = DOWN,
     .condtype = cond_pct,
@@ -10542,7 +10612,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 111: LOC_TOPSTALACTITE
     .motion = MOT_39,
     .condtype = cond_pct,
@@ -10552,7 +10622,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 111: LOC_TOPSTALACTITE
     .motion = MOT_56,
     .condtype = cond_pct,
@@ -10562,7 +10632,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 111: LOC_TOPSTALACTITE
     .motion = DOWN,
     .condtype = cond_pct,
@@ -10572,7 +10642,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 111: LOC_TOPSTALACTITE
     .motion = DOWN,
     .condtype = cond_goto,
@@ -10582,7 +10652,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE4,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 112: LOC_DIFFERENT2
     .motion = SW,
     .condtype = cond_goto,
@@ -10592,7 +10662,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 112: LOC_DIFFERENT2
     .motion = NORTH,
     .condtype = cond_goto,
@@ -10602,7 +10672,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 112: LOC_DIFFERENT2
     .motion = EAST,
     .condtype = cond_goto,
@@ -10612,7 +10682,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 112: LOC_DIFFERENT2
     .motion = NW,
     .condtype = cond_goto,
@@ -10622,7 +10692,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 112: LOC_DIFFERENT2
     .motion = SE,
     .condtype = cond_goto,
@@ -10632,7 +10702,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 112: LOC_DIFFERENT2
     .motion = NE,
     .condtype = cond_goto,
@@ -10642,7 +10712,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 112: LOC_DIFFERENT2
     .motion = WEST,
     .condtype = cond_goto,
@@ -10652,7 +10722,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 112: LOC_DIFFERENT2
     .motion = DOWN,
     .condtype = cond_goto,
@@ -10662,7 +10732,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 112: LOC_DIFFERENT2
     .motion = UP,
     .condtype = cond_goto,
@@ -10672,7 +10742,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 112: LOC_DIFFERENT2
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -10682,7 +10752,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND13,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 113: LOC_RESERVOIR
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -10692,7 +10762,7 @@ const travelop_t travel[] = {
     .destval = LOC_MIRRORCANYON,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 113: LOC_RESERVOIR
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -10702,7 +10772,7 @@ const travelop_t travel[] = {
     .destval = LOC_MIRRORCANYON,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 113: LOC_RESERVOIR
     .motion = NORTH,
     .condtype = cond_not,
@@ -10712,7 +10782,7 @@ const travelop_t travel[] = {
     .destval = BAD_DIRECTION,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 113: LOC_RESERVOIR
     .motion = MOT_42,
     .condtype = cond_not,
@@ -10722,7 +10792,7 @@ const travelop_t travel[] = {
     .destval = BAD_DIRECTION,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 113: LOC_RESERVOIR
     .motion = CROSS,
     .condtype = cond_not,
@@ -10732,7 +10802,7 @@ const travelop_t travel[] = {
     .destval = BAD_DIRECTION,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 113: LOC_RESERVOIR
     .motion = NORTH,
     .condtype = cond_goto,
@@ -10742,7 +10812,7 @@ const travelop_t travel[] = {
     .destval = LOC_RESBOTTOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 114: LOC_DEADEND12
     .motion = SE,
     .condtype = cond_goto,
@@ -10752,7 +10822,7 @@ const travelop_t travel[] = {
     .destval = LOC_ALIKE13,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 115: LOC_NE
     .motion = SW,
     .condtype = cond_goto,
@@ -10762,7 +10832,7 @@ const travelop_t travel[] = {
     .destval = LOC_SW,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 116: LOC_SW
     .motion = NE,
     .condtype = cond_goto,
@@ -10772,7 +10842,7 @@ const travelop_t travel[] = {
     .destval = LOC_NE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 116: LOC_SW
     .motion = DOWN,
     .condtype = cond_goto,
@@ -10782,7 +10852,7 @@ const travelop_t travel[] = {
     .destval = GRATE_NOWAY,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 117: LOC_SWCHASM
     .motion = SW,
     .condtype = cond_goto,
@@ -10792,7 +10862,7 @@ const travelop_t travel[] = {
     .destval = LOC_WINDING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 117: LOC_SWCHASM
     .motion = MOT_41,
     .condtype = cond_with,
@@ -10802,7 +10872,7 @@ const travelop_t travel[] = {
     .destval = TROLL_BLOCKS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 117: LOC_SWCHASM
     .motion = MOT_42,
     .condtype = cond_with,
@@ -10812,7 +10882,7 @@ const travelop_t travel[] = {
     .destval = TROLL_BLOCKS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 117: LOC_SWCHASM
     .motion = CROSS,
     .condtype = cond_with,
@@ -10822,7 +10892,7 @@ const travelop_t travel[] = {
     .destval = TROLL_BLOCKS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 117: LOC_SWCHASM
     .motion = NE,
     .condtype = cond_with,
@@ -10832,7 +10902,7 @@ const travelop_t travel[] = {
     .destval = TROLL_BLOCKS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 117: LOC_SWCHASM
     .motion = MOT_41,
     .condtype = cond_not,
@@ -10842,7 +10912,7 @@ const travelop_t travel[] = {
     .destval = BRIDGE_GONE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 117: LOC_SWCHASM
     .motion = MOT_41,
     .condtype = cond_goto,
@@ -10852,7 +10922,7 @@ const travelop_t travel[] = {
     .destval = LOC_BUILDING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 117: LOC_SWCHASM
     .motion = MOT_39,
     .condtype = cond_not,
@@ -10862,7 +10932,7 @@ const travelop_t travel[] = {
     .destval = LOC_NOMAKE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 117: LOC_SWCHASM
     .motion = MOT_39,
     .condtype = cond_goto,
@@ -10872,7 +10942,7 @@ const travelop_t travel[] = {
     .destval = CROSS_BRIDGE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 118: LOC_WINDING
     .motion = DOWN,
     .condtype = cond_goto,
@@ -10882,7 +10952,7 @@ const travelop_t travel[] = {
     .destval = LOC_LOWROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 118: LOC_WINDING
     .motion = UP,
     .condtype = cond_goto,
@@ -10892,7 +10962,7 @@ const travelop_t travel[] = {
     .destval = LOC_SWCHASM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 119: LOC_SECRET4
     .motion = NORTH,
     .condtype = cond_goto,
@@ -10902,7 +10972,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 119: LOC_SECRET4
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -10912,7 +10982,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 119: LOC_SECRET4
     .motion = EAST,
     .condtype = cond_goto,
@@ -10922,7 +10992,7 @@ const travelop_t travel[] = {
     .destval = NASTY_DRAGON,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 119: LOC_SECRET4
     .motion = FORWARD,
     .condtype = cond_goto,
@@ -10932,7 +11002,7 @@ const travelop_t travel[] = {
     .destval = NASTY_DRAGON,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 120: LOC_SECRET5
     .motion = NORTH,
     .condtype = cond_goto,
@@ -10942,7 +11012,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 120: LOC_SECRET5
     .motion = EAST,
     .condtype = cond_goto,
@@ -10952,7 +11022,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET3,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 121: LOC_SECRET6
     .motion = EAST,
     .condtype = cond_goto,
@@ -10962,7 +11032,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 121: LOC_SECRET6
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -10972,7 +11042,7 @@ const travelop_t travel[] = {
     .destval = LOC_SECRET3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 121: LOC_SECRET6
     .motion = NORTH,
     .condtype = cond_goto,
@@ -10982,7 +11052,7 @@ const travelop_t travel[] = {
     .destval = NASTY_DRAGON,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 121: LOC_SECRET6
     .motion = FORWARD,
     .condtype = cond_goto,
@@ -10992,7 +11062,7 @@ const travelop_t travel[] = {
     .destval = NASTY_DRAGON,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 122: LOC_NECHASM
     .motion = NE,
     .condtype = cond_goto,
@@ -11002,7 +11072,7 @@ const travelop_t travel[] = {
     .destval = LOC_CORRIDOR,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 122: LOC_NECHASM
     .motion = MOT_41,
     .condtype = cond_with,
@@ -11012,7 +11082,7 @@ const travelop_t travel[] = {
     .destval = TROLL_BLOCKS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 122: LOC_NECHASM
     .motion = MOT_42,
     .condtype = cond_with,
@@ -11022,7 +11092,7 @@ const travelop_t travel[] = {
     .destval = TROLL_BLOCKS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 122: LOC_NECHASM
     .motion = CROSS,
     .condtype = cond_with,
@@ -11032,7 +11102,7 @@ const travelop_t travel[] = {
     .destval = TROLL_BLOCKS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 122: LOC_NECHASM
     .motion = SW,
     .condtype = cond_with,
@@ -11042,7 +11112,7 @@ const travelop_t travel[] = {
     .destval = TROLL_BLOCKS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 122: LOC_NECHASM
     .motion = MOT_41,
     .condtype = cond_goto,
@@ -11052,7 +11122,7 @@ const travelop_t travel[] = {
     .destval = LOC_BUILDING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 122: LOC_NECHASM
     .motion = MOT_39,
     .condtype = cond_goto,
@@ -11062,7 +11132,7 @@ const travelop_t travel[] = {
     .destval = CROSS_BRIDGE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 122: LOC_NECHASM
     .motion = MOT_15,
     .condtype = cond_goto,
@@ -11072,7 +11142,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 122: LOC_NECHASM
     .motion = MOT_28,
     .condtype = cond_goto,
@@ -11082,7 +11152,7 @@ const travelop_t travel[] = {
     .destval = LOC_BREATHTAKING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 122: LOC_NECHASM
     .motion = MOT_40,
     .condtype = cond_goto,
@@ -11092,7 +11162,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENFRONT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 123: LOC_CORRIDOR
     .motion = WEST,
     .condtype = cond_goto,
@@ -11102,7 +11172,7 @@ const travelop_t travel[] = {
     .destval = LOC_NECHASM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 123: LOC_CORRIDOR
     .motion = EAST,
     .condtype = cond_goto,
@@ -11112,7 +11182,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 123: LOC_CORRIDOR
     .motion = MOT_15,
     .condtype = cond_goto,
@@ -11122,7 +11192,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 123: LOC_CORRIDOR
     .motion = MOT_28,
     .condtype = cond_goto,
@@ -11132,7 +11202,7 @@ const travelop_t travel[] = {
     .destval = LOC_BREATHTAKING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 123: LOC_CORRIDOR
     .motion = MOT_40,
     .condtype = cond_goto,
@@ -11142,7 +11212,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENFRONT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 124: LOC_FORK
     .motion = WEST,
     .condtype = cond_goto,
@@ -11152,7 +11222,7 @@ const travelop_t travel[] = {
     .destval = LOC_CORRIDOR,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 124: LOC_FORK
     .motion = NE,
     .condtype = cond_goto,
@@ -11162,7 +11232,7 @@ const travelop_t travel[] = {
     .destval = LOC_WARMWALLS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 124: LOC_FORK
     .motion = LEFT,
     .condtype = cond_goto,
@@ -11172,7 +11242,7 @@ const travelop_t travel[] = {
     .destval = LOC_WARMWALLS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 124: LOC_FORK
     .motion = SE,
     .condtype = cond_goto,
@@ -11182,7 +11252,7 @@ const travelop_t travel[] = {
     .destval = LOC_LIMESTONE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 124: LOC_FORK
     .motion = RIGHT,
     .condtype = cond_goto,
@@ -11192,7 +11262,7 @@ const travelop_t travel[] = {
     .destval = LOC_LIMESTONE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 124: LOC_FORK
     .motion = DOWN,
     .condtype = cond_goto,
@@ -11202,7 +11272,7 @@ const travelop_t travel[] = {
     .destval = LOC_LIMESTONE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 124: LOC_FORK
     .motion = MOT_28,
     .condtype = cond_goto,
@@ -11212,7 +11282,7 @@ const travelop_t travel[] = {
     .destval = LOC_BREATHTAKING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 124: LOC_FORK
     .motion = MOT_40,
     .condtype = cond_goto,
@@ -11222,7 +11292,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENFRONT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 125: LOC_WARMWALLS
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -11232,7 +11302,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 125: LOC_WARMWALLS
     .motion = MOT_15,
     .condtype = cond_goto,
@@ -11242,7 +11312,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 125: LOC_WARMWALLS
     .motion = NORTH,
     .condtype = cond_goto,
@@ -11252,7 +11322,7 @@ const travelop_t travel[] = {
     .destval = LOC_BREATHTAKING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 125: LOC_WARMWALLS
     .motion = MOT_28,
     .condtype = cond_goto,
@@ -11262,7 +11332,7 @@ const travelop_t travel[] = {
     .destval = LOC_BREATHTAKING,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 125: LOC_WARMWALLS
     .motion = EAST,
     .condtype = cond_goto,
@@ -11272,7 +11342,7 @@ const travelop_t travel[] = {
     .destval = LOC_BOULDERS2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 125: LOC_WARMWALLS
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -11282,7 +11352,7 @@ const travelop_t travel[] = {
     .destval = LOC_BOULDERS2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 126: LOC_BREATHTAKING
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -11292,7 +11362,7 @@ const travelop_t travel[] = {
     .destval = LOC_WARMWALLS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 126: LOC_BREATHTAKING
     .motion = MOT_23,
     .condtype = cond_goto,
@@ -11302,7 +11372,7 @@ const travelop_t travel[] = {
     .destval = LOC_WARMWALLS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 126: LOC_BREATHTAKING
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -11312,7 +11382,7 @@ const travelop_t travel[] = {
     .destval = LOC_WARMWALLS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 126: LOC_BREATHTAKING
     .motion = MOT_15,
     .condtype = cond_goto,
@@ -11322,7 +11392,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 126: LOC_BREATHTAKING
     .motion = DOWN,
     .condtype = cond_goto,
@@ -11332,7 +11402,7 @@ const travelop_t travel[] = {
     .destval = RIDICULOUS_ATTEMPT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 126: LOC_BREATHTAKING
     .motion = MOT_39,
     .condtype = cond_goto,
@@ -11342,7 +11412,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRUESOME,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 127: LOC_BOULDERS2
     .motion = WEST,
     .condtype = cond_goto,
@@ -11352,7 +11422,7 @@ const travelop_t travel[] = {
     .destval = LOC_WARMWALLS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 127: LOC_BOULDERS2
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -11362,7 +11432,7 @@ const travelop_t travel[] = {
     .destval = LOC_WARMWALLS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 127: LOC_BOULDERS2
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -11372,7 +11442,7 @@ const travelop_t travel[] = {
     .destval = LOC_WARMWALLS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 127: LOC_BOULDERS2
     .motion = MOT_15,
     .condtype = cond_goto,
@@ -11382,7 +11452,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 127: LOC_BOULDERS2
     .motion = MOT_28,
     .condtype = cond_goto,
@@ -11392,7 +11462,7 @@ const travelop_t travel[] = {
     .destval = LOC_BREATHTAKING,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 128: LOC_LIMESTONE
     .motion = NORTH,
     .condtype = cond_goto,
@@ -11402,7 +11472,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 128: LOC_LIMESTONE
     .motion = UP,
     .condtype = cond_goto,
@@ -11412,7 +11482,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 128: LOC_LIMESTONE
     .motion = MOT_15,
     .condtype = cond_goto,
@@ -11422,7 +11492,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 128: LOC_LIMESTONE
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -11432,7 +11502,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENFRONT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 128: LOC_LIMESTONE
     .motion = DOWN,
     .condtype = cond_goto,
@@ -11442,7 +11512,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENFRONT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 128: LOC_LIMESTONE
     .motion = MOT_40,
     .condtype = cond_goto,
@@ -11452,7 +11522,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENFRONT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 128: LOC_LIMESTONE
     .motion = MOT_28,
     .condtype = cond_goto,
@@ -11462,7 +11532,7 @@ const travelop_t travel[] = {
     .destval = LOC_BREATHTAKING,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 129: LOC_BARRENFRONT
     .motion = WEST,
     .condtype = cond_goto,
@@ -11472,7 +11542,7 @@ const travelop_t travel[] = {
     .destval = LOC_LIMESTONE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 129: LOC_BARRENFRONT
     .motion = UP,
     .condtype = cond_goto,
@@ -11482,7 +11552,7 @@ const travelop_t travel[] = {
     .destval = LOC_LIMESTONE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 129: LOC_BARRENFRONT
     .motion = MOT_15,
     .condtype = cond_goto,
@@ -11492,7 +11562,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 129: LOC_BARRENFRONT
     .motion = EAST,
     .condtype = cond_goto,
@@ -11502,7 +11572,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 129: LOC_BARRENFRONT
     .motion = INSIDE,
     .condtype = cond_goto,
@@ -11512,7 +11582,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 129: LOC_BARRENFRONT
     .motion = MOT_40,
     .condtype = cond_goto,
@@ -11522,7 +11592,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 129: LOC_BARRENFRONT
     .motion = ENTER,
     .condtype = cond_goto,
@@ -11532,7 +11602,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENROOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 129: LOC_BARRENFRONT
     .motion = MOT_28,
     .condtype = cond_goto,
@@ -11542,7 +11612,7 @@ const travelop_t travel[] = {
     .destval = LOC_BREATHTAKING,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 130: LOC_BARRENROOM
     .motion = WEST,
     .condtype = cond_goto,
@@ -11552,7 +11622,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENFRONT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 130: LOC_BARRENROOM
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -11562,7 +11632,7 @@ const travelop_t travel[] = {
     .destval = LOC_BARRENFRONT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 130: LOC_BARRENROOM
     .motion = MOT_15,
     .condtype = cond_goto,
@@ -11572,7 +11642,7 @@ const travelop_t travel[] = {
     .destval = LOC_FORK,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 130: LOC_BARRENROOM
     .motion = MOT_28,
     .condtype = cond_goto,
@@ -11582,7 +11652,7 @@ const travelop_t travel[] = {
     .destval = LOC_BREATHTAKING,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 131: LOC_DIFFERENT3
     .motion = WEST,
     .condtype = cond_goto,
@@ -11592,7 +11662,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 131: LOC_DIFFERENT3
     .motion = SE,
     .condtype = cond_goto,
@@ -11602,7 +11672,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 131: LOC_DIFFERENT3
     .motion = NW,
     .condtype = cond_goto,
@@ -11612,7 +11682,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 131: LOC_DIFFERENT3
     .motion = SW,
     .condtype = cond_goto,
@@ -11622,7 +11692,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 131: LOC_DIFFERENT3
     .motion = NE,
     .condtype = cond_goto,
@@ -11632,7 +11702,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 131: LOC_DIFFERENT3
     .motion = UP,
     .condtype = cond_goto,
@@ -11642,7 +11712,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 131: LOC_DIFFERENT3
     .motion = DOWN,
     .condtype = cond_goto,
@@ -11652,7 +11722,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 131: LOC_DIFFERENT3
     .motion = NORTH,
     .condtype = cond_goto,
@@ -11662,7 +11732,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 131: LOC_DIFFERENT3
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -11672,7 +11742,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 131: LOC_DIFFERENT3
     .motion = EAST,
     .condtype = cond_goto,
@@ -11682,7 +11752,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 132: LOC_DIFFERENT4
     .motion = NW,
     .condtype = cond_goto,
@@ -11692,7 +11762,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 132: LOC_DIFFERENT4
     .motion = UP,
     .condtype = cond_goto,
@@ -11702,7 +11772,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 132: LOC_DIFFERENT4
     .motion = NORTH,
     .condtype = cond_goto,
@@ -11712,7 +11782,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 132: LOC_DIFFERENT4
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -11722,7 +11792,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 132: LOC_DIFFERENT4
     .motion = WEST,
     .condtype = cond_goto,
@@ -11732,7 +11802,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 132: LOC_DIFFERENT4
     .motion = SW,
     .condtype = cond_goto,
@@ -11742,7 +11812,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 132: LOC_DIFFERENT4
     .motion = NE,
     .condtype = cond_goto,
@@ -11752,7 +11822,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 132: LOC_DIFFERENT4
     .motion = EAST,
     .condtype = cond_goto,
@@ -11762,7 +11832,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 132: LOC_DIFFERENT4
     .motion = DOWN,
     .condtype = cond_goto,
@@ -11772,7 +11842,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 132: LOC_DIFFERENT4
     .motion = SE,
     .condtype = cond_goto,
@@ -11782,7 +11852,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 133: LOC_DIFFERENT5
     .motion = UP,
     .condtype = cond_goto,
@@ -11792,7 +11862,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 133: LOC_DIFFERENT5
     .motion = DOWN,
     .condtype = cond_goto,
@@ -11802,7 +11872,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 133: LOC_DIFFERENT5
     .motion = WEST,
     .condtype = cond_goto,
@@ -11812,7 +11882,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 133: LOC_DIFFERENT5
     .motion = NE,
     .condtype = cond_goto,
@@ -11822,7 +11892,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 133: LOC_DIFFERENT5
     .motion = SW,
     .condtype = cond_goto,
@@ -11832,7 +11902,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 133: LOC_DIFFERENT5
     .motion = EAST,
     .condtype = cond_goto,
@@ -11842,7 +11912,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 133: LOC_DIFFERENT5
     .motion = NORTH,
     .condtype = cond_goto,
@@ -11852,7 +11922,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 133: LOC_DIFFERENT5
     .motion = NW,
     .condtype = cond_goto,
@@ -11862,7 +11932,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 133: LOC_DIFFERENT5
     .motion = SE,
     .condtype = cond_goto,
@@ -11872,7 +11942,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 133: LOC_DIFFERENT5
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -11882,7 +11952,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 134: LOC_DIFFERENT6
     .motion = NE,
     .condtype = cond_goto,
@@ -11892,7 +11962,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 134: LOC_DIFFERENT6
     .motion = NORTH,
     .condtype = cond_goto,
@@ -11902,7 +11972,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 134: LOC_DIFFERENT6
     .motion = NW,
     .condtype = cond_goto,
@@ -11912,7 +11982,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 134: LOC_DIFFERENT6
     .motion = SE,
     .condtype = cond_goto,
@@ -11922,7 +11992,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 134: LOC_DIFFERENT6
     .motion = EAST,
     .condtype = cond_goto,
@@ -11932,7 +12002,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 134: LOC_DIFFERENT6
     .motion = DOWN,
     .condtype = cond_goto,
@@ -11942,7 +12012,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 134: LOC_DIFFERENT6
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -11952,7 +12022,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 134: LOC_DIFFERENT6
     .motion = UP,
     .condtype = cond_goto,
@@ -11962,7 +12032,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 134: LOC_DIFFERENT6
     .motion = WEST,
     .condtype = cond_goto,
@@ -11972,7 +12042,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 134: LOC_DIFFERENT6
     .motion = SW,
     .condtype = cond_goto,
@@ -11982,7 +12052,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 135: LOC_DIFFERENT7
     .motion = NORTH,
     .condtype = cond_goto,
@@ -11992,7 +12062,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 135: LOC_DIFFERENT7
     .motion = SE,
     .condtype = cond_goto,
@@ -12002,7 +12072,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 135: LOC_DIFFERENT7
     .motion = DOWN,
     .condtype = cond_goto,
@@ -12012,7 +12082,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 135: LOC_DIFFERENT7
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12022,7 +12092,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 135: LOC_DIFFERENT7
     .motion = EAST,
     .condtype = cond_goto,
@@ -12032,7 +12102,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 135: LOC_DIFFERENT7
     .motion = WEST,
     .condtype = cond_goto,
@@ -12042,7 +12112,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 135: LOC_DIFFERENT7
     .motion = SW,
     .condtype = cond_goto,
@@ -12052,7 +12122,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 135: LOC_DIFFERENT7
     .motion = NE,
     .condtype = cond_goto,
@@ -12062,7 +12132,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 135: LOC_DIFFERENT7
     .motion = NW,
     .condtype = cond_goto,
@@ -12072,7 +12142,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 135: LOC_DIFFERENT7
     .motion = UP,
     .condtype = cond_goto,
@@ -12082,7 +12152,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 136: LOC_DIFFERENT8
     .motion = EAST,
     .condtype = cond_goto,
@@ -12092,7 +12162,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 136: LOC_DIFFERENT8
     .motion = WEST,
     .condtype = cond_goto,
@@ -12102,7 +12172,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 136: LOC_DIFFERENT8
     .motion = UP,
     .condtype = cond_goto,
@@ -12112,7 +12182,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 136: LOC_DIFFERENT8
     .motion = SW,
     .condtype = cond_goto,
@@ -12122,7 +12192,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 136: LOC_DIFFERENT8
     .motion = DOWN,
     .condtype = cond_goto,
@@ -12132,7 +12202,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 136: LOC_DIFFERENT8
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12142,7 +12212,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 136: LOC_DIFFERENT8
     .motion = NW,
     .condtype = cond_goto,
@@ -12152,7 +12222,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 136: LOC_DIFFERENT8
     .motion = SE,
     .condtype = cond_goto,
@@ -12162,7 +12232,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 136: LOC_DIFFERENT8
     .motion = NE,
     .condtype = cond_goto,
@@ -12172,7 +12242,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 136: LOC_DIFFERENT8
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12182,7 +12252,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 137: LOC_DIFFERENT9
     .motion = SE,
     .condtype = cond_goto,
@@ -12192,7 +12262,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 137: LOC_DIFFERENT9
     .motion = NE,
     .condtype = cond_goto,
@@ -12202,7 +12272,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 137: LOC_DIFFERENT9
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12212,7 +12282,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 137: LOC_DIFFERENT9
     .motion = DOWN,
     .condtype = cond_goto,
@@ -12222,7 +12292,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 137: LOC_DIFFERENT9
     .motion = UP,
     .condtype = cond_goto,
@@ -12232,7 +12302,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 137: LOC_DIFFERENT9
     .motion = NW,
     .condtype = cond_goto,
@@ -12242,7 +12312,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 137: LOC_DIFFERENT9
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12252,7 +12322,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 137: LOC_DIFFERENT9
     .motion = SW,
     .condtype = cond_goto,
@@ -12262,7 +12332,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 137: LOC_DIFFERENT9
     .motion = EAST,
     .condtype = cond_goto,
@@ -12272,7 +12342,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 137: LOC_DIFFERENT9
     .motion = WEST,
     .condtype = cond_goto,
@@ -12282,7 +12352,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 138: LOC_DIFFERENT10
     .motion = DOWN,
     .condtype = cond_goto,
@@ -12292,7 +12362,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 138: LOC_DIFFERENT10
     .motion = EAST,
     .condtype = cond_goto,
@@ -12302,7 +12372,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 138: LOC_DIFFERENT10
     .motion = NE,
     .condtype = cond_goto,
@@ -12312,7 +12382,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 138: LOC_DIFFERENT10
     .motion = UP,
     .condtype = cond_goto,
@@ -12322,7 +12392,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 138: LOC_DIFFERENT10
     .motion = WEST,
     .condtype = cond_goto,
@@ -12332,7 +12402,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 138: LOC_DIFFERENT10
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12342,7 +12412,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 138: LOC_DIFFERENT10
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12352,7 +12422,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 138: LOC_DIFFERENT10
     .motion = SE,
     .condtype = cond_goto,
@@ -12362,7 +12432,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 138: LOC_DIFFERENT10
     .motion = SW,
     .condtype = cond_goto,
@@ -12372,7 +12442,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 138: LOC_DIFFERENT10
     .motion = NW,
     .condtype = cond_goto,
@@ -12382,7 +12452,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 139: LOC_DIFFERENT11
     .motion = SW,
     .condtype = cond_goto,
@@ -12392,7 +12462,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 139: LOC_DIFFERENT11
     .motion = NW,
     .condtype = cond_goto,
@@ -12402,7 +12472,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 139: LOC_DIFFERENT11
     .motion = EAST,
     .condtype = cond_goto,
@@ -12412,7 +12482,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 139: LOC_DIFFERENT11
     .motion = WEST,
     .condtype = cond_goto,
@@ -12422,7 +12492,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 139: LOC_DIFFERENT11
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12432,7 +12502,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 139: LOC_DIFFERENT11
     .motion = DOWN,
     .condtype = cond_goto,
@@ -12442,7 +12512,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 139: LOC_DIFFERENT11
     .motion = SE,
     .condtype = cond_goto,
@@ -12452,7 +12522,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 139: LOC_DIFFERENT11
     .motion = UP,
     .condtype = cond_goto,
@@ -12462,7 +12532,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 139: LOC_DIFFERENT11
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12472,7 +12542,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 139: LOC_DIFFERENT11
     .motion = NE,
     .condtype = cond_goto,
@@ -12482,7 +12552,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 140: LOC_DEADEND13
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12492,7 +12562,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 140: LOC_DEADEND13
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -12502,7 +12572,7 @@ const travelop_t travel[] = {
     .destval = LOC_DIFFERENT2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 140: LOC_DEADEND13
     .motion = SOUTH,
     .condtype = cond_not,
@@ -12512,7 +12582,7 @@ const travelop_t travel[] = {
     .destval = LOC_ROUGHHEWN,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 140: LOC_DEADEND13
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12522,7 +12592,7 @@ const travelop_t travel[] = {
     .destval = LOC_BADDIRECTION,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 141: LOC_ROUGHHEWN
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12532,7 +12602,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND13,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 141: LOC_ROUGHHEWN
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12542,7 +12612,7 @@ const travelop_t travel[] = {
     .destval = LOC_LARGE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 142: LOC_BADDIRECTION
     .motion = 1,
     .condtype = cond_goto,
@@ -12552,7 +12622,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEADEND13,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 143: LOC_LARGE
     .motion = WEST,
     .condtype = cond_goto,
@@ -12562,7 +12632,7 @@ const travelop_t travel[] = {
     .destval = LOC_ROUGHHEWN,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 143: LOC_LARGE
     .motion = NORTH,
     .condtype = cond_with,
@@ -12572,7 +12642,7 @@ const travelop_t travel[] = {
     .destval = OGRE_SNARL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 143: LOC_LARGE
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12582,7 +12652,7 @@ const travelop_t travel[] = {
     .destval = LOC_STOREROOM,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 144: LOC_STOREROOM
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12592,7 +12662,7 @@ const travelop_t travel[] = {
     .destval = LOC_LARGE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 144: LOC_STOREROOM
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -12602,7 +12672,7 @@ const travelop_t travel[] = {
     .destval = LOC_LARGE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 145: LOC_FOREST1
     .motion = EAST,
     .condtype = cond_goto,
@@ -12612,7 +12682,7 @@ const travelop_t travel[] = {
     .destval = LOC_START,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 145: LOC_FOREST1
     .motion = WEST,
     .condtype = cond_goto,
@@ -12622,7 +12692,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST13,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 145: LOC_FOREST1
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12632,7 +12702,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 145: LOC_FOREST1
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12642,7 +12712,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST3,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 146: LOC_FOREST2
     .motion = EAST,
     .condtype = cond_goto,
@@ -12652,7 +12722,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 146: LOC_FOREST2
     .motion = WEST,
     .condtype = cond_goto,
@@ -12662,7 +12732,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST19,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 146: LOC_FOREST2
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12672,7 +12742,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 146: LOC_FOREST2
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12682,7 +12752,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST18,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 147: LOC_FOREST3
     .motion = EAST,
     .condtype = cond_goto,
@@ -12692,7 +12762,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 147: LOC_FOREST3
     .motion = WEST,
     .condtype = cond_goto,
@@ -12702,7 +12772,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 147: LOC_FOREST3
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12712,7 +12782,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 147: LOC_FOREST3
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12722,7 +12792,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST1,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 148: LOC_FOREST4
     .motion = EAST,
     .condtype = cond_goto,
@@ -12732,7 +12802,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 148: LOC_FOREST4
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12742,7 +12812,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST3,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 148: LOC_FOREST4
     .motion = WEST,
     .condtype = cond_goto,
@@ -12752,7 +12822,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 148: LOC_FOREST4
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12762,7 +12832,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST5,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 149: LOC_FOREST5
     .motion = EAST,
     .condtype = cond_goto,
@@ -12772,7 +12842,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 149: LOC_FOREST5
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12782,7 +12852,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST4,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 149: LOC_FOREST5
     .motion = WEST,
     .condtype = cond_goto,
@@ -12792,7 +12862,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 149: LOC_FOREST5
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12802,7 +12872,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST6,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 150: LOC_FOREST6
     .motion = EAST,
     .condtype = cond_goto,
@@ -12812,7 +12882,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 150: LOC_FOREST6
     .motion = WEST,
     .condtype = cond_goto,
@@ -12822,7 +12892,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST7,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 150: LOC_FOREST6
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12832,7 +12902,7 @@ const travelop_t travel[] = {
     .destval = LOC_VALLEY,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 150: LOC_FOREST6
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12842,7 +12912,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLIT,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 151: LOC_FOREST7
     .motion = EAST,
     .condtype = cond_goto,
@@ -12852,7 +12922,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST5,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 151: LOC_FOREST7
     .motion = WEST,
     .condtype = cond_goto,
@@ -12862,7 +12932,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST6,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 151: LOC_FOREST7
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12872,7 +12942,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 151: LOC_FOREST7
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12882,7 +12952,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST8,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 152: LOC_FOREST8
     .motion = EAST,
     .condtype = cond_goto,
@@ -12892,7 +12962,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 152: LOC_FOREST8
     .motion = WEST,
     .condtype = cond_goto,
@@ -12902,7 +12972,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 152: LOC_FOREST8
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12912,7 +12982,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST22,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 152: LOC_FOREST8
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12922,7 +12992,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST7,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 153: LOC_FOREST9
     .motion = EAST,
     .condtype = cond_goto,
@@ -12932,7 +13002,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 153: LOC_FOREST9
     .motion = WEST,
     .condtype = cond_goto,
@@ -12942,7 +13012,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 153: LOC_FOREST9
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12952,7 +13022,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 153: LOC_FOREST9
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -12962,7 +13032,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 154: LOC_FOREST10
     .motion = EAST,
     .condtype = cond_goto,
@@ -12972,7 +13042,7 @@ const travelop_t travel[] = {
     .destval = LOC_SLIT,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 154: LOC_FOREST10
     .motion = WEST,
     .condtype = cond_goto,
@@ -12982,7 +13052,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 154: LOC_FOREST10
     .motion = NORTH,
     .condtype = cond_goto,
@@ -12992,7 +13062,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST9,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 154: LOC_FOREST10
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13002,7 +13072,7 @@ const travelop_t travel[] = {
     .destval = LOC_GRATE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 155: LOC_FOREST11
     .motion = EAST,
     .condtype = cond_goto,
@@ -13012,7 +13082,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST10,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 155: LOC_FOREST11
     .motion = WEST,
     .condtype = cond_goto,
@@ -13022,7 +13092,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 155: LOC_FOREST11
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13032,7 +13102,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST22,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 155: LOC_FOREST11
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13042,7 +13112,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST9,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 156: LOC_FOREST12
     .motion = EAST,
     .condtype = cond_goto,
@@ -13052,7 +13122,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST13,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 156: LOC_FOREST12
     .motion = WEST,
     .condtype = cond_goto,
@@ -13062,7 +13132,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST14,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 156: LOC_FOREST12
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13072,7 +13142,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST22,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 156: LOC_FOREST12
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13082,7 +13152,7 @@ const travelop_t travel[] = {
     .destval = LOC_VALLEY,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 157: LOC_FOREST13
     .motion = EAST,
     .condtype = cond_goto,
@@ -13092,7 +13162,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST1,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 157: LOC_FOREST13
     .motion = WEST,
     .condtype = cond_goto,
@@ -13102,7 +13172,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST12,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 157: LOC_FOREST13
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13112,7 +13182,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST20,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 157: LOC_FOREST13
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13122,7 +13192,7 @@ const travelop_t travel[] = {
     .destval = LOC_HILL,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 158: LOC_FOREST14
     .motion = EAST,
     .condtype = cond_goto,
@@ -13132,7 +13202,7 @@ const travelop_t travel[] = {
     .destval = LOC_ROADEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 158: LOC_FOREST14
     .motion = WEST,
     .condtype = cond_goto,
@@ -13142,7 +13212,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST16,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 158: LOC_FOREST14
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13152,7 +13222,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST15,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 158: LOC_FOREST14
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13162,7 +13232,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST12,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 159: LOC_FOREST15
     .motion = EAST,
     .condtype = cond_goto,
@@ -13172,7 +13242,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST16,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 159: LOC_FOREST15
     .motion = WEST,
     .condtype = cond_goto,
@@ -13182,7 +13252,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST22,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 159: LOC_FOREST15
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13192,7 +13262,7 @@ const travelop_t travel[] = {
     .destval = LOC_ROADEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 159: LOC_FOREST15
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13202,7 +13272,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST14,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 160: LOC_FOREST16
     .motion = EAST,
     .condtype = cond_goto,
@@ -13212,7 +13282,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST17,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 160: LOC_FOREST16
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13222,7 +13292,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST17,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 160: LOC_FOREST16
     .motion = WEST,
     .condtype = cond_goto,
@@ -13232,7 +13302,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST14,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 160: LOC_FOREST16
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13242,7 +13312,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST15,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 161: LOC_FOREST17
     .motion = EAST,
     .condtype = cond_goto,
@@ -13252,7 +13322,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST18,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 161: LOC_FOREST17
     .motion = WEST,
     .condtype = cond_goto,
@@ -13262,7 +13332,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST16,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 161: LOC_FOREST17
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13272,7 +13342,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST16,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 161: LOC_FOREST17
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13282,7 +13352,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFF,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 162: LOC_FOREST18
     .motion = EAST,
     .condtype = cond_goto,
@@ -13292,7 +13362,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST19,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 162: LOC_FOREST18
     .motion = WEST,
     .condtype = cond_goto,
@@ -13302,7 +13372,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST17,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 162: LOC_FOREST18
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13312,7 +13382,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 162: LOC_FOREST18
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13322,7 +13392,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST21,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 163: LOC_FOREST19
     .motion = EAST,
     .condtype = cond_goto,
@@ -13332,7 +13402,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST2,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 163: LOC_FOREST19
     .motion = WEST,
     .condtype = cond_goto,
@@ -13342,7 +13412,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST18,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 163: LOC_FOREST19
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13352,7 +13422,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFF,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 163: LOC_FOREST19
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13362,7 +13432,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST20,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 164: LOC_FOREST20
     .motion = EAST,
     .condtype = cond_goto,
@@ -13372,7 +13442,7 @@ const travelop_t travel[] = {
     .destval = LOC_HILL,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 164: LOC_FOREST20
     .motion = WEST,
     .condtype = cond_goto,
@@ -13382,7 +13452,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST21,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 164: LOC_FOREST20
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13392,7 +13462,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST19,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 164: LOC_FOREST20
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13402,7 +13472,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST13,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 165: LOC_FOREST21
     .motion = EAST,
     .condtype = cond_goto,
@@ -13412,7 +13482,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST20,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 165: LOC_FOREST21
     .motion = WEST,
     .condtype = cond_goto,
@@ -13422,7 +13492,7 @@ const travelop_t travel[] = {
     .destval = LOC_ROADEND,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 165: LOC_FOREST21
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13432,7 +13502,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST18,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 165: LOC_FOREST21
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13442,7 +13512,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST21,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 166: LOC_FOREST22
     .motion = EAST,
     .condtype = cond_goto,
@@ -13452,7 +13522,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST8,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 166: LOC_FOREST22
     .motion = WEST,
     .condtype = cond_goto,
@@ -13462,7 +13532,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST11,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 166: LOC_FOREST22
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13472,7 +13542,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST15,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 166: LOC_FOREST22
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13482,7 +13552,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOREST12,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 167: LOC_LEDGE
     .motion = MOT_39,
     .condtype = cond_goto,
@@ -13492,7 +13562,7 @@ const travelop_t travel[] = {
     .destval = LOC_NOMAKE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 168: LOC_RESBOTTOM
     .motion = NORTH,
     .condtype = cond_goto,
@@ -13502,7 +13572,7 @@ const travelop_t travel[] = {
     .destval = LOC_RESNORTH,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 168: LOC_RESBOTTOM
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13512,7 +13582,7 @@ const travelop_t travel[] = {
     .destval = LOC_RESERVOIR,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 169: LOC_RESNORTH
     .motion = SOUTH,
     .condtype = cond_not,
@@ -13522,7 +13592,7 @@ const travelop_t travel[] = {
     .destval = BAD_DIRECTION,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 169: LOC_RESNORTH
     .motion = MOT_42,
     .condtype = cond_not,
@@ -13532,7 +13602,7 @@ const travelop_t travel[] = {
     .destval = BAD_DIRECTION,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 169: LOC_RESNORTH
     .motion = CROSS,
     .condtype = cond_not,
@@ -13542,7 +13612,7 @@ const travelop_t travel[] = {
     .destval = BAD_DIRECTION,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 169: LOC_RESNORTH
     .motion = SOUTH,
     .condtype = cond_goto,
@@ -13552,7 +13622,7 @@ const travelop_t travel[] = {
     .destval = LOC_RESBOTTOM,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 169: LOC_RESNORTH
     .motion = NW,
     .condtype = cond_goto,
@@ -13562,7 +13632,7 @@ const travelop_t travel[] = {
     .destval = LOC_TREACHEROUS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 169: LOC_RESNORTH
     .motion = UP,
     .condtype = cond_goto,
@@ -13572,7 +13642,7 @@ const travelop_t travel[] = {
     .destval = LOC_TREACHEROUS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 169: LOC_RESNORTH
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -13582,7 +13652,7 @@ const travelop_t travel[] = {
     .destval = LOC_TREACHEROUS,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 170: LOC_TREACHEROUS
     .motion = UP,
     .condtype = cond_goto,
@@ -13592,7 +13662,7 @@ const travelop_t travel[] = {
     .destval = LOC_STEEP,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 170: LOC_TREACHEROUS
     .motion = NW,
     .condtype = cond_goto,
@@ -13602,7 +13672,7 @@ const travelop_t travel[] = {
     .destval = LOC_STEEP,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 170: LOC_TREACHEROUS
     .motion = DOWN,
     .condtype = cond_goto,
@@ -13612,7 +13682,7 @@ const travelop_t travel[] = {
     .destval = LOC_RESNORTH,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 170: LOC_TREACHEROUS
     .motion = SE,
     .condtype = cond_goto,
@@ -13622,7 +13692,7 @@ const travelop_t travel[] = {
     .destval = LOC_RESNORTH,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 171: LOC_STEEP
     .motion = DOWN,
     .condtype = cond_goto,
@@ -13632,7 +13702,7 @@ const travelop_t travel[] = {
     .destval = LOC_TREACHEROUS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 171: LOC_STEEP
     .motion = SE,
     .condtype = cond_goto,
@@ -13642,7 +13712,7 @@ const travelop_t travel[] = {
     .destval = LOC_TREACHEROUS,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 171: LOC_STEEP
     .motion = UP,
     .condtype = cond_goto,
@@ -13652,7 +13722,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFBASE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 171: LOC_STEEP
     .motion = NW,
     .condtype = cond_goto,
@@ -13662,7 +13732,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFBASE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 172: LOC_CLIFFBASE
     .motion = DOWN,
     .condtype = cond_goto,
@@ -13672,7 +13742,7 @@ const travelop_t travel[] = {
     .destval = LOC_STEEP,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 172: LOC_CLIFFBASE
     .motion = SE,
     .condtype = cond_goto,
@@ -13682,7 +13752,7 @@ const travelop_t travel[] = {
     .destval = LOC_STEEP,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 172: LOC_CLIFFBASE
     .motion = UP,
     .condtype = cond_goto,
@@ -13692,7 +13762,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFACE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 172: LOC_CLIFFBASE
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -13702,7 +13772,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFACE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 173: LOC_CLIFFACE
     .motion = DOWN,
     .condtype = cond_goto,
@@ -13712,7 +13782,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFBASE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 173: LOC_CLIFFACE
     .motion = UP,
     .condtype = cond_carry,
@@ -13722,7 +13792,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFTOP,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 173: LOC_CLIFFACE
     .motion = UP,
     .condtype = cond_goto,
@@ -13732,7 +13802,7 @@ const travelop_t travel[] = {
     .destval = LOC_FOOTSLIP,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 174: LOC_FOOTSLIP
     .motion = 1,
     .condtype = cond_goto,
@@ -13742,7 +13812,7 @@ const travelop_t travel[] = {
     .destval = LOC_NOWHERE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 175: LOC_CLIFFTOP
     .motion = 1,
     .condtype = cond_goto,
@@ -13752,7 +13822,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFLEDGE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 176: LOC_CLIFFLEDGE
     .motion = MOT_56,
     .condtype = cond_goto,
@@ -13762,7 +13832,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFACE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 176: LOC_CLIFFLEDGE
     .motion = DOWN,
     .condtype = cond_goto,
@@ -13772,7 +13842,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFACE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 176: LOC_CLIFFLEDGE
     .motion = NE,
     .condtype = cond_goto,
@@ -13782,7 +13852,7 @@ const travelop_t travel[] = {
     .destval = LOC_REACHDEAD,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 176: LOC_CLIFFLEDGE
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -13792,7 +13862,7 @@ const travelop_t travel[] = {
     .destval = LOC_REACHDEAD,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 177: LOC_REACHDEAD
     .motion = SW,
     .condtype = cond_goto,
@@ -13802,7 +13872,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFLEDGE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 177: LOC_REACHDEAD
     .motion = OUTSIDE,
     .condtype = cond_goto,
@@ -13812,7 +13882,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFLEDGE,
     .nodwarves = false,
     .stop = false,
-     },
+    },
    {                            // from 177: LOC_REACHDEAD
     .motion = CRAWL,
     .condtype = cond_goto,
@@ -13822,7 +13892,7 @@ const travelop_t travel[] = {
     .destval = LOC_CLIFFLEDGE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 178: LOC_GRUESOME
     .motion = 1,
     .condtype = cond_goto,
@@ -13832,7 +13902,7 @@ const travelop_t travel[] = {
     .destval = LOC_NOWHERE,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 179: LOC_FOOF1
     .motion = 1,
     .condtype = cond_goto,
@@ -13842,7 +13912,7 @@ const travelop_t travel[] = {
     .destval = LOC_DEBRIS,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 180: LOC_FOOF2
     .motion = 1,
     .condtype = cond_goto,
@@ -13852,7 +13922,7 @@ const travelop_t travel[] = {
     .destval = LOC_BUILDING,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 181: LOC_FOOF3
     .motion = 1,
     .condtype = cond_goto,
@@ -13862,7 +13932,7 @@ const travelop_t travel[] = {
     .destval = LOC_Y2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 182: LOC_FOOF4
     .motion = 1,
     .condtype = cond_goto,
@@ -13872,7 +13942,7 @@ const travelop_t travel[] = {
     .destval = LOC_BUILDING,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 183: LOC_FOOF5
     .motion = 1,
     .condtype = cond_goto,
@@ -13882,7 +13952,7 @@ const travelop_t travel[] = {
     .destval = LOC_PLOVER,
     .nodwarves = false,
     .stop = true,
-     },
+    },
    {                            // from 184: LOC_FOOF6
     .motion = 1,
     .condtype = cond_goto,
@@ -13892,7 +13962,7 @@ const travelop_t travel[] = {
     .destval = LOC_Y2,
     .nodwarves = false,
     .stop = true,
-     },
+    },
 };
 
 const char *ignore = "LXGZI";

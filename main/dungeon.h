@@ -31,16 +31,18 @@
 #define COND_HOGRE	19      /* Trying to deal with ogre */
 #define COND_HJADE	20      /* Found all treasures except jade */
 
-typedef struct {
+typedef struct
+{
    const char **strs;
    const int n;
 } string_group_t;
 
-typedef struct {
+typedef struct
+{
    const string_group_t words;
    const char *inventory;
    int plac,
-    fixd;
+     fixd;
    bool is_treasure;
    const char **descriptions;
    const char **sounds;
@@ -48,34 +50,40 @@ typedef struct {
    const char **changes;
 } object_t;
 
-typedef struct {
+typedef struct
+{
    const char *small;
    const char *big;
 } descriptions_t;
 
-typedef struct {
+typedef struct
+{
    descriptions_t description;
    const long sound;
    const bool loud;
 } location_t;
 
-typedef struct {
+typedef struct
+{
    const char *query;
    const char *yes_response;
 } obituary_t;
 
-typedef struct {
+typedef struct
+{
    const int threshold;
    const int point_loss;
    const char *message;
 } turn_threshold_t;
 
-typedef struct {
+typedef struct
+{
    const int threshold;
    const char *message;
 } class_t;
 
-typedef struct {
+typedef struct
+{
    const int number;
    const int turns;
    const int penalty;
@@ -83,20 +91,25 @@ typedef struct {
    const char *hint;
 } hint_t;
 
-typedef struct {
+typedef struct
+{
    const string_group_t words;
 } motion_t;
 
-typedef struct {
+typedef struct
+{
    const string_group_t words;
    const char *message;
    const bool noaction;
 } action_t;
 
-enum condtype_t { cond_goto, cond_pct, cond_carry, cond_with, cond_not };
-enum desttype_t { dest_goto, dest_special, dest_speak };
+enum condtype_t
+{ cond_goto, cond_pct, cond_carry, cond_with, cond_not };
+enum desttype_t
+{ dest_goto, dest_special, dest_speak };
 
-typedef struct {
+typedef struct
+{
    const long motion;
    const long condtype;
    const long condarg1;
@@ -141,7 +154,8 @@ extern const char *ignore;
 
 #define BIRD_ENDSTATE 5
 
-enum arbitrary_messages_refs {
+enum arbitrary_messages_refs
+{
    NO_MESSAGE,
    CAVE_NEARBY,
    DWARF_BLOCK,
@@ -353,7 +367,8 @@ enum arbitrary_messages_refs {
    NUMERIC_REQUIRED,
 };
 
-enum locations_refs {
+enum locations_refs
+{
    LOC_NOWHERE,
    LOC_START,
    LOC_HILL,
@@ -541,7 +556,8 @@ enum locations_refs {
    LOC_FOOF6,
 };
 
-enum object_refs {
+enum object_refs
+{
    NO_OBJECT,
    KEYS,
    LAMP,
@@ -614,7 +630,8 @@ enum object_refs {
    OBJ_69,
 };
 
-enum motion_refs {
+enum motion_refs
+{
    MOT_0,
    HERE,
    MOT_2,
@@ -693,7 +710,8 @@ enum motion_refs {
    OFFICE,
 };
 
-enum action_refs {
+enum action_refs
+{
    ACT_NULL,
    CARRY,
    DROP,
@@ -874,4 +892,4 @@ enum action_refs {
 
 
 
-#endif                          /* end DUNGEON_H */
+#endif /* end DUNGEON_H */

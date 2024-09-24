@@ -19,18 +19,19 @@ struct settings_t settings;
 
 struct game_t game;
 
-int initialise(void)
+int
+initialise (void)
 {
-   srand(time(NULL));
-   int seedval = (int) rand();
-   set_seed(seedval);
+   srand (time (NULL));
+   int seedval = (int) rand ();
+   set_seed (seedval);
 
-   memset(&settings, 0, sizeof(settings));
+   memset (&settings, 0, sizeof (settings));
    settings.logfp = NULL;
    settings.oldstyle = false;
    settings.prompt = true;
 
-   memset(&game, 0, sizeof(game));
+   memset (&game, 0, sizeof (game));
    game.dloc[1] = LOC_KINGHALL;
    game.dloc[2] = LOC_WESTBANK;
    game.dloc[3] = LOC_Y2;
@@ -62,7 +63,7 @@ int initialise(void)
       if (!(locations[i].description.big == 0 || tkey[i] == 0))
       {
          int k = tkey[i];
-         if (T_TERMINATE(travel[k]))
+         if (T_TERMINATE (travel[k]))
             conditions[i] |= (1 << COND_FORCED);
       }
    }
@@ -77,8 +78,8 @@ int initialise(void)
    {
       if (objects[i].fixd > 0)
       {
-         drop(i + NOBJECTS, objects[i].fixd);
-         drop(i, objects[i].plac);
+         drop (i + NOBJECTS, objects[i].fixd);
+         drop (i, objects[i].plac);
       }
    }
 
@@ -87,7 +88,7 @@ int initialise(void)
       int k = NOBJECTS + 1 - i;
       game.fixed[k] = objects[k].fixd;
       if (objects[k].plac != 0 && objects[k].fixd <= 0)
-         drop(k, objects[k].plac);
+         drop (k, objects[k].plac);
    }
 
    /*  Treasure props are initially -1, and are set to 0 the first time
@@ -102,7 +103,7 @@ int initialise(void)
          game.tally = game.tally - game.prop[treasure];
       }
    }
-   game.conds = setbit(11);
+   game.conds = setbit (11);
 
    return seedval;
 }

@@ -82,7 +82,8 @@
 #define INDEEP(LOC)  ((LOC) >= LOC_MISTHALL && !OUTSID(LOC))
 #define BUG(x)       bug(x, #x)
 
-enum bugtype {
+enum bugtype
+{
    SPECIAL_TRAVEL_500_GT_L_GT_300_EXCEEDS_GOTO_LIST,
    VOCABULARY_TYPE_N_OVER_1000_NOT_BETWEEN_0_AND_3,
    INTRANSITIVE_ACTION_VERB_EXCEEDS_GOTO_LIST,
@@ -94,21 +95,27 @@ enum bugtype {
    ACTION_RETURNED_PHASE_CODE_BEYOND_END_OF_SWITCH,
 };
 
-enum speaktype { touch, look, hear, study, change };
+enum speaktype
+{ touch, look, hear, study, change };
 
-enum termination { endgame, quitgame, scoregame };
+enum termination
+{ endgame, quitgame, scoregame };
 
-enum speechpart { unknown, intransitive, transitive };
+enum speechpart
+{ unknown, intransitive, transitive };
 
-typedef enum { NO_WORD_TYPE, MOTION, OBJECT, ACTION, NUMERIC } word_type_t;
+typedef enum
+{ NO_WORD_TYPE, MOTION, OBJECT, ACTION, NUMERIC } word_type_t;
 
-typedef enum scorebonus { none, splatter, defeat, victory } score_t;
+typedef enum scorebonus
+{ none, splatter, defeat, victory } score_t;
 
 /* Phase codes for action returns.
  * These were at one time FORTRAN line numbers.
  * The values don't matter, but perturb their order at your peril.
  */
-typedef enum {
+typedef enum
+{
    GO_TERMINATE,
    GO_MOVE,
    GO_TOP,
@@ -125,7 +132,8 @@ typedef int obj_t;              // index into the object array */
 typedef int loc_t;              // index into the locations array */
 typedef int turn_t;             // turn counter or threshold */
 
-struct game_t {
+struct game_t
+{
    int32_t lcg_x;
    int abbnum;                  // How often to print int descriptions
    score_t bonus;               // What kind of finishing bonus we are getting
@@ -190,21 +198,25 @@ struct game_t {
  * Game application settings - settings, but not state of the game, per se.
  * This data is not saved in a saved game.
  */
-struct settings_t {
+struct settings_t
+{
    FILE *logfp;
    bool oldstyle;
    bool prompt;
 };
 
-typedef struct {
+typedef struct
+{
    char raw[LINESIZE];
    vocab_t id;
    word_type_t type;
 } command_word_t;
 
-typedef enum { EMPTY, RAW, TOKENIZED, GIVEN, PREPROCESSED, PROCESSING, EXECUTED } command_state_t;
+typedef enum
+{ EMPTY, RAW, TOKENIZED, GIVEN, PREPROCESSED, PROCESSING, EXECUTED } command_state_t;
 
-typedef struct {
+typedef struct
+{
    enum speechpart part;
    command_word_t word[2];
    verb_t verb;
@@ -215,37 +227,37 @@ typedef struct {
 extern struct game_t game;
 extern struct settings_t settings;
 
-extern bool get_command_input(command_t *);
-extern void clear_command(command_t *);
-extern void speak(const char *, ...);
-extern void sspeak(int msg, ...);
-extern void pspeak(vocab_t, enum speaktype, bool, int, ...);
-extern void rspeak(vocab_t, ...);
-extern void echo_input(FILE *, const char *, const char *);
-extern bool silent_yes(void);
-extern bool yes(const char *, const char *, const char *);
-extern void juggle(obj_t);
-extern void move(obj_t, loc_t);
-extern loc_t put(obj_t, int, int);
-extern void carry(obj_t, loc_t);
-extern void drop(obj_t, loc_t);
-extern int atdwrf(loc_t);
-extern int setbit(int);
-extern bool tstbit(int, int);
-extern void set_seed(int32_t);
-extern int32_t randrange(int32_t);
-extern int score(enum termination);
-extern void terminate(enum termination);
-extern int savefile(FILE *, int32_t);
-extern int suspend(void);
-extern int resume(void);
-extern int restore(FILE *);
-extern int initialise(void);
-extern phase_codes_t action(command_t);
-extern void state_change(obj_t, int);
-extern bool is_valid(struct game_t);
+extern bool get_command_input (command_t *);
+extern void clear_command (command_t *);
+extern void speak (const char *, ...);
+extern void sspeak (int msg, ...);
+extern void pspeak (vocab_t, enum speaktype, bool, int, ...);
+extern void rspeak (vocab_t, ...);
+extern void echo_input (FILE *, const char *, const char *);
+extern bool silent_yes (void);
+extern bool yes (const char *, const char *, const char *);
+extern void juggle (obj_t);
+extern void move (obj_t, loc_t);
+extern loc_t put (obj_t, int, int);
+extern void carry (obj_t, loc_t);
+extern void drop (obj_t, loc_t);
+extern int atdwrf (loc_t);
+extern int setbit (int);
+extern bool tstbit (int, int);
+extern void set_seed (int32_t);
+extern int32_t randrange (int32_t);
+extern int score (enum termination);
+extern void terminate (enum termination);
+extern int savefile (FILE *, int32_t);
+extern int suspend (void);
+extern int resume (void);
+extern int restore (FILE *);
+extern int initialise (void);
+extern phase_codes_t action (command_t);
+extern void state_change (obj_t, int);
+extern bool is_valid (struct game_t);
 
-void bug(enum bugtype, const char *) __attribute__((__noreturn__));
+void bug (enum bugtype, const char *) __attribute__((__noreturn__));
 
 /* represent an empty command word */
 static const command_word_t empty_command_word = {

@@ -62,6 +62,16 @@ struct softuart_s
    uint8_t txnext:1;            // Next tx bit
 };
 
+uint8_t
+pe (uint8_t b)
+{                               // Make even parity
+   b &= 0x7F;
+   for (int i = 0; i < 7; i++)
+      if (b & (1 << i))
+         b ^= 0x80;
+   return b;
+}
+
 // Low level direct GPIO controls - inlines were not playing with some optimisation modes
 #define gpio_set(r) do{if ((r) >= 32)GPIO_REG_WRITE(GPIO_OUT1_W1TS_REG, 1 << ((r) - 32)); else if ((r) >= 0)GPIO_REG_WRITE(GPIO_OUT_W1TS_REG, 1 << (r));}while(0)
 #define gpio_clr(r) do{if ((r) >= 32)GPIO_REG_WRITE(GPIO_OUT1_W1TC_REG, 1 << ((r) - 32));else if ((r) >= 0)GPIO_REG_WRITE(GPIO_OUT_W1TC_REG, 1 << (r));}while(0)
@@ -189,6 +199,8 @@ timer_isr (void *up)
                } else
                {                // Normal end of byte - record received byte (clean start and stop bit)
                   uint16_t rxi = u->rxi;
+                  if (u->rxbyte != pe (u->rxbyte))
+                     u->stats.rxbadp++;
                   u->rxdata[rxi] = u->rxbyte;
                   rxi++;
                   if (rxi == sizeof (u->rxdata))

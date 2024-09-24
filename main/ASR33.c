@@ -47,16 +47,6 @@ const unsigned char small_f[256][5] = {
 #include "smallfont.h"
 };
 
-static inline uint8_t
-pe (uint8_t b)
-{                               // Make even parity
-   b &= 0x7F;
-   for (int i = 0; i < 7; i++)
-      if (b & (1 << i))
-         b ^= 0x80;
-   return b;
-}
-
 void
 sendbyte (uint8_t b)
 {
@@ -300,6 +290,7 @@ app_callback (int client, const char *prefix, const char *target, const char *su
       jo_int (j, "rxbadstop", s.rxbadstop);
       jo_int (j, "rxbad0", s.rxbad0);
       jo_int (j, "rxbad1", s.rxbad1);
+      jo_int (j, "rxbadp", s.rxbadp);
       revk_info ("uartstats", &j);
    }
 
@@ -863,13 +854,14 @@ web_root (httpd_req_t * req)
    {
       softuart_stats_t s;
       tty_stats (&s);
-      revk_web_send (req, "tx=%d rx=%d rxbadstart=%d rxbadstop=%d rxbad0=%d rxbad1=%d", s.tx, s.rx, s.rxbadstart,
-                     s.rxbadstop, s.rxbad0, s.rxbad1);
+      revk_web_send (req, "tx=%u rx=%u rxbadstart=%u rxbadstop=%u rxbad0=%u rxbad1=%u rxbadp=%u", s.tx, s.rx, s.rxbadstart,
+                     s.rxbadstop, s.rxbad0, s.rxbad1, s.rxbadp);
    }
    revk_web_send (req, "</td><td><input type=submit name=STAT Value='Stats'></td></tr></form>");
    revk_web_send (req,
                   "<form method=post><tr><td><textarea rows=4 cols=80 name=text></textarea></td><td><input type=submit name=TEXT value='Text'></td></tr></form>");
-   revk_web_send (req, "<form method=post><tr><td><input size=80 name=tape></td><td><input type=submit name=TAPE value='Tape'></td></tr></form>");
+   revk_web_send (req,
+                  "<form method=post><tr><td><input size=80 name=tape></td><td><input type=submit name=TAPE value='Tape'></td></tr></form>");
    revk_web_send (req, "</table>");
    if (j)
    {

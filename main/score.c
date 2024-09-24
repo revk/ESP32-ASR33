@@ -12,7 +12,8 @@
 
 static int mxscor;              /* ugh..the price for having score() not exit. */
 
-int score(enum termination mode)
+int
+score (enum termination mode)
 /* mode is 'scoregame' if scoring, 'quitgame' if quitting, 'endgame' if died
  * or won */
 {
@@ -113,37 +114,38 @@ int score(enum termination mode)
    /* Return to score command if that's where we came from. */
    if (mode == scoregame)
    {
-      rspeak(GARNERED_POINTS, score, mxscor, game.turns, game.turns);
+      rspeak (GARNERED_POINTS, score, mxscor, game.turns, game.turns);
    }
 
    return score;
 }
 
-void terminate(enum termination mode)
+void
+terminate (enum termination mode)
 /* End of game.  Let's tell him all about it. */
 {
    if (gameover)
       return;
    gameover = 1;
-   int points = score(mode);
+   int points = score (mode);
 
    if (points + game.trnluz + 1 >= mxscor && game.trnluz != 0)
-      rspeak(TOOK_LONG);
+      rspeak (TOOK_LONG);
    if (points + game.saved + 1 >= mxscor && game.saved != 0)
-      rspeak(WITHOUT_SUSPENDS);
-   rspeak(TOTAL_SCORE, points, mxscor, game.turns, game.turns);
+      rspeak (WITHOUT_SUSPENDS);
+   rspeak (TOTAL_SCORE, points, mxscor, game.turns, game.turns);
    for (int i = 1; i <= (int) NCLASSES; i++)
    {
       if (classes[i].threshold >= points)
       {
-         speak(classes[i].message);
+         speak (classes[i].message);
          i = classes[i].threshold + 1 - points;
-         rspeak(NEXT_HIGHER, i, i);
+         rspeak (NEXT_HIGHER, i, i);
          return;
       }
    }
-   rspeak(OFF_SCALE);
-   rspeak(NO_HIGHER);
+   rspeak (OFF_SCALE);
+   rspeak (NO_HIGHER);
 }
 
 /* end */
