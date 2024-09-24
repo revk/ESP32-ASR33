@@ -41,6 +41,8 @@ int64_t done = 0;               // When to turn off
 uint32_t rxp = 0;               // Rx line buffer pointer
 uint8_t hayes = 0;              // Hayes +++ counter
 
+static httpd_handle_t webserver = NULL;
+
 const unsigned char small_f[256][5] = {
 #include "smallfont.h"
 };
@@ -95,6 +97,58 @@ sendstring (const char *c)
          }
          c++;
       }
+}
+
+void
+sendutf8 (int len, const char *value)
+{
+   while (len--)
+   {
+      uint32_t b = *value++;
+      // We assume this is utf-8
+      if ((b & 0xC0) == 0x80)
+         b = 0x7F;              // Silly, not even utf-8, rub out
+      else if ((b & 0xF8) == 0xF0 && len >= 3 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80
+               && (value[2] & 0xC0) == 0x80)
+      {
+         b = (value[2] & 0x3F) + ((value[1] & 0x3F) << 6) + ((value[0] & 0x3F) << 12) + ((b & 0x07) << 18);
+         value += 3;
+         len -= 3;
+      } else if ((b & 0xF0) == 0xE0 && len >= 2 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80)
+      {
+         b = (value[1] & 0x3F) + ((value[0] & 0x3F) << 6) + ((b & 0x0F) << 12);
+         value += 2;
+         len -= 2;
+      } else if ((b & 0xE0) == 0xC0 && len >= 1 && (value[0] & 0xC0) == 0x80)
+      {
+         b = (value[0] & 0x3F) + ((b & 0x1F) << 6);
+         value += 1;
+         len -= 1;
+      }
+      // Handle some unicode we understand
+      if (b >= 0x1D670 && b < 0x1D670 + 26)
+         b = 'A' + b - 0x1D670; // Maths monospace characters
+      else if (b >= 0x1D68A && b < 0x1D68A + 26)
+         b = 'a' + b - 0x1D68A;
+      else if (b >= 0x1D7F6 && b < 0x1D7F6 + 10)
+         b = '0' + b - 0x1D7F6;
+      else if (b == 0x2014)
+         b = '-';               // Common hyphen (long)
+      else if (b == 0x2018 || b == 0x2019)
+         b = '\'';              // Common quote escape
+      else if (b == 0x201c || b == 0x201d)
+         b = '"';               // Common quote escape
+      if (b >= 0x80)
+         b = 0x5E;              // Other unicode so print as Up arrow
+      if (b >= ' ' && b < 0x7F && pos >= linelen)
+         nl ();                 // Force newline as would overprint
+      if (b == LF)
+         nl ();                 // We want a new line (does CR too)
+      else if (b == CR)
+         cr ();                 // We want a carriage return
+      else
+         sendbyte (pe (b));
+   }
 }
 
 int
@@ -291,55 +345,7 @@ app_callback (int client, const char *prefix, const char *target, const char *su
       if (!strcmp (suffix, "text") || !strcmp (suffix, "line") || !strcmp (suffix, "bell"))
       {
          power = 1;
-         while (len--)
-         {
-            uint32_t b = *value++;
-            // We assume this is utf-8
-            if ((b & 0xC0) == 0x80)
-               b = 0x7F;        // Silly, not even utf-8, rub out
-            else if ((b & 0xF8) == 0xF0 && len >= 3 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80
-                     && (value[2] & 0xC0) == 0x80)
-            {
-               b = (value[2] & 0x3F) + ((value[1] & 0x3F) << 6) + ((value[0] & 0x3F) << 12) + ((b & 0x07) << 18);
-               value += 3;
-               len -= 3;
-            } else if ((b & 0xF0) == 0xE0 && len >= 2 && (value[0] & 0xC0) == 0x80 && (value[1] & 0xC0) == 0x80)
-            {
-               b = (value[1] & 0x3F) + ((value[0] & 0x3F) << 6) + ((b & 0x0F) << 12);
-               value += 2;
-               len -= 2;
-            } else if ((b & 0xE0) == 0xC0 && len >= 1 && (value[0] & 0xC0) == 0x80)
-            {
-               b = (value[0] & 0x3F) + ((b & 0x1F) << 6);
-               value += 1;
-               len -= 1;
-            }
-            // Handle some unicode we understand
-            if (b >= 0x1D670 && b < 0x1D670 + 26)
-               b = 'A' + b - 0x1D670;   // Maths monospace characters
-            else if (b >= 0x1D68A && b < 0x1D68A + 26)
-               b = 'a' + b - 0x1D68A;
-            else if (b >= 0x1D7F6 && b < 0x1D7F6 + 10)
-               b = '0' + b - 0x1D7F6;
-            else if (b == 0x2014)
-               b = '-';         // Common hyphen (long)
-            else if (b == 0x2018 || b == 0x2019)
-               b = '\'';        // Common quote escape
-            else if (b == 0x201c || b == 0x201d)
-               b = '"';         // Common quote escape
-            if (b >= 0x80)
-               b = 0x5E;        // Other unicode so print as Up arrow
-            if (b >= ' ' && b < 0x7F && pos >= linelen)
-               nl ();           // Force newline as would overprint
-            if (b == LF)
-               nl ();           // We want a new line (does CR too)
-            else if (b == CR)
-            {                   // Explicit CR, let's assume no NL
-               cr ();           // We want a carriage return
-               sendbyte (NUL);  // Assuming no LF, need extra null
-            } else
-               sendbyte (pe (b));
-         }
+         sendutf8 (len, value);
          if (!strcmp (suffix, "line") || !strcmp (suffix, "bell"))
          {
             cr ();
@@ -398,7 +404,10 @@ app_callback (int client, const char *prefix, const char *target, const char *su
                sendbyte (NUL);
          }
          if (!nodc4)
+         {
             sendbyte (DC4);     // Tape off
+            nl ();              // Tidy
+         }
       }
       free (buf);
    }
@@ -408,8 +417,6 @@ app_callback (int client, const char *prefix, const char *target, const char *su
 void
 asr33_main (void *param)
 {
-   revk_boot (&app_callback);
-   revk_start ();
    doecho = !noecho;
 
    tty_setup ();
@@ -810,9 +817,123 @@ asr33_main (void *param)
    }
 }
 
+
+static void
+register_uri (const httpd_uri_t * uri_struct)
+{
+   esp_err_t res = httpd_register_uri_handler (webserver, uri_struct);
+   if (res != ESP_OK)
+   {
+      ESP_LOGE (TAG, "Failed to register %s, error code %d", uri_struct->uri, res);
+   }
+}
+
+static void
+register_get_uri (const char *uri, esp_err_t (*handler) (httpd_req_t * r))
+{
+   httpd_uri_t uri_struct = {
+      .uri = uri,
+      .method = HTTP_GET,
+      .handler = handler,
+   };
+   register_uri (&uri_struct);
+}
+
+static void
+register_post_uri (const char *uri, esp_err_t (*handler) (httpd_req_t * r))
+{
+   httpd_uri_t uri_struct = {
+      .uri = uri,
+      .method = HTTP_POST,
+      .handler = handler,
+   };
+   register_uri (&uri_struct);
+}
+
+static esp_err_t
+web_root (httpd_req_t * req)
+{
+   if (revk_link_down ())
+      return revk_web_settings (req);   // Direct to web set up
+   jo_t j = revk_web_query (req);
+   revk_web_head (req, "ASR33");
+   revk_web_send (req, "<h1>ASR33 %s</h1>", hostname);
+   revk_web_send (req, "<table><form method=post><tr><td>");
+   if (j && jo_find (j, "STAT"))
+   {
+      softuart_stats_t s;
+      tty_stats (&s);
+      revk_web_send (req, "tx=%d rx=%d rxbadstart=%d rxbadstop=%d rxbad0=%d rxbad1=%d", s.tx, s.rx, s.rxbadstart,
+                     s.rxbadstop, s.rxbad0, s.rxbad1);
+   }
+   revk_web_send (req, "</td><td><input type=submit name=STAT Value='Stats'></td></tr></form>");
+   revk_web_send (req,
+                  "<form method=post><tr><td><textarea rows=4 cols=80 name=text></textarea></td><td><input type=submit name=TEXT value='Text'></td></tr></form>");
+   revk_web_send (req, "<form method=post><tr><td><input size=80 name=tape></td><td><input type=submit name=TAPE value='Tape'></td></tr></form>");
+   revk_web_send (req, "</table>");
+   if (j)
+   {
+      if (jo_find (j, "TEXT") && jo_find (j, "text"))
+      {                         // Text
+         int len = jo_strlen (j);
+         if (len > 0)
+         {
+            power = 1;
+            char *text = jo_strdup (j);
+            sendutf8 (len, text);
+            nl ();
+            free (text);
+         }
+      } else if (jo_find (j, "TAPE") && jo_find (j, "tape"))
+      {                         // Punch big text
+         int len = jo_strlen (j);
+         if (len > 0)
+         {
+            power = 1;
+            if (!nodc4)
+               sendbyte (DC2);  // Tape on
+            for (int i = 0; i < tapelead; i++)
+               sendbyte (NUL);
+            char *text = jo_strdup (j),
+               *value = text;
+            while (len--)
+            {
+               if (!queuebig (*value++))
+                  continue;
+               if (len)
+                  sendbyte (NUL);
+            }
+            free (text);
+            for (int i = 0; i < tapetail; i++)
+               sendbyte (NUL);
+            if (!nodc4)
+            {
+               sendbyte (DC4);  // Tape off
+               nl ();           // Tidy
+            }
+         }
+      }
+   }
+   jo_free (&j);
+   return revk_web_foot (req, 0, 1, NULL);
+}
+
 void
 app_main (void)
 {
+   revk_boot (&app_callback);
+   revk_start ();
+   {                            // Web interface
+      httpd_config_t config = HTTPD_DEFAULT_CONFIG ();  // When updating the code below, make sure this is enough
+      //  Note that we 're also 4 adding revk' s web config handlers
+      config.max_uri_handlers = 8;
+      if (!httpd_start (&webserver, &config))
+      {
+         revk_web_settings_add (webserver);
+         register_get_uri ("/", web_root);
+         register_post_uri ("/", web_root);
+      }
+   }
    TaskHandle_t task_id = NULL;
    xTaskCreatePinnedToCore (asr33_main, "asr33", 20 * 1024, NULL, 2, &task_id, 1);
 }
