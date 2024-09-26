@@ -20,7 +20,9 @@ struct softuart_stats_s
    uint32_t rxbadstart;
    uint32_t rxbadstop;
    uint32_t rxbad0;
+   uint32_t rxbadish0;
    uint32_t rxbad1;
+   uint32_t rxbadish1;
    uint32_t rxbadp;
 };
 
@@ -30,7 +32,7 @@ softuart_t *softuart_init (int8_t timer, revk_gpio_t tx, revk_gpio_t rx, uint16_
 void softuart_start (softuart_t *);
 void *softuart_end (softuart_t *);
 
-void softuart_stats (softuart_t *, softuart_stats_t *); // Get (and clear) stats
+void softuart_stats (softuart_t *, softuart_stats_t *, char clear);     // Get (and possibly clear) stats
 int softuart_tx_space (softuart_t *);   // Report how much space for sending
 int softuart_tx_waiting (softuart_t *); // Report how many bytes still being transmitted including one in process of transmission
 void softuart_tx_flush (softuart_t *);  // Wait for all tx to complete

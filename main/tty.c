@@ -75,7 +75,7 @@ tty_xon (void)
 }
 
 void
-tty_stats (softuart_stats_t * s)
+tty_stats (softuart_stats_t * s, char clear)
 {
-   softuart_stats (u, s);
+   softuart_stats (u, s, clear);
 }

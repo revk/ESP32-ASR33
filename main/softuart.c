@@ -176,10 +176,14 @@ timer_isr (void *up)
                if (b)
                {
                   u->rxbyte |= (1 << (u->bits - 1));
-                  if (u->rxcount < STEPS)
-                     u->stats.rxbad1++; // Should be all bits 1
-               } else if (u->rxcount)
-                  u->stats.rxbad0++;    // Should be non bits 1
+                  if (u->rxcount < STEPS - 1)
+                     u->stats.rxbad1++; // Should be all bits 1, allow 1
+                  else if (u->rxcount < STEPS)
+                     u->stats.rxbadish1++;      // Should be all bits 1
+               } else if (u->rxcount > 1)
+                  u->stats.rxbad0++;    // Should be none bits 1, allow 1
+               else if (u->rxcount)
+                  u->stats.rxbadish0++; // Should be none bits 1
                u->rxbit--;
                u->rxsubbit = STEPS;     // Next bit
             }
@@ -430,10 +434,11 @@ softuart_xon (softuart_t * u)
 }
 
 void
-softuart_stats (softuart_t * u, softuart_stats_t * s)
+softuart_stats (softuart_t * u, softuart_stats_t * s, char clear)
 {                               // Get (and clear) stats
    if (!u)
       return;
-   *s = u->stats;
-   memset (&u->stats, 0, sizeof (u->stats));
+   if(s)*s = u->stats;
+   if (clear)
+      memset (&u->stats, 0, sizeof (u->stats));
 }

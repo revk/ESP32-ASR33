@@ -41,6 +41,10 @@ int64_t done = 0;               // When to turn off
 uint32_t rxp = 0;               // Rx line buffer pointer
 uint8_t hayes = 0;              // Hayes +++ counter
 
+volatile uint8_t rxws[64];      // rx for ws
+volatile uint8_t rxwsp = 0;     // tx for ws
+static SemaphoreHandle_t rxws_mutex = NULL;
+
 static httpd_handle_t webserver = NULL;
 
 const unsigned char small_f[256][5] = {
@@ -198,7 +202,8 @@ power_off (void)
    xoff = 0;
    reportstate ();
    tty_flush ();
-   tty_xoff ();
+   if (pwr.set)
+      tty_xoff ();
    usleep (100000);
    if (mtr.set || *mtrtopic)
    {                            // Motor direct control, off
@@ -239,9 +244,28 @@ power_on (void)
       }
       on = 1;
       reportstate ();
-      tty_xon ();
+      if (pwr.set)
+         tty_xon ();
    }
    done = esp_timer_get_time () + 1000 * (power > 1 ? timekeyidle : timeremidle);
+}
+
+jo_t
+jo_stats (char clear)
+{
+   softuart_stats_t s;
+   tty_stats (&s, clear);
+   jo_t j = jo_object_alloc ();
+   jo_int (j, "tx", s.tx);
+   jo_int (j, "rx", s.rx);
+   jo_int (j, "rxbadstart", s.rxbadstart);
+   jo_int (j, "rxbadstop", s.rxbadstop);
+   jo_int (j, "rxbad0", s.rxbad0);
+   jo_int (j, "rxbadish0", s.rxbadish0);
+   jo_int (j, "rxbad1", s.rxbad1);
+   jo_int (j, "rxbadish1", s.rxbadish1);
+   jo_int (j, "rxbadp", s.rxbadp);
+   return j;
 }
 
 const char *
@@ -281,16 +305,7 @@ app_callback (int client, const char *prefix, const char *target, const char *su
    }
    if (!strcmp (suffix, "uartstats"))
    {
-      softuart_stats_t s;
-      tty_stats (&s);
-      jo_t j = jo_object_alloc ();
-      jo_int (j, "tx", s.tx);
-      jo_int (j, "rx", s.rx);
-      jo_int (j, "rxbadstart", s.rxbadstart);
-      jo_int (j, "rxbadstop", s.rxbadstop);
-      jo_int (j, "rxbad0", s.rxbad0);
-      jo_int (j, "rxbad1", s.rxbad1);
-      jo_int (j, "rxbadp", s.rxbadp);
+      jo_t j = jo_stats (1);
       revk_info ("uartstats", &j);
    }
 
@@ -435,7 +450,10 @@ asr33_main (void *param)
       close (lsock);
       lsock = -1;
    }
-   tty_xoff ();
+   if (pwr.set)
+      tty_xoff ();
+   else
+      tty_xon ();
    void doconnect (const char *line)
    {
       if (csock >= 0)
@@ -672,6 +690,10 @@ asr33_main (void *param)
          if (!on)
             dorun ();           // Must be not using power controls, so turn on for rx data
          uint8_t b = tty_rx ();
+         xSemaphoreTake (rxws_mutex, portMAX_DELAY);
+         if (rxwsp < sizeof (rxws))
+            rxws[rxwsp++] = b;
+         xSemaphoreGive (rxws_mutex);
          if (csock >= 0)
             send (csock, &b, 1, 0);     // Connected via TCP
          else
@@ -831,14 +853,134 @@ register_get_uri (const char *uri, esp_err_t (*handler) (httpd_req_t * r))
 }
 
 static void
-register_post_uri (const char *uri, esp_err_t (*handler) (httpd_req_t * r))
+register_ws_uri (const char *uri, esp_err_t (*handler) (httpd_req_t * r))
 {
    httpd_uri_t uri_struct = {
       .uri = uri,
-      .method = HTTP_POST,
+      .method = HTTP_GET,
       .handler = handler,
+      .is_websocket = true,
    };
    register_uri (&uri_struct);
+}
+
+static esp_err_t
+web_live (httpd_req_t * req)
+{                               // Web socket
+   int fd = httpd_req_to_sockfd (req);
+   void wsend (jo_t * jp)
+   {
+      char *js = jo_finisha (jp);
+      if (js)
+      {
+         httpd_ws_frame_t ws_pkt;
+         memset (&ws_pkt, 0, sizeof (httpd_ws_frame_t));
+         ws_pkt.payload = (uint8_t *) js;
+         ws_pkt.len = strlen (js);
+         ws_pkt.type = HTTPD_WS_TYPE_TEXT;
+         httpd_ws_send_frame_async (req->handle, fd, &ws_pkt);
+         free (js);
+      }
+   }
+   esp_err_t status (void)
+   {
+      jo_t j = jo_stats (0);
+      const char *reason;
+      int t = revk_shutting_down (&reason);
+      if (t)
+         jo_string (j, "shutdown", reason);
+      jo_bool (j, "power", on);
+      jo_bool (j, "break", brk);
+      jo_bool (j, "busy", busy);
+      xSemaphoreTake (rxws_mutex, portMAX_DELAY);
+      if (rxwsp)
+      {
+         for (uint8_t i = 0; i < rxwsp; i++)
+            rxws[i] &= 0x7F;
+         jo_stringn (j, "data", (void *) rxws, rxwsp);
+         rxwsp = 0;
+      }
+      xSemaphoreGive (rxws_mutex);
+      wsend (&j);
+      return ESP_OK;
+   }
+   if (req->method == HTTP_GET)
+      return status ();         // Send status on initial connect
+   // received packet
+   httpd_ws_frame_t ws_pkt;
+   uint8_t *buf = NULL;
+   memset (&ws_pkt, 0, sizeof (httpd_ws_frame_t));
+   ws_pkt.type = HTTPD_WS_TYPE_TEXT;
+   esp_err_t ret = httpd_ws_recv_frame (req, &ws_pkt, 0);
+   if (ret)
+      return ret;
+   if (!ws_pkt.len)
+      return status ();         // Empty string
+   buf = calloc (1, ws_pkt.len + 1);
+   if (!buf)
+      return ESP_ERR_NO_MEM;
+   ws_pkt.payload = buf;
+   ret = httpd_ws_recv_frame (req, &ws_pkt, ws_pkt.len);
+   if (!ret)
+   {
+      jo_t j = jo_parse_mem (buf, ws_pkt.len);
+      if (j)
+      {                         // handle commands
+         if (jo_find (j, "text"))
+         {
+            int len = jo_strlen (j);
+            if (len > 0)
+            {
+               power = 1;
+               char *text = jo_strdup (j);
+               sendutf8 (len, text);
+               nl ();
+               free (text);
+            }
+         }
+         if (jo_find (j, "tape"))
+         {
+            int len = jo_strlen (j);
+            if (len > 0)
+            {
+               power = 1;
+               if (!nodc4)
+                  sendbyte (DC2);       // Tape on
+               for (int i = 0; i < tapelead; i++)
+                  sendbyte (NUL);
+               char *text = jo_strdup (j),
+                  *value = text;
+               while (len--)
+               {
+                  if (!queuebig (*value++))
+                     continue;
+                  if (len)
+                     sendbyte (NUL);
+               }
+               free (text);
+               for (int i = 0; i < tapetail; i++)
+                  sendbyte (NUL);
+               if (!nodc4)
+               {
+                  sendbyte (DC4);       // Tape off
+                  nl ();        // Tidy
+               }
+            }
+         }
+         if (jo_find (j, "wru"))
+         {
+            power = 1;
+            sendbyte (pe (WRU));
+         }
+         if (jo_find (j, "clear"))
+         {
+            tty_stats (NULL, 1);
+         }
+         jo_free (&j);
+      }
+   }
+   free (buf);
+   return status ();
 }
 
 static esp_err_t
@@ -846,71 +988,43 @@ web_root (httpd_req_t * req)
 {
    if (revk_link_down ())
       return revk_web_settings (req);   // Direct to web set up
-   jo_t j = revk_web_query (req);
    revk_web_head (req, "ASR33");
-   revk_web_send (req, "<h1>ASR33 %s</h1>", hostname);
-   revk_web_send (req, "<form method=post>");
-   if (j && jo_find (j, "STAT"))
-   {
-      softuart_stats_t s;
-      tty_stats (&s);
-      revk_web_send (req, "tx=%u rx=%u rxbadstart=%u rxbadstop=%u rxbad0=%u rxbad1=%u rxbadp=%u<br>", s.tx, s.rx, s.rxbadstart,
-                     s.rxbadstop, s.rxbad0, s.rxbad1, s.rxbadp);
-   }
-   revk_web_send (req, "<input type=submit name=STAT Value='Stats'></form>");
-   revk_web_send (req,
-                  "<form method=post><textarea rows=4 cols=80 name=text></textarea><br><input type=submit name=TEXT value='Text'></form>");
-   revk_web_send (req, "<form method=post><input size=80 name=tape><br><input type=submit name=TAPE value='Tape'></form>");
-   if (j)
-   {
-      if (jo_find (j, "TEXT") && jo_find (j, "text"))
-      {                         // Text
-         int len = jo_strlen (j);
-         if (len > 0)
-         {
-            power = 1;
-            char *text = jo_strdup (j);
-            sendutf8 (len, text);
-            nl ();
-            free (text);
-         }
-      } else if (jo_find (j, "TAPE") && jo_find (j, "tape"))
-      {                         // Punch big text
-         int len = jo_strlen (j);
-         if (len > 0)
-         {
-            power = 1;
-            if (!nodc4)
-               sendbyte (DC2);  // Tape on
-            for (int i = 0; i < tapelead; i++)
-               sendbyte (NUL);
-            char *text = jo_strdup (j),
-               *value = text;
-            while (len--)
-            {
-               if (!queuebig (*value++))
-                  continue;
-               if (len)
-                  sendbyte (NUL);
-            }
-            free (text);
-            for (int i = 0; i < tapetail; i++)
-               sendbyte (NUL);
-            if (!nodc4)
-            {
-               sendbyte (DC4);  // Tape off
-               nl ();           // Tidy
-            }
-         }
-      }
-   }
-   jo_free (&j);
+   revk_web_send (req, "<script>"       //
+                  "var ws=0;"   //
+                  "var reboot=0;"       //
+                  "function g(n){return document.getElementById(n);};"  //
+                  "function s(n,v){var d=g(n);if(d)d.textContent=v;}"   //
+                  "function w(n,v){var m=new Object();m[n]=v;ws.send(JSON.stringify(m));}"      //
+                  "function c(){"       //
+                  "ws=new WebSocket((location.protocol=='https:'?'wss:':'ws:')+'//'+window.location.host+'/status');"   //
+                  "ws.onclose=function(v){ws=undefined;if(reboot)location.reload();};"  //
+                  "ws.onerror=function(v){ws.close();};"        //
+                  "ws.onmessage=function(v){"   //
+                  "o=JSON.parse(v.data);"       //
+                  "if(o.shutdown){reboot=true;s('shutdown','Restarting: '+o.shutdown);};"       //
+                  "s('stats','Tx:'+o.tx+' Rx:'+o.rx+' Bad: Start:'+o.rxbadstart+' Stop:'+o.rxbadstop+' Zero:'+o.rxbad0+'/'+o.rxbadish0+' One:'+o.rxbad1+'/'+o.rxbadish1+' Parity:'+o.rxbadp+(o.brk?' BREAK':'')+(o.power?' (power on)':''));"   //
+                  "if(o.data)g('rx').append(o.data);"   //
+                  "};};c();"    //
+                  "setInterval(function() {if(!ws)c();else ws.send('');},1000);"        //
+                  "</script><form name=f><h1>ASR33 %s</h1>"     //
+                  "<p id=shutdown style='color:red;'></p>"      //
+                  "<textarea style='font-family:monospace' rows=4 cols=80 name=text></textarea><br>"    //
+                  "<input type=button value='Text' onclick='w(\"text\",f.text.value);'>"        //
+                  "<input type=button value='Tape' onclick='w(\"tape\",f.text.value);'>"        //
+                  "<input type=button value='WRU' onclick='w(\"wru\",true);'>"  //
+                  "<input type=button value='Clear stats' onclick='w(\"clear\",true);'>"        //
+                  "<p id=stats></p>"    //
+                  "<pre id=rx style='border:1px solid blue;'></pre>"      //
+                  "</form>"     //
+                  , hostname);
    return revk_web_foot (req, 0, 1, NULL);
 }
 
 void
 app_main (void)
 {
+   rxws_mutex = xSemaphoreCreateBinary ();
+   xSemaphoreGive (rxws_mutex);
    revk_boot (&app_callback);
    revk_start ();
    {                            // Web interface
@@ -921,7 +1035,7 @@ app_main (void)
       {
          revk_web_settings_add (webserver);
          register_get_uri ("/", web_root);
-         register_post_uri ("/", web_root);
+         register_ws_uri ("/status", web_live);
       }
    }
    TaskHandle_t task_id = NULL;
