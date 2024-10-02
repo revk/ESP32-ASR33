@@ -53,7 +53,7 @@ struct softuart_s
    uint8_t rxsubbit;            // Rx sub bit count
    uint8_t rxcount;             // Rx sub bit 1 count
    uint8_t rxbyte;              // Rx byte being clocked in
-   volatile uint16_t rxbreak;   // Rx break (bit count up to max)
+   volatile uint8_t rxbreak;    // Rx break (bit count up to max)
 
    softuart_stats_t stats;
 
@@ -163,7 +163,7 @@ timer_isr (void *up)
       u->rxsubbit--;
       if (!u->rxsubbit)
       {                         // Bit received
-         uint8_t b = ((u->rxcount > STEPS / 2) ? 1 : 0);
+         uint8_t b = ((u->rxcount > STEPS / 2) ? 1 : 0);        // c locked bit value
          if (u->rxbit)
          {                      // Clocking in a byte
             if (u->rxbit == u->bits + 1 && b)
@@ -193,13 +193,9 @@ timer_isr (void *up)
             {                   // Normal (stop bit now clocked in)
                if (!b)
                {                // Bad stop bit, don't clock in byte
-                  if (!r)
-                  {             // Looks like break
-                     u->rxbreak = (u->bits + 2) * STEPS;        // Start break condition (we have had this many sub bits)
-                     u->rxsubbit = 1;   // Wait end of break
-                  }
+                  u->rxbreak = 1;       // Start of break condition
+                  u->rxsubbit = STEPS;  // Keep clocking stop bits
                   u->stats.rxbadstop++;
-                  // else leave rxsubbit unset so we wait for next start bit - don't clock in duff byte
                } else
                {                // Normal end of byte - record received byte (clean start and stop bit)
                   uint16_t rxi = u->rxi;
@@ -216,11 +212,11 @@ timer_isr (void *up)
                }
             } else
             {                   // Check still in break condition.
-               if (!r)
+               if (!b)
                {                // Still in break
                   if (u->rxbreak < 255)
                      u->rxbreak++;
-                  u->rxsubbit = 1;      // Wait end of break
+                  u->rxsubbit = STEPS;  // Keep clocking stop bits
                } else
                   u->rxbreak = 0;       // End of break - leave rxsubbit unset so we wait for next start bit
             }
@@ -413,7 +409,7 @@ softuart_rx_ready (softuart_t * u)
    if (s < 0)
       s += sizeof (u->rxdata);
    if (!s)
-      s = -(u->rxbreak / STEPS);        // How many bits of break
+      s = -(signed) u->rxbreak; // How many bits of break
    return s;
 }
 
@@ -438,7 +434,8 @@ softuart_stats (softuart_t * u, softuart_stats_t * s, char clear)
 {                               // Get (and clear) stats
    if (!u)
       return;
-   if(s)*s = u->stats;
+   if (s)
+      *s = u->stats;
    if (clear)
       memset (&u->stats, 0, sizeof (u->stats));
 }

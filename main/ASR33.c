@@ -22,16 +22,20 @@
 
 #define	MAXRX	256             // Line max
 
+struct
+{
+   uint8_t on:1;                // Power is on
+   uint8_t brk:1;               // Break condition
+   uint8_t busy:1;              // Busy state (tx queue is low)
+   uint8_t pressed:1;           // Button pressed
+   uint8_t xoff:1;              // Manual no echo
+   uint8_t doecho:1;            // Do echo (set each start up)
+   uint8_t dobig:1;             // Do big lettering on tape
+   uint8_t docave:1;            // Run advent()
+   uint8_t suppress:1;          // Suppress WRU
+} b = { 0 };
+
 volatile int8_t power = 0;      // power request, -1 means want off, 1 means want on, 2 means want on with long timeout
-int8_t on = 0;                  // Power is on
-int8_t busy = 0;                // Busy state (tx queue is low)
-uint8_t brk = 0;                // Break condition
-uint8_t pressed = 0;            // Button pressed
-uint8_t xoff = 0;               // Manual no echo
-uint8_t doecho = 0;             // Do echo (set each start up)
-uint8_t dobig = 0;              // Do big lettering on tape
-uint8_t docave = 0;             // Fun advent()
-uint8_t suppress = 0;           // Suppress WRU
 uint8_t pos = 0;                // Pos for wrapping
 int lsock = -1;                 // Listen socket
 int csock = -1;                 // Connected sockets
@@ -169,7 +173,7 @@ queuebig (int c)
          sendbyte (DC2);
       if (c == WRU)
       {
-         suppress = 1;
+         b.suppress = 1;
          lastrx = 0;
       }
    }
@@ -182,9 +186,9 @@ reportstate (void)
    uint64_t t = esp_timer_get_time ();
    jo_t j = jo_object_alloc ();
    jo_litf (j, "up", "%d.%06d", (uint32_t) (t / 1000000LL), (uint32_t) (t % 1000000LL));
-   jo_bool (j, "power", on);
-   jo_bool (j, "break", brk);
-   jo_bool (j, "busy", busy);
+   jo_bool (j, "power", b.on);
+   jo_bool (j, "brk", b.brk);
+   jo_bool (j, "busy", b.busy);
    if (port)
       jo_bool (j, "connected", csock >= 0);
    revk_state (NULL, &j);
@@ -193,13 +197,13 @@ reportstate (void)
 void
 power_off (void)
 {
-   if (!on)
+   if (!b.on)
       return;                   // Already off
    power = 0;
    rxp = 0;
    hayes = 0;
-   doecho = !noecho;
-   xoff = 0;
+   b.doecho = !noecho;
+   b.xoff = 0;
    reportstate ();
    tty_flush ();
    if (pwr.set)
@@ -219,14 +223,14 @@ power_off (void)
       revk_gpio_set (pwr, 0);   // Off
       usleep (1000 * timepwroff);
    }
-   on = 0;
+   b.on = 0;
    reportstate ();
 }
 
 void
 power_on (void)
 {
-   if (!on)
+   if (!b.on)
    {
       if (pwr.set || *pwrtopic)
       {                         // Power, direct control, on
@@ -242,7 +246,7 @@ power_on (void)
          revk_gpio_set (mtr, 1);        // On
          usleep (1000 * timemtron);     // Min 100ms for a null character from power off, and some for motor to start and get to speed
       }
-      on = 1;
+      b.on = 1;
       reportstate ();
       if (pwr.set)
          tty_xon ();
@@ -279,23 +283,23 @@ app_callback (int client, const char *prefix, const char *target, const char *su
    if (!strcmp (suffix, "connect"))
    {
       if (*pwrtopic)
-         revk_mqtt_send_raw (pwrtopic, 0, on ? "1" : "0", 0);
+         revk_mqtt_send_raw (pwrtopic, 0, b.on ? "1" : "0", 0);
       if (*mtrtopic)
-         revk_mqtt_send_raw (mtrtopic, 0, on ? "1" : "0", 0);
+         revk_mqtt_send_raw (mtrtopic, 0, b.on ? "1" : "0", 0);
       reportstate ();
    }
    if (!strcmp (suffix, "restart"))
       power = -1;
    if (!strcmp (suffix, "cave"))
-      docave = 1;
+      b.docave = 1;
    if (!strcmp (suffix, "on"))
       power = 2;
    if (!strcmp (suffix, "off"))
       power = -1;
    if (!strcmp (suffix, "echo"))
-      doecho = 1;
+      b.doecho = 1;
    if (!strcmp (suffix, "noecho"))
-      doecho = 0;
+      b.doecho = 0;
    if (!strcmp (suffix, "break"))
    {
       power = 1;
@@ -401,7 +405,7 @@ app_callback (int client, const char *prefix, const char *target, const char *su
                sendbyte (DC2);  // Turn tape back on
             if (c == WRU)
             {
-               suppress = 1;    // Suppress WRU response
+               b.suppress = 1;  // Suppress WRU response
                lastrx = 0;
             }
          }
@@ -424,7 +428,7 @@ app_callback (int client, const char *prefix, const char *target, const char *su
 void
 asr33_main (void *param)
 {
-   doecho = !noecho;
+   b.doecho = !noecho;
 
    tty_setup ();
 
@@ -494,7 +498,7 @@ asr33_main (void *param)
       }
    }
    if (revk_gpio_get (run))
-      pressed = 1;              // Initial state for RUN/STOP button
+      b.pressed = 1;            // Initial state for RUN/STOP button
    void dorun (void)
    {                            // RUN button manual start
       power = 2;
@@ -505,7 +509,7 @@ asr33_main (void *param)
          if (autoprompt)
             hayes = 3;
          else if (autocave)
-            docave = 1;
+            b.docave = 1;
       }
    }
    if (autoon)
@@ -519,27 +523,27 @@ asr33_main (void *param)
          revk_blink (1, 0, tty_tx_waiting ()? "CR" : "C");
       else if (hayes > 3)
          revk_blink (1, 0, "M");
-      else if (on)
+      else if (b.on)
          revk_blink (1, 0, tty_tx_waiting ()? "RG" : "G");
       else
          revk_blink (0, 0, NULL);
       // Handle RUN button
       if (revk_gpio_get (run))
       {                         // RUN button
-         if (!pressed)
+         if (!b.pressed)
          {                      // Button pressed
-            pressed = 1;
-            if (on)
+            b.pressed = 1;
+            if (b.on)
                power = -1;      // Turn off
             else
                dorun ();
          }
       } else
-         pressed = 0;
+         b.pressed = 0;
       // Handle power change
       if (power < 0)
       {                         // Power off
-         if (on && !tty_tx_waiting ())
+         if (b.on && !tty_tx_waiting ())
          {                      // Do power off once tx done
             if (csock >= 0)
             {                   // Close connection
@@ -553,22 +557,22 @@ asr33_main (void *param)
          }
       } else if (power)
       {
-         if (!on)
+         if (!b.on)
             power_on ();
       }
       // Check tx buffer usage
       if (tty_tx_space () < 4096)
       {
-         if (!busy)
+         if (!b.busy)
          {
-            busy = 1;
+            b.busy = 1;
             reportstate ();
          }
       } else
       {
-         if (busy)
+         if (b.busy)
          {
-            busy = 0;
+            b.busy = 0;
             reportstate ();
          }
       }
@@ -661,16 +665,16 @@ asr33_main (void *param)
       int len = tty_rx_ready ();
       if (!len)
       {                         // Nothing waiting and not break
-         if (brk)
+         if (b.brk)
          {                      // End of break
-            brk = 0;
+            b.brk = 0;
             reportstate ();
          }
       } else if (len < 0)
       {                         // Break
-         if (!brk)
+         if (!b.brk)
          {                      // Start of break
-            brk = 1;
+            b.brk = 1;
             hayes = 0;
             rxp = 0;
             reportstate ();
@@ -688,29 +692,29 @@ asr33_main (void *param)
       {
          if (power < 0)
             power = 0;          // Abort power off
-         if (!on)
+         if (!b.on)
             dorun ();           // Must be not using power controls, so turn on for rx data
-         uint8_t b = tty_rx ();
+         uint8_t byte = tty_rx ();
          xSemaphoreTake (rxws_mutex, portMAX_DELAY);
          if (rxwsp < sizeof (rxws))
-            rxws[rxwsp++] = b;
+            rxws[rxwsp++] = byte;
          xSemaphoreGive (rxws_mutex);
          if (csock >= 0)
-            send (csock, &b, 1, 0);     // Connected via TCP
+            send (csock, &byte, 1, 0);  // Connected via TCP
          else
          {                      // Not connected via TCP
             if (gap > 250000)
-               suppress = 0;    // Suppressed WRU response timeout can end
+               b.suppress = 0;  // Suppressed WRU response timeout can end
             if (hayes > 3)
             {                   // Hayes command prompt only
-               if (b == pe (CR) || b == pe (LF))
+               if (byte == pe (CR) || byte == pe (LF))
                {                // Command
                   sendstring ("\n");
                   line[rxp] = 0;
                   hayes = 0;
                   rxp = 0;
                   if (!strcmp (line, "Y") || !strcmp (line, "YES"))
-                     docave = 1;
+                     b.docave = 1;
                   else if (!strcmp (line, "N") || !strcmp (line, "NO"))
                   {
                      sendstring ("SHAME, BYE\n");
@@ -726,64 +730,64 @@ asr33_main (void *param)
                      sendstring ("OK, BYE\r\n");
                      cheese ();
                   }
-               } else if ((b & 0x7f) >= ' ' && rxp < MAXRX)
+               } else if ((byte & 0x7f) >= ' ' && rxp < MAXRX)
                {
-                  sendbyte (b); // echo
-                  line[rxp++] = (b & 0x7F);
+                  sendbyte (byte);      // echo
+                  line[rxp++] = (byte & 0x7F);
                }
             } else
             {
                if (!hayes)
                {
-                  if (b == pe ('+') && !rxp && gap > 1000000)
+                  if (byte == pe ('+') && !rxp && gap > 1000000)
                      hayes++;
                } else
                {
-                  if (b != pe ('+') || hayes >= 3 || gap > 1000000)
+                  if (byte != pe ('+') || hayes >= 3 || gap > 1000000)
                      hayes = 0;
                   else
                      hayes++;
                }
-               if (!suppress)
+               if (!b.suppress)
                {
                   jo_t j = jo_object_alloc ();
-                  jo_int (j, "byte", b);
+                  jo_int (j, "byte", byte);
                   revk_event ("rx", &j);
-                  if (b == pe (EOT))
+                  if (byte == pe (EOT))
                      power = -1;        // EOT to shut down
-                  if ((b & 0x7F) == LF || (b & 0x7F) == CR)
+                  if ((byte & 0x7F) == LF || (byte & 0x7F) == CR)
                   {
                      jo_t j = jo_create_alloc ();
                      jo_stringn (j, NULL, (void *) line, rxp);
                      revk_event ("line", &j);
                      rxp = 0;
-                  } else if ((b & 0x7f) >= ' ' && rxp < MAXRX)
-                     line[rxp++] = (b & 0x7F);
-                  if (doecho)
+                  } else if ((byte & 0x7f) >= ' ' && rxp < MAXRX)
+                     line[rxp++] = (byte & 0x7F);
+                  if (b.doecho)
                   {             // Handling local characters and echoing (maybe, depends on xoff too)
-                     if (dobig)
+                     if (b.dobig)
                      {          // Doing large lettering
-                        if (b == pe (DC4))
+                        if (byte == pe (DC4))
                         {       // End
                            for (int i = 0; i < 9; i++)
                               sendbyte (NUL);
                            sendbyte (pe (DC4));
-                           dobig = 0;
-                        } else if (b == pe (b) && (b & 0x7F) >= 0x20 && queuebig (b & 0x7F))
+                           b.dobig = 0;
+                        } else if (byte == pe (byte) && (byte & 0x7F) >= 0x20 && queuebig (byte & 0x7F))
                            sendbyte (NUL);
-                     } else if (b == pe (DC2) && doecho && !nobig)
+                     } else if (byte == pe (DC2) && b.doecho && !nobig)
                      {          // Start big lettering
                         sendbyte (pe (DC2));
                         for (int i = 0; i < 10; i++)
                            sendbyte (NUL);
-                        dobig = 1;
+                        b.dobig = 1;
                      }
-                     // else if (b == pe(RU) && !nocave) docave = 1;
-                     else if (b == pe (DC1))
-                        xoff = 0;
-                     else if (b == pe (DC3))
-                        xoff = 1;
-                     else if (b == pe (WRU) && (!nover || *wru))
+                     // else if (byte == pe(RU) && !nocave) b.docave = 1;
+                     else if (byte == pe (DC1))
+                        b.xoff = 0;
+                     else if (byte == pe (DC3))
+                        b.xoff = 1;
+                     else if (byte == pe (WRU) && (!nover || *wru))
                      {          // WRU
                         // See 3.27 of ISS 8, SECTION 574-122-700TC
                         sendbyte (pe (CR));     // CR
@@ -802,8 +806,8 @@ asr33_main (void *param)
                         sendbyte (pe (LF));     // LF
                         if (ack)
                            sendbyte (pe (ack)); // ACK
-                     } else if (!xoff)
-                        sendbyte (b);
+                     } else if (!b.xoff)
+                        sendbyte (byte);
                   }
                }
             }
@@ -812,19 +816,19 @@ asr33_main (void *param)
       }
       if (!tty_tx_waiting () && csock < 0)
       {                         // Nothing to send
-         if (docave)
+         if (b.docave)
          {                      // Let's play a game
-            docave = 0;
+            b.docave = 0;
             extern int advent (void);
-            if (!busy)
+            if (!b.busy)
             {
-               busy = 1;
+               b.busy = 1;
                reportstate ();
             }
             revk_blink (1, 0, "B");
             advent ();
             power = -1;
-         } else if (on && now > done)
+         } else if (b.on && now > done)
             power = -1;
       } else
          done = now + 1000 * (power > 1 ? timekeyidle : timeremidle);
@@ -890,9 +894,9 @@ web_live (httpd_req_t * req)
       int t = revk_shutting_down (&reason);
       if (t)
          jo_string (j, "shutdown", reason);
-      jo_bool (j, "power", on);
-      jo_bool (j, "break", brk);
-      jo_bool (j, "busy", busy);
+      jo_bool (j, "power", b.on);
+      jo_bool (j, "brk", b.brk);
+      jo_bool (j, "busy", b.busy);
       xSemaphoreTake (rxws_mutex, portMAX_DELAY);
       if (rxwsp)
       {
