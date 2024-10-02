@@ -265,6 +265,7 @@ jo_stats (char clear)
    jo_int (j, "rxbad1", s.rxbad1);
    jo_int (j, "rxbadish1", s.rxbadish1);
    jo_int (j, "rxbadp", s.rxbadp);
+   jo_bool (j, "rxlevel", revk_gpio_get (rx));
    return j;
 }
 
@@ -1002,7 +1003,7 @@ web_root (httpd_req_t * req)
                   "ws.onmessage=function(v){"   //
                   "o=JSON.parse(v.data);"       //
                   "if(o.shutdown){reboot=true;s('shutdown','Restarting: '+o.shutdown);};"       //
-                  "s('stats','Tx:'+o.tx+' Rx:'+o.rx+' Bad: Start:'+o.rxbadstart+' Stop:'+o.rxbadstop+' Zero:'+o.rxbad0+'/'+o.rxbadish0+' One:'+o.rxbad1+'/'+o.rxbadish1+' Parity:'+o.rxbadp+(o.brk?' BREAK':'')+(o.power?' (power on)':''));"   //
+                  "s('stats','Tx:'+o.tx+' Rx:'+o.rx+(o.rxlevel?'(1)':'(0)')+' Bad: Start:'+o.rxbadstart+' Stop:'+o.rxbadstop+' Zero:'+o.rxbad0+'/'+o.rxbadish0+' One:'+o.rxbad1+'/'+o.rxbadish1+' Parity:'+o.rxbadp+(o.brk?' BREAK':'')+(o.power?' (power on)':''));"   //
                   "if(o.data)g('rx').append(o.data);"   //
                   "};};c();"    //
                   "setInterval(function() {if(!ws)c();else ws.send('');},1000);"        //
@@ -1014,7 +1015,7 @@ web_root (httpd_req_t * req)
                   "<input type=button value='WRU' onclick='w(\"wru\",true);'>"  //
                   "<input type=button value='Clear stats' onclick='w(\"clear\",true);'>"        //
                   "<p id=stats></p>"    //
-                  "<pre id=rx style='border:1px solid blue;'></pre>"      //
+                  "<pre id=rx style='border:1px solid blue;'></pre>"    //
                   "</form>"     //
                   , hostname);
    return revk_web_foot (req, 0, 1, NULL);
