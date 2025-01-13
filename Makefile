@@ -7,7 +7,7 @@ PROJECT_NAME := ASR33
 SUFFIX := $(shell components/ESP32-RevK/buildsuffix)
 MODELS := ASR33 ASR33h
 
-all:    settings.h
+all:    main/settings.h
 	@echo Make: $(PROJECT_NAME)$(SUFFIX).bin
 	@idf.py build
 	@cp build/$(PROJECT_NAME).bin $(PROJECT_NAME)$(SUFFIX).bin
@@ -18,21 +18,19 @@ beta:
 	-git submodule update --recursive
 	-git commit -a
 	@make set
-	cp ASR33*.bin betarelease
+	cp ASR33*.bin release/beta
 	git commit -a -m Beta
 	git push
 
 issue:
+	make -C PCB
 	-git pull
-	-git submodule update --recursive
 	-git commit -a
-	@make set
-	cp ASR33*.bin betarelease
-	cp ASR33*.bin release
-	git commit -a -m Release
-	git push
+	cp -f release/beta/$(PROJECT_NAME)*.bin release
+	-git commit -a -m Release
+	-git push
 
-settings.h:     components/ESP32-RevK/revk_settings settings.def components/ESP32-RevK/settings.def
+main/settings.h:     components/ESP32-RevK/revk_settings main/settings.def components/ESP32-RevK/settings.def
 	components/ESP32-RevK/revk_settings $^
 
 components/ESP32-RevK/revk_settings: components/ESP32-RevK/revk_settings.c
