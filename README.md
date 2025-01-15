@@ -12,11 +12,11 @@ Hardware and software for ESP32 based controller for ASR33 teletype.
 - MQTT connection
 - Includes stand alone Colossal Cave adventure game
 
-This is actually available to buy from [A&A](https://www.aa.net.uk/etc/circuit-boards/).
+This is actually available to buy from [A&A](https://www.aa.net.uk/etc/circuit-boards/) and [Tindie](https://www.tindie.com/products/revk/asr33-teletype-controller-development-board/)
 
 [More details](Manuals/ASR33-Controller.md)
 
-![ASR33](Manuals/ASR33.png)
+![ASR33](PCB/ASR33WAGO/ASR33.png)
 
 # Building
 

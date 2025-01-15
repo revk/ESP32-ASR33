@@ -10,7 +10,7 @@ The ASR33 has a Tx and Rx pair that work passively, using 20mA current loop at 1
 
 Note this document describes the new ESP32-PICO-MINI-02 based board.
 
-![324063](https://github.com/user-attachments/assets/efe73864-ae8f-4de6-aef4-12caa92fdde8)
+![Board](../PCB/ASR33WAGO/ASR33-90.png)
 
 ### USB
 
@@ -34,9 +34,9 @@ In the case of my ASR33 I have two solid state relays in the base of the unit :-
 
 ### Connections
 
-The connections are via PTSM 2.5mm, or 0.1” headers. The pins are marked on the back of the board as follows.
+The connections are WAGO. The pins are marked on the back of the board as follows.
 
-![324064](https://github.com/user-attachments/assets/95f61004-b72b-4da8-bc19-09cee0e8a25d)
+![Back](../PCB/ASR33WAGO/ASR33-bottom.png)
 
 ### Start/stop button
 
