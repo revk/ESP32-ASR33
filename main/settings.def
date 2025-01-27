@@ -1,7 +1,7 @@
 gpio	tx	15				// Tx
 gpio	rx	-16				// Rx
 gpio	run	17				// Run button input
-gpio	pwr	21				// Power relay control output
+gpio	pwr	13				// Power relay control output
 gpio	mtr	47				// Motor relay control output
 s	pwrtopic				// MQTT topic to control power relay
 s	mtrtopic				// MQTT topic to control motor relay
