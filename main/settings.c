@@ -13,7 +13,7 @@ revk_settings_t const revk_settings[]={
  {.type=REVK_SETTINGS_UNSIGNED,.gpio=1,.name="tx",.comment="Tx",.len=2,.def="15",.ptr=&tx,.size=sizeof(revk_gpio_t),.fix=1,.set=1,.flags="- ~↓↕⇕"},
  {.type=REVK_SETTINGS_UNSIGNED,.gpio=1,.name="rx",.comment="Rx",.len=2,.def="-16",.ptr=&rx,.size=sizeof(revk_gpio_t),.fix=1,.set=1,.flags="- ~↓↕⇕"},
  {.type=REVK_SETTINGS_UNSIGNED,.gpio=1,.name="run",.comment="Run button input",.len=3,.def="17",.ptr=&run,.size=sizeof(revk_gpio_t),.fix=1,.set=1,.flags="- ~↓↕⇕"},
- {.type=REVK_SETTINGS_UNSIGNED,.gpio=1,.name="pwr",.comment="Power relay control output",.len=3,.def="21",.ptr=&pwr,.size=sizeof(revk_gpio_t),.fix=1,.set=1,.flags="- ~↓↕⇕"},
+ {.type=REVK_SETTINGS_UNSIGNED,.gpio=1,.name="pwr",.comment="Power relay control output",.len=3,.def="13",.ptr=&pwr,.size=sizeof(revk_gpio_t),.fix=1,.set=1,.flags="- ~↓↕⇕"},
  {.type=REVK_SETTINGS_UNSIGNED,.gpio=1,.name="mtr",.comment="Motor relay control output",.len=3,.def="47",.ptr=&mtr,.size=sizeof(revk_gpio_t),.fix=1,.set=1,.flags="- ~↓↕⇕"},
  {.type=REVK_SETTINGS_STRING,.name="pwrtopic",.comment="MQTT topic to control power relay",.len=8,.ptr=&pwrtopic,.malloc=1},
  {.type=REVK_SETTINGS_STRING,.name="mtrtopic",.comment="MQTT topic to control motor relay",.len=8,.ptr=&mtrtopic,.malloc=1},
