@@ -4,13 +4,13 @@ The ASR33 project consists of software for an ESP32 and a hardware design for an
 
 ## Hardware
 
+<img src="../PCB/ASR33WAGO/ASR33-90.png" width=50% align=right>
+
 A board design is included, which includes the ESP32, USB serial, and connectors. Note that 0.1” headers can be used instead of these PTSM connectors if more convenient.
 
 The ASR33 has a Tx and Rx pair that work passively, using 20mA current loop at 110 Baud. However there are additional connections for a start/stop (RUN) button, and control of power (PWR) and motor (MTR) via external solid state relays or using MQTT connected power switches. The board can be powered by USB, or an external DC supply. A typical passive 20mA loop ASR33 can work solely using USB power.
 
-Note this document describes the new ESP32-PICO-MINI-02 based board.
-
-![Board](../PCB/ASR33WAGO/ASR33-90.png)
+Note this document describes the new ESP32-S3-MINI-1-N4-R2 board with WAGOs.
 
 ### USB
 
