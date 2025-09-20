@@ -1,6 +1,6 @@
 all: png stl
 
-stl:    ASR33/ASR33.stl ARS33WAGO/ASR33.stl
+stl:    ASR33/ASR33T.stl ASR33WAGO/ASR33T.stl ASR33/ASR33B.stl ASR33WAGO/ASR33B.stl
 
 png:	$(patsubst %.kicad_pcb,%.png,$(wildcard */*.kicad_pcb))
 
@@ -12,14 +12,14 @@ PCBCase/clean: PCBCase/clean.c
 
 %.stl: %.scad
 	echo "Making $@"
-	/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD $< -o $@
+	/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD $< -o $@ --backend CGAL
 	echo "Made $@"
 
-ASR33/ASR33.scad: ASR33/ASR33.kicad_pcb PCBCase/case Makefile
-	PCBCase/case -o $@ $< --edge=2 --bottom=2 --top=7 --pcb=2
+ASR33/ASR33T.scad: ASR33/ASR33.kicad_pcb PCBCase/case
+	PCBCase/case -o $@ $< --edge=2 --bottom=2 --top=7 --pcb=2 --two-file
 
-ASR33WAGO/ASR33.scad: ASR33WAGO/ASR33.kicad_pcb PCBCase/case Makefile
-	PCBCase/case -o $@ $< --edge=2 --bottom=2 --top=7 --pcb=2
+ASR33WAGO/ASR33T.scad: ASR33WAGO/ASR33.kicad_pcb PCBCase/case
+	PCBCase/case -o $@ $< --edge=2 --bottom=2 --top=7 --pcb=2 --two-file
 
-%.png:	%.kicad_pcb PCBCase/clean PCBCase/render Makefile
+%.png:	%.kicad_pcb PCBCase/clean PCBCase/render
 	PCBCase/render $<
